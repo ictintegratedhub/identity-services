@@ -1,6 +1,5 @@
-const axios = require('axios');
-
 module.exports = async (req, res) => {
+    // Enable CORS
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -17,9 +16,12 @@ module.exports = async (req, res) => {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    const token = req.cookies?.staffToken;
+    // Get token from cookie
+    const cookies = req.headers.cookie || '';
+    const token = cookies.split('; ').find(row => row.startsWith('staffToken='))?.split('=')[1];
+
     if (!token) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        return res.status(401).json({ error: 'Unauthorized. Please login first.' });
     }
 
     const { nin } = req.body;

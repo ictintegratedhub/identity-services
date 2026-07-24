@@ -1,11 +1,10 @@
 {
   "name": "identity-services",
   "version": "1.0.0",
-  "description": "NIN and BVN verification services for ICT Integrated Hub",
-  "main": "index.js",
+  "description": "NIN and BVN verification services",
   "scripts": {
     "start": "node api/index.js",
-    "dev": "vercel dev"
+    "build": "echo 'No build step required'"
   },
   "dependencies": {
     "axios": "^1.4.0",
@@ -17,5 +16,8 @@
   },
   "devDependencies": {
     "vercel": "^32.0.0"
+  },
+  "engines": {
+    "node": "18.x"
   }
 }
