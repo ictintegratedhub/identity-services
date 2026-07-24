@@ -1,0 +1,21 @@
+{
+  "name": "identity-services",
+  "version": "1.0.0",
+  "description": "NIN and BVN verification services for ICT Integrated Hub",
+  "main": "index.js",
+  "scripts": {
+    "start": "node api/index.js",
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "axios": "^1.4.0",
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "jsonwebtoken": "^9.0.0"
+  },
+  "devDependencies": {
+    "vercel": "^32.0.0"
+  }
+}

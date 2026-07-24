@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Login</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f0e8 0%, #e8ddd0 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: rgba(255,255,255,0.9);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+        }
+        h1 { 
+            color: #5a4a3a; 
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        p { 
+            color: #888; 
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        input {
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+            border: 2px solid #e0d5c8;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            border-color: #d4af37;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #d4af37, #f5c518);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 10px;
+        }
+        button:hover { transform: translateY(-2px); }
+        button:disabled { opacity: 0.7; transform: none; }
+        .error { 
+            color: #c0392b; 
+            background: #fde8e8;
+            padding: 12px;
+            border-radius: 8px;
+            display: none;
+            margin: 10px 0;
+        }
+        .error.visible { display: block; }
+        .icon { text-align: center; font-size: 48px; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">🔐</div>
+        <h1>Staff Login</h1>
+        <p>Enter your staff password</p>
+        
+        <div class="error" id="errorMsg"></div>
+        
+        <form id="loginForm">
+            <input type="password" id="password" placeholder="Enter staff password" required>
+            <button type="submit">Access Identity Services →</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('errorMsg');
+            
+            errorMsg.classList.remove('visible');
+            const btn = this.querySelector('button');
+            btn.textContent = '⏳ Verifying...';
+            btn.disabled = true;
+            
+            try {
+                const response = await fetch('/api/identity/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    window.location.href = '/identity';
+                } else {
+                    errorMsg.textContent = data.error || 'Invalid password';
+                    errorMsg.classList.add('visible');
+                    btn.textContent = 'Access Identity Services →';
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                errorMsg.textContent = 'Network error. Please try again.';
+                errorMsg.classList.add('visible');
+                btn.textContent = 'Access Identity Services →';
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

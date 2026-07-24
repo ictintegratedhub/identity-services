@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIN Verification</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #faf6ef 0%, #f5f0e8 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container { max-width: 700px; margin: 0 auto; }
+        .back {
+            color: #888;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .back:hover { color: #5a4a3a; }
+        .form-box {
+            background: rgba(255,255,255,0.8);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        h1 { color: #5a4a3a; margin-bottom: 8px; }
+        .subtitle { color: #888; margin-bottom: 25px; }
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0d5c8;
+            border-radius: 10px;
+            font-size: 18px;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            border-color: #d4af37;
+            outline: none;
+        }
+        .hint { color: #888; font-size: 14px; margin-bottom: 20px; }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #d4af37, #f5c518);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        button:hover { transform: translateY(-2px); }
+        button:disabled { opacity: 0.7; transform: none; }
+        .error {
+            color: #c0392b;
+            background: #fde8e8;
+            padding: 12px;
+            border-radius: 8px;
+            display: none;
+            margin: 15px 0;
+        }
+        .error.visible { display: block; }
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+        .loading.visible { display: block; }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #d4af37;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .result {
+            display: none;
+            margin-top: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 30px;
+            border-radius: 15px;
+        }
+        .result.visible { display: block; }
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0e8e0;
+        }
+        .result-row .label { color: #888; }
+        .result-row .value { color: #5a4a3a; font-weight: bold; }
+        .photo {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .photo img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid #d4af37;
+            object-fit: cover;
+        }
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .actions button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-print { background: #5a4a3a; color: white; }
+        .btn-print:hover { background: #7a6a5a; }
+        .btn-download { background: #d4af37; color: white; }
+        .btn-download:hover { background: #f5c518; }
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            color: #27ae60;
+        }
+        .status i { font-size: 24px; }
+        .privacy {
+            margin-top: 30px;
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            padding: 15px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 12px;
+        }
+        @media (max-width: 600px) {
+            .actions { flex-direction: column; }
+            .result-row { flex-direction: column; gap: 5px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/identity" class="back">← Back to Identity Services</a>
+        
+        <div class="form-box">
+            <h1>NIN Verification</h1>
+            <p class="subtitle">Verify and print official National Identification Number slips</p>
+            
+            <form id="ninForm">
+                <input type="text" id="ninInput" placeholder="Enter 11-digit NIN" maxlength="11" required>
+                <div class="hint">Example: 12345678901</div>
+                <button type="submit">✅ Verify NIN</button>
+            </form>
+            
+            <div class="error" id="errorMsg"></div>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Verifying NIN... Please wait.</p>
+            </div>
+            
+            <div class="result" id="result">
+                <div class="status">
+                    <span>✅</span>
+                    <strong>Verification Successful</strong>
+                </div>
+                
+                <div class="photo">
+                    <img src="https://ui-avatars.com/api/?name=John+Doe&background=d4af37&color=fff&size=120" alt="Photo" id="userPhoto">
+                </div>
+                
+                <div class="result-row">
+                    <span class="label">Full Name</span>
+                    <span class="value" id="userName">-</span>
+                </div>
+                <div class="result-row">
+                    <span class="label">Date of Birth</span>
+                    <span class="value" id="userDob">-</span>
+                </div>
+                <div class="result-row">
+                    <span class="label">Phone Number</span>
+                    <span class="value" id="userPhone">-</span>
+                </div>
+                <div class="result-row">
+                    <span class="label">NIN</span>
+                    <span class="value" id="userNin">-</span>
+                </div>
+                <div class="result-row">
+                    <span class="label">Verification Date</span>
+                    <span class="value" id="verificationDate">-</span>
+                </div>
+                
+                <div class="actions">
+                    <button class="btn-print" onclick="window.print()">🖨️ Print Slip</button>
+                    <button class="btn-download" id="downloadBtn">📥 Download PDF</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="privacy">
+            🔒 All verification requests are encrypted. We do not store your NIN data.
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('verificationDate').textContent = new Date().toLocaleDateString();
+            
+            document.getElementById('ninForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const nin = document.getElementById('ninInput').value.trim();
+                const errorMsg = document.getElementById('errorMsg');
+                const loading = document.getElementById('loading');
+                const result = document.getElementById('result');
+                const btn = this.querySelector('button');
+                
+                if (!nin || nin.length !== 11 || !/^\d{11}$/.test(nin)) {
+                    errorMsg.textContent = 'Please enter a valid 11-digit NIN.';
+                    errorMsg.classList.add('visible');
+                    return;
+                }
+                
+                errorMsg.classList.remove('visible');
+                result.classList.remove('visible');
+                loading.classList.add('visible');
+                btn.textContent = '⏳ Verifying...';
+                btn.disabled = true;
+                
+                try {
+                    const response = await fetch('/api/identity/nin/verify', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ nin })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok && data.success) {
+                        document.getElementById('userName').textContent = data.data.fullName || 'Not Available';
+                        document.getElementById('userDob').textContent = data.data.dob || 'Not Available';
+                        document.getElementById('userPhone').textContent = data.data.phone || 'Not Available';
+                        document.getElementById('userNin').textContent = nin;
+                        if (data.data.photo) {
+                            document.getElementById('userPhoto').src = data.data.photo;
+                        }
+                        result.classList.add('visible');
+                    } else {
+                        errorMsg.textContent = data.error || 'Unable to verify NIN.';
+                        errorMsg.classList.add('visible');
+                    }
+                } catch (err) {
+                    errorMsg.textContent = 'Network error. Please try again.';
+                    errorMsg.classList.add('visible');
+                }
+                
+                loading.classList.remove('visible');
+                btn.textContent = '✅ Verify NIN';
+                btn.disabled = false;
+            });
+            
+            document.getElementById('ninInput').addEventListener('input', function() {
+                this.value = this.value.replace(/\D/g, '');
+            });
+            
+            document.getElementById('downloadBtn').addEventListener('click', function() {
+                alert('PDF download coming soon. Use Print to save as PDF.');
+            });
+        });
+    </script>
+</body>
+</html>
