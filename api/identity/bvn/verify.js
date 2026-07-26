@@ -1,5 +1,49 @@
 const axios = require('axios');
 
+// Cache for the access token
+let cachedToken = null;
+let tokenExpiry = null;
+
+// Function to get or refresh the access token
+async function getAccessToken() {
+    if (cachedToken && tokenExpiry && Date.now() < tokenExpiry) {
+        console.log('✅ Using cached token');
+        return cachedToken;
+    }
+
+    console.log('🔄 Getting new access token...');
+    
+    try {
+        const authString = Buffer.from(
+            `${process.env.API_PUBLIC_KEY}:${process.env.API_SECRET_KEY}`
+        ).toString('base64');
+
+        const response = await axios.post(
+            'https://api.ninslip.com/auth/token',
+            {},
+            {
+                headers: {
+                    'Authorization': `Basic ${authString}`,
+                    'Content-Type': 'application/json'
+                },
+                timeout: 10000
+            }
+        );
+
+        if (response.data.success && response.data.data?.access_token) {
+            cachedToken = response.data.data.access_token;
+            tokenExpiry = Date.now() + (55 * 60 * 1000);
+            console.log('✅ Access token obtained successfully');
+            return cachedToken;
+        } else {
+            throw new Error(response.data.message || 'Failed to get access token');
+        }
+    } catch (error) {
+        console.error('❌ Failed to get access token:', error.message);
+        throw error;
+    }
+}
+
 module.exports = async (req, res) => {
     // Enable CORS
     res.setHeader('Access-Control-Allow-Credentials', true);
@@ -52,98 +96,54 @@ module.exports = async (req, res) => {
             });
         }
 
-        // Try multiple authentication options
-        try {
-            console.log('🌐 Calling ArewaGate API (Option 1: Both keys in headers)...');
-            
-            const response = await axios.post(
-                'https://api.ninslip.com/verification/bvn',
-                { bvn: bvn },
-                {
-                    headers: {
-                        'x-api-key': process.env.API_PUBLIC_KEY,
-                        'x-secret-key': process.env.API_SECRET_KEY,
-                        'Content-Type': 'application/json'
-                    },
-                    timeout: 30000
-                }
-            );
+        // Get access token
+        console.log('🌐 Getting ArewaGate access token...');
+        const accessToken = await getAccessToken();
+        console.log('✅ Access token obtained');
 
-            if (response.data.success && response.data.data?.status === 'completed') {
-                const userData = response.data.data.data;
-                const formattedData = formatBVNResponse(userData, bvn);
-                return res.json(formattedData);
+        // Verify BVN
+        console.log('🌐 Verifying BVN with ArewaGate...');
+        const response = await axios.post(
+            'https://api.ninslip.com/verification/bvn',
+            { bvn: bvn },
+            {
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                timeout: 30000
             }
-        } catch (error1) {
-            console.log('❌ Option 1 failed, trying Option 2...');
+        );
+
+        console.log(`✅ API Response Status: ${response.status}`);
+
+        if (response.data.success && response.data.data?.status === 'completed') {
+            const userData = response.data.data.data;
             
-            try {
-                console.log('🌐 Calling ArewaGate API (Option 2: Bearer token)...');
-                
-                const authResponse = await axios.post(
-                    'https://api.ninslip.com/auth/token',
-                    {},
-                    {
-                        headers: {
-                            'Authorization': `Basic ${Buffer.from(`${process.env.API_PUBLIC_KEY}:${process.env.API_SECRET_KEY}`).toString('base64')}`,
-                            'Content-Type': 'application/json'
-                        }
-                    }
-                );
-
-                const bearerToken = authResponse.data.token || authResponse.data.access_token;
-                console.log('✅ Bearer token obtained');
-
-                const response = await axios.post(
-                    'https://api.ninslip.com/verification/bvn',
-                    { bvn: bvn },
-                    {
-                        headers: {
-                            'Authorization': `Bearer ${bearerToken}`,
-                            'Content-Type': 'application/json'
-                        },
-                        timeout: 30000
-                    }
-                );
-
-                if (response.data.success && response.data.data?.status === 'completed') {
-                    const userData = response.data.data.data;
-                    const formattedData = formatBVNResponse(userData, bvn);
-                    return res.json(formattedData);
+            const formattedData = {
+                success: true,
+                data: {
+                    fullName: `${userData.firstname || ''} ${userData.lastname || ''}`.trim() || 'Not Available',
+                    firstName: userData.firstname || '',
+                    lastName: userData.lastname || '',
+                    dob: userData.dob || 'Not Available',
+                    gender: userData.gender === 'm' ? 'Male' : userData.gender === 'f' ? 'Female' : userData.gender || 'Not Available',
+                    phone: userData.phone || 'Not Available',
+                    address: userData.address || 'Not Available',
+                    bvn: userData.bvn || bvn,
+                    bankName: userData.bankName || userData.bank || 'Not Available',
+                    photo: userData.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.firstname || '')}+${encodeURIComponent(userData.lastname || '')}&background=d4af37&color=fff&size=200`,
+                    verified: true,
+                    verificationDate: new Date().toISOString()
                 }
-            } catch (error2) {
-                console.log('❌ Option 2 failed, trying Option 3...');
-                
-                try {
-                    console.log('🌐 Calling ArewaGate API (Option 3: Bearer with public key)...');
-                    
-                    const response = await axios.post(
-                        'https://api.ninslip.com/verification/bvn',
-                        { bvn: bvn },
-                        {
-                            headers: {
-                                'Authorization': `Bearer ${process.env.API_PUBLIC_KEY}`,
-                                'Content-Type': 'application/json'
-                            },
-                            timeout: 30000
-                        }
-                    );
-
-                    if (response.data.success && response.data.data?.status === 'completed') {
-                        const userData = response.data.data.data;
-                        const formattedData = formatBVNResponse(userData, bvn);
-                        return res.json(formattedData);
-                    }
-                } catch (error3) {
-                    console.log('❌ All authentication options failed');
-                    throw error3;
-                }
-            }
+            };
+            
+            return res.json(formattedData);
+        } else {
+            return res.status(400).json({
+                error: response.data.message || 'Unable to verify BVN. Please try again.'
+            });
         }
-
-        return res.status(500).json({
-            error: 'Unable to verify BVN. Please check your API credentials and try again.'
-        });
 
     } catch (error) {
         console.error(`❌ ERROR DETAILS:`, error.message);
@@ -152,15 +152,17 @@ module.exports = async (req, res) => {
             console.error(`Response Status:`, error.response.status);
             console.error(`Response Data:`, JSON.stringify(error.response.data, null, 2));
             
-            if (error.response.status === 402) {
-                return res.status(402).json({
-                    error: '⚠️ Insufficient wallet balance. Please fund your ArewaGate wallet.'
+            if (error.response.status === 401) {
+                cachedToken = null;
+                tokenExpiry = null;
+                return res.status(401).json({
+                    error: '⚠️ Invalid API credentials. Please check your Public and Secret keys.'
                 });
             }
             
-            if (error.response.status === 401) {
-                return res.status(401).json({
-                    error: '⚠️ Invalid API credentials. Please check your Public and Secret keys.'
+            if (error.response.status === 402) {
+                return res.status(402).json({
+                    error: '⚠️ Insufficient wallet balance. Please fund your ArewaGate wallet.'
                 });
             }
 
@@ -169,31 +171,17 @@ module.exports = async (req, res) => {
             });
         }
         
+        if (error.code === 'ECONNABORTED') {
+            return res.status(504).json({
+                error: '⏱️ Request timeout. The API is taking too long to respond.'
+            });
+        }
+        
         return res.status(500).json({
             error: `Network error: ${error.message}. Please try again.`
         });
     }
 };
-
-function formatBVNResponse(userData, bvn) {
-    return {
-        success: true,
-        data: {
-            fullName: `${userData.firstname || ''} ${userData.lastname || ''}`.trim() || 'Not Available',
-            firstName: userData.firstname || '',
-            lastName: userData.lastname || '',
-            dob: userData.dob || 'Not Available',
-            gender: userData.gender === 'm' ? 'Male' : userData.gender === 'f' ? 'Female' : userData.gender || 'Not Available',
-            phone: userData.phone || 'Not Available',
-            address: userData.address || 'Not Available',
-            bvn: userData.bvn || bvn,
-            bankName: userData.bankName || userData.bank || 'Not Available',
-            photo: userData.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.firstname || '')}+${encodeURIComponent(userData.lastname || '')}&background=d4af37&color=fff&size=200`,
-            verified: true,
-            verificationDate: new Date().toISOString()
-        }
-    };
-}
 
 function generateMockBVNData(bvn) {
     const hash = simpleHash(bvn);
