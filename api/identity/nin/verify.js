@@ -36,98 +36,151 @@ module.exports = async (req, res) => {
     const useMock = process.env.USE_MOCK_PROVIDER === 'true' || process.env.USE_MOCK_PROVIDER === '1';
 
     try {
-        console.log(`Verifying NIN: ${nin} (Provider: ${useMock ? 'MOCK' : 'AREWAGATE'})`);
+        console.log(`========================================`);
+        console.log(`🔍 NIN Verification Request`);
+        console.log(`NIN: ${nin}`);
+        console.log(`Use Mock: ${useMock}`);
+        console.log(`Public Key: ${process.env.API_PUBLIC_KEY ? '✅ Present' : '❌ Missing'}`);
+        console.log(`Secret Key: ${process.env.API_SECRET_KEY ? '✅ Present' : '❌ Missing'}`);
+        console.log(`========================================`);
 
-       
-        // MOCK PROVIDER (For testing when API is down)
-        
+        // ============================================================
+        // MOCK PROVIDER (For testing)
+        // ============================================================
         if (useMock) {
-            console.log('Using MOCK provider for NIN verification');
-            
-            // Generate consistent mock data based on NIN
+            console.log('📦 Using MOCK provider for NIN verification');
             const mockData = generateMockNINData(nin);
-            
             return res.json({
                 success: true,
                 data: mockData
             });
         }
 
-        // API_PROVIDER
-        const response = await axios.post(
-            'https://api.ninslip.com/verification/nin',
-            { nin: nin },
-            {
-                headers: {
-                    'Authorization': `Bearer ${process.env.API_KEY}`,
-                    'Content-Type': 'application/json'
-                },
-                timeout: 30000 // 30 second timeout
-            }
-        );
-
-        // Check if verification was successful
-        if (response.data.success && response.data.data?.status === 'completed') {
-            const userData = response.data.data.data;
+        // ============================================================
+        // AREWAGATE API - OPTION 1: Both Keys in Headers
+        // ============================================================
+        try {
+            console.log('🌐 Calling ArewaGate API (Option 1: Both keys in headers)...');
             
-            // Format the response for our frontend
-            const formattedData = {
-                success: true,
-                data: {
-                    fullName: `${userData.firstname || ''} ${userData.middlename || ''} ${userData.lastname || ''}`.trim() || 'Not Available',
-                    firstName: userData.firstname || '',
-                    lastName: userData.lastname || '',
-                    middleName: userData.middlename || '',
-                    dob: userData.dob || 'Not Available',
-                    gender: userData.gender === 'm' ? 'Male' : userData.gender === 'f' ? 'Female' : userData.gender || 'Not Available',
-                    phone: userData.phone || 'Not Available',
-                    address: userData.address || 'Not Available',
-                    nin: userData.nin || nin,
-                    state: userData.state || 'Not Available',
-                    lga: userData.lga || 'Not Available',
-                    photo: userData.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.firstname || '')}+${encodeURIComponent(userData.lastname || '')}&background=d4af37&color=fff&size=200`,
-                    verified: true,
-                    verificationDate: new Date().toISOString()
+            const response = await axios.post(
+                'https://api.ninslip.com/verification/nin',
+                { nin: nin },
+                {
+                    headers: {
+                        'x-api-key': process.env.API_PUBLIC_KEY,
+                        'x-secret-key': process.env.API_SECRET_KEY,
+                        'Content-Type': 'application/json'
+                    },
+                    timeout: 30000
                 }
-            };
-            
-            return res.json(formattedData);
-        } else {
-            // API returned error
-            return res.status(400).json({
-                error: response.data.message || 'Unable to verify NIN. Please try again.'
-            });
+            );
+
+            // If this works, return the formatted data
+            if (response.data.success && response.data.data?.status === 'completed') {
+                const userData = response.data.data.data;
+                const formattedData = formatNINResponse(userData, nin);
+                return res.json(formattedData);
+            }
+        } catch (error1) {
+            console.log('❌ Option 1 failed, trying Option 2...');
+            console.log('Error:', error1.message);
+
+            // ============================================================
+            // AREWAGATE API - OPTION 2: Bearer Token Authentication
+            // ============================================================
+            try {
+                console.log('🌐 Calling ArewaGate API (Option 2: Bearer token)...');
+                
+                // First, get a Bearer token using both keys
+                const authResponse = await axios.post(
+                    'https://api.ninslip.com/auth/token',
+                    {},
+                    {
+                        headers: {
+                            'Authorization': `Basic ${Buffer.from(`${process.env.API_PUBLIC_KEY}:${process.env.API_SECRET_KEY}`).toString('base64')}`,
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                );
+
+                const bearerToken = authResponse.data.token || authResponse.data.access_token;
+                console.log('✅ Bearer token obtained');
+
+                // Now use the Bearer token for the actual verification
+                const response = await axios.post(
+                    'https://api.ninslip.com/verification/nin',
+                    { nin: nin },
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${bearerToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        timeout: 30000
+                    }
+                );
+
+                if (response.data.success && response.data.data?.status === 'completed') {
+                    const userData = response.data.data.data;
+                    const formattedData = formatNINResponse(userData, nin);
+                    return res.json(formattedData);
+                }
+            } catch (error2) {
+                console.log('❌ Option 2 failed, trying Option 3...');
+                console.log('Error:', error2.message);
+
+                // ============================================================
+                // AREWAGATE API - OPTION 3: Simple Bearer with Public Key
+                // ============================================================
+                try {
+                    console.log('🌐 Calling ArewaGate API (Option 3: Bearer with public key)...');
+                    
+                    const response = await axios.post(
+                        'https://api.ninslip.com/verification/nin',
+                        { nin: nin },
+                        {
+                            headers: {
+                                'Authorization': `Bearer ${process.env.API_PUBLIC_KEY}`,
+                                'Content-Type': 'application/json'
+                            },
+                            timeout: 30000
+                        }
+                    );
+
+                    if (response.data.success && response.data.data?.status === 'completed') {
+                        const userData = response.data.data.data;
+                        const formattedData = formatNINResponse(userData, nin);
+                        return res.json(formattedData);
+                    }
+                } catch (error3) {
+                    console.log('❌ All authentication options failed');
+                    throw error3;
+                }
+            }
         }
+
+        // If we get here, all options failed
+        return res.status(500).json({
+            error: 'Unable to verify NIN. Please check your API credentials and try again.'
+        });
 
     } catch (error) {
-        console.error('NIN API Error:', error.message);
+        console.error(`❌ ERROR DETAILS:`);
+        console.error(`Message:`, error.message);
         
-        // Handle specific error types
-        if (error.code === 'ECONNABORTED') {
-            return res.status(504).json({
-                error: 'Request timeout. The API is taking too long to respond.'
-            });
-        }
-
         if (error.response) {
-            console.error('API Response:', error.response.data);
+            console.error(`Response Status:`, error.response.status);
+            console.error(`Response Data:`, JSON.stringify(error.response.data, null, 2));
             
-            // Handle specific status codes
+            // Handle specific error codes
             if (error.response.status === 402) {
                 return res.status(402).json({
-                    error: '⚠️ Insufficient wallet balance. Please fund your wallet.'
+                    error: '⚠️ Insufficient wallet balance. Please fund your ArewaGate wallet.'
                 });
             }
             
-            if (error.response.status === 422) {
-                return res.status(422).json({
-                    error: error.response.data.message || 'Invalid NIN format or verification failed.'
-                });
-            }
-
             if (error.response.status === 401) {
                 return res.status(401).json({
-                    error: '⚠️ Invalid API key. Please check your API credentials.'
+                    error: '⚠️ Invalid API credentials. Please check your Public and Secret keys.'
                 });
             }
 
@@ -136,18 +189,40 @@ module.exports = async (req, res) => {
             });
         }
         
-        // Network error or other issues
         return res.status(500).json({
-            error: 'Network error. Please check your connection and try again.'
+            error: `Network error: ${error.message}. Please try again.`
         });
     }
 };
 
 // ============================================================
-// MOCK DATA GENERATOR
+// HELPER FUNCTIONS
 // ============================================================
+
+function formatNINResponse(userData, nin) {
+    return {
+        success: true,
+        data: {
+            fullName: `${userData.firstname || ''} ${userData.middlename || ''} ${userData.lastname || ''}`.trim() || 'Not Available',
+            firstName: userData.firstname || '',
+            lastName: userData.lastname || '',
+            middleName: userData.middlename || '',
+            dob: userData.dob || 'Not Available',
+            gender: userData.gender === 'm' ? 'Male' : userData.gender === 'f' ? 'Female' : userData.gender || 'Not Available',
+            phone: userData.phone || 'Not Available',
+            address: userData.address || 'Not Available',
+            nin: userData.nin || nin,
+            state: userData.state || 'Not Available',
+            lga: userData.lga || 'Not Available',
+            photo: userData.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.firstname || '')}+${encodeURIComponent(userData.lastname || '')}&background=d4af37&color=fff&size=200`,
+            verified: true,
+            verificationDate: new Date().toISOString()
+        }
+    };
+}
+
 function generateMockNINData(nin) {
-    // Use the NIN to generate consistent but unique data
+    // ... (keep the same mock data generator from before)
     const hash = simpleHash(nin);
     const firstNames = ['John', 'Jane', 'Michael', 'Mary', 'David', 'Grace', 'Peter', 'Esther', 'Samuel', 'Ruth'];
     const lastNames = ['Okafor', 'Adebayo', 'Musa', 'Okonkwo', 'Eze', 'Bello', 'Adeyemi', 'Chukwu', 'Ibrahim', 'Adeleke'];
@@ -164,7 +239,6 @@ function generateMockNINData(nin) {
     const phonePrefix = phonePrefixes[(hash * 13) % phonePrefixes.length];
     const phoneNumber = phonePrefix + String(10000000 + (hash * 17) % 90000000).padStart(8, '0');
     
-    // Random DOB between 1970-2005
     const year = 1970 + (hash * 3) % 35;
     const month = 1 + (hash * 5) % 12;
     const day = 1 + (hash * 7) % 28;
@@ -193,7 +267,7 @@ function simpleHash(str) {
     for (let i = 0; i < str.length; i++) {
         const char = str.charCodeAt(i);
         hash = ((hash << 5) - hash) + char;
-        hash = hash & hash; // Convert to 32bit integer
+        hash = hash & hash;
     }
     return Math.abs(hash);
 }
