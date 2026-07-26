@@ -16,6 +16,7 @@
             --success: #27ae60;
             --error: #e74c3c;
             --shadow: 0 10px 40px rgba(0,0,0,0.06);
+            --border-radius: 16px;
         }
 
         body {
@@ -25,9 +26,8 @@
             padding: 30px 20px;
         }
 
-        .container { max-width: 720px; margin: 0 auto; }
+        .container { max-width: 780px; margin: 0 auto; }
 
-        /* Back Button */
         .back {
             color: var(--text-muted);
             text-decoration: none;
@@ -41,23 +41,21 @@
         }
         .back:hover { color: var(--text-dark); }
 
-        /* Main Card */
         .card {
             background: rgba(255,255,255,0.85);
             backdrop-filter: blur(12px);
-            padding: 40px;
-            border-radius: 24px;
+            padding: 32px;
+            border-radius: var(--border-radius);
             box-shadow: var(--shadow);
             border: 1px solid rgba(255,255,255,0.3);
-            transition: all 0.3s ease;
         }
 
         .card-header {
-            margin-bottom: 30px;
+            margin-bottom: 24px;
         }
 
         .card-header h1 {
-            font-size: 28px;
+            font-size: 26px;
             color: var(--text-dark);
             font-weight: 700;
             letter-spacing: -0.5px;
@@ -66,64 +64,124 @@
         .card-header p {
             color: var(--text-muted);
             margin-top: 4px;
-            font-size: 15px;
+            font-size: 14px;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            background: #f0ece6;
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 24px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: transparent;
+            color: var(--text-muted);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-dark);
+            background: rgba(255,255,255,0.5);
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: var(--text-dark);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .tab-btn .icon { font-size: 16px; }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* Form */
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .form-group label {
             display: block;
             font-weight: 600;
             color: var(--text-dark);
-            margin-bottom: 6px;
-            font-size: 14px;
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+
+        .form-group .required {
+            color: var(--error);
+            margin-left: 2px;
         }
 
         .input-wrapper {
             position: relative;
         }
 
-        .input-wrapper input {
+        .input-wrapper input,
+        .input-wrapper select {
             width: 100%;
-            padding: 14px 18px;
-            padding-right: 50px;
+            padding: 12px 16px;
             border: 2px solid #e8e0d8;
-            border-radius: 12px;
-            font-size: 18px;
-            letter-spacing: 3px;
-            font-weight: 500;
+            border-radius: 10px;
+            font-size: 15px;
             transition: all 0.3s ease;
             background: rgba(255,255,255,0.8);
             color: var(--text-dark);
             font-family: 'Inter', sans-serif;
         }
 
-        .input-wrapper input:focus {
+        .input-wrapper input:focus,
+        .input-wrapper select:focus {
             border-color: var(--gold);
             outline: none;
             box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
             background: white;
         }
 
-        .input-wrapper input:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
+        .input-wrapper select {
+            appearance: none;
+            cursor: pointer;
         }
 
         .input-wrapper .clear-btn {
             position: absolute;
-            right: 14px;
+            right: 12px;
             top: 50%;
             transform: translateY(-50%);
             background: none;
             border: none;
             color: #ccc;
             cursor: pointer;
-            font-size: 18px;
-            padding: 4px 8px;
+            font-size: 16px;
+            padding: 4px 6px;
             display: none;
         }
 
@@ -132,27 +190,39 @@
 
         .hint {
             color: var(--text-muted);
-            font-size: 13px;
-            margin-top: 6px;
+            font-size: 12px;
+            margin-top: 4px;
         }
 
-        /* Buttons */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 500px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .btn-primary {
             width: 100%;
-            padding: 16px;
+            padding: 14px;
             background: linear-gradient(135deg, var(--gold), #f5c518);
             color: white;
             border: none;
-            border-radius: 12px;
-            font-size: 16px;
+            border-radius: 10px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             font-family: 'Inter', sans-serif;
+            margin-top: 8px;
         }
 
         .btn-primary:hover:not(:disabled) {
@@ -209,7 +279,7 @@
             cursor: not-allowed;
         }
 
-        /* Loading State */
+        /* Loading */
         .loading-overlay {
             display: none;
             text-align: center;
@@ -222,120 +292,76 @@
         }
 
         .spinner {
-            width: 48px;
-            height: 48px;
+            width: 44px;
+            height: 44px;
             border: 4px solid rgba(212, 175, 55, 0.15);
             border-top-color: var(--gold);
             border-radius: 50%;
             animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-            margin: 0 auto 16px;
-        }
-
-        .loading-overlay p {
-            color: var(--text-muted);
-            font-size: 15px;
-        }
-
-        .loading-overlay .loading-dots::after {
-            content: '';
-            animation: dots 1.5s steps(4, end) infinite;
+            margin: 0 auto 14px;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
-        @keyframes dots {
-            0% { content: ''; }
-            25% { content: '.'; }
-            50% { content: '..'; }
-            75% { content: '...'; }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Error State */
+        /* Error */
         .error-msg {
             display: none;
-            padding: 14px 18px;
+            padding: 12px 16px;
             background: #fdf2f2;
             border: 1px solid #f5c6c6;
             border-radius: 10px;
             color: var(--error);
             font-size: 14px;
-            margin-top: 16px;
+            margin-top: 12px;
             animation: fadeIn 0.3s ease;
         }
 
-        .error-msg.visible {
-            display: block;
-        }
+        .error-msg.visible { display: block; }
 
-        .error-msg i { margin-right: 8px; }
-
-        /* Result/Slip */
+        /* Result */
         .result {
             display: none;
-            margin-top: 30px;
+            margin-top: 28px;
             animation: fadeIn 0.5s ease;
         }
 
-        .result.visible {
-            display: block;
-        }
+        .result.visible { display: block; }
 
         #slipContent {
             background: white;
-            border-radius: 16px;
-            padding: 32px;
+            border-radius: var(--border-radius);
+            padding: 28px;
             border: 1px solid #e8e0d8;
             box-shadow: 0 4px 20px rgba(0,0,0,0.03);
         }
 
-        /* Slip Header */
         .slip-header {
             text-align: center;
             border-bottom: 3px solid var(--gold);
-            padding-bottom: 20px;
-            margin-bottom: 24px;
+            padding-bottom: 16px;
+            margin-bottom: 20px;
         }
 
-        .slip-header .logo-icon {
-            font-size: 32px;
-            margin-bottom: 4px;
-        }
-
-        .slip-header h2 {
-            color: var(--text-dark);
-            font-size: 20px;
-            font-weight: 700;
-        }
-
-        .slip-header .sub {
-            color: var(--text-muted);
-            font-size: 13px;
-            margin-top: 2px;
-        }
-
-        .slip-header .verification-badge {
+        .slip-header .logo-icon { font-size: 28px; margin-bottom: 2px; }
+        .slip-header h2 { color: var(--text-dark); font-size: 20px; font-weight: 700; }
+        .slip-header .sub { color: var(--text-muted); font-size: 13px; }
+        .slip-header .badge {
             display: inline-block;
             background: #eafaf1;
             color: var(--success);
-            padding: 4px 16px;
+            padding: 3px 14px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
-            margin-top: 8px;
+            margin-top: 6px;
         }
 
-        /* Slip Body */
         .slip-body {
             display: flex;
-            gap: 30px;
-            margin-bottom: 20px;
+            gap: 24px;
+            margin-bottom: 16px;
         }
 
         .slip-photo {
@@ -344,8 +370,8 @@
         }
 
         .slip-photo img {
-            width: 140px;
-            height: 140px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             border: 4px solid var(--gold);
             object-fit: cover;
@@ -358,24 +384,20 @@
             margin-top: 4px;
         }
 
-        .slip-details {
-            flex: 1;
-        }
+        .slip-details { flex: 1; }
 
         .slip-row {
             display: flex;
-            padding: 10px 0;
+            padding: 7px 0;
             border-bottom: 1px solid #f5f0e8;
         }
 
-        .slip-row:last-child {
-            border-bottom: none;
-        }
+        .slip-row:last-child { border-bottom: none; }
 
         .slip-row .label {
             color: var(--text-muted);
             width: 38%;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 500;
         }
 
@@ -383,13 +405,13 @@
             color: var(--text-dark);
             width: 62%;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
+            word-break: break-word;
         }
 
-        /* Slip Footer */
         .slip-footer {
-            margin-top: 20px;
-            padding-top: 20px;
+            margin-top: 16px;
+            padding-top: 16px;
             border-top: 2px solid #f5f0e8;
             text-align: center;
             color: var(--text-muted);
@@ -399,198 +421,170 @@
         .slip-footer .stamp {
             color: var(--gold);
             font-weight: 700;
-            font-size: 16px;
+            font-size: 14px;
             letter-spacing: 2px;
         }
 
-        .slip-footer .reference {
-            margin-top: 4px;
+        .slip-footer .ref {
+            margin-top: 3px;
             font-size: 11px;
         }
 
-        /* Actions */
         .actions {
             display: flex;
             gap: 12px;
-            margin-top: 20px;
+            margin-top: 16px;
         }
 
-        /* Privacy */
         .privacy {
-            margin-top: 20px;
-            padding: 14px 20px;
+            margin-top: 16px;
+            padding: 12px 16px;
             background: rgba(255,255,255,0.6);
             border-radius: 12px;
             text-align: center;
             color: var(--text-muted);
-            font-size: 13px;
+            font-size: 12px;
             backdrop-filter: blur(4px);
         }
 
         .privacy i { margin-right: 6px; color: var(--gold); }
 
-        /* Print Styles */
         @media print {
-            body {
-                background: white !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-
-            .card-header,
-            .form-group,
-            .btn-primary,
-            .error-msg,
-            .loading-overlay,
-            .actions,
-            .back,
-            .privacy,
-            .hint {
-                display: none !important;
-            }
-
-            .result {
-                display: block !important;
-                margin: 0 !important;
-            }
-
-            #slipContent {
-                box-shadow: none !important;
-                border: 1px solid #ddd !important;
-                border-radius: 0 !important;
-                padding: 20px !important;
-                margin: 0 !important;
-            }
-
-            .slip-photo img {
-                border-width: 2px !important;
-            }
-
-            .slip-header .verification-badge {
-                background: #eafaf1 !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-
-            .slip-footer .stamp {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
+            body { background: white !important; padding: 0 !important; margin: 0 !important; }
+            .card-header, .tabs, .form-group, .btn-primary, .error-msg,
+            .loading-overlay, .actions, .back, .privacy, .hint { display: none !important; }
+            .result { display: block !important; margin: 0 !important; }
+            #slipContent { box-shadow: none !important; border: 1px solid #ddd !important; border-radius: 0 !important; padding: 16px !important; margin: 0 !important; }
+            .slip-photo img { border-width: 2px !important; }
+            .slip-header .badge { background: #eafaf1 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            .slip-footer .stamp { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
 
-        /* Responsive */
         @media (max-width: 640px) {
-            .card { padding: 24px; }
+            .card { padding: 20px; }
             .card-header h1 { font-size: 22px; }
-            .slip-body {
-                flex-direction: column;
-                align-items: center;
-            }
-            .slip-photo img {
-                width: 120px;
-                height: 120px;
-            }
-            .slip-row {
-                flex-direction: column;
-                gap: 2px;
-                padding: 8px 0;
-            }
-            .slip-row .label,
-            .slip-row .value {
-                width: 100%;
-            }
-            .slip-row .label {
-                font-size: 12px;
-            }
-            .slip-row .value {
-                font-size: 14px;
-            }
-            .actions {
-                flex-direction: column;
-            }
-            .btn-secondary {
-                padding: 14px;
-            }
-        }
-
-        @media (max-width: 400px) {
-            .card { padding: 18px; }
-            .card-header h1 { font-size: 20px; }
-            .input-wrapper input {
-                font-size: 16px;
-                padding: 12px 14px;
-                padding-right: 44px;
-            }
+            .slip-body { flex-direction: column; align-items: center; }
+            .slip-photo img { width: 100px; height: 100px; }
+            .slip-row { flex-direction: column; gap: 2px; padding: 6px 0; }
+            .slip-row .label, .slip-row .value { width: 100%; }
+            .slip-row .label { font-size: 11px; }
+            .slip-row .value { font-size: 13px; }
+            .actions { flex-direction: column; }
+            .btn-secondary { padding: 14px; }
+            .tabs { flex-wrap: wrap; }
+            .tab-btn { font-size: 12px; padding: 8px 12px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Back Button -->
         <a href="/identity" class="back">← Back to Identity Services</a>
 
-        <!-- Main Card -->
         <div class="card">
-            <!-- Header -->
             <div class="card-header">
                 <h1>NIN Verification</h1>
-                <p>Verify and generate official National Identification Number slip</p>
+                <p>Verify National Identification Number using multiple search methods</p>
             </div>
 
-            <!-- Form -->
-            <form id="ninForm">
-                <div class="form-group">
-                    <label for="ninInput">NIN Number</label>
-                    <div class="input-wrapper">
-                        <input
-                            type="text"
-                            id="ninInput"
-                            placeholder="Enter 11-digit NIN"
-                            maxlength="11"
-                            autocomplete="off"
-                            required
-                        >
-                        <button type="button" class="clear-btn" id="clearBtn">✕</button>
-                    </div>
-                    <div class="hint">Enter the 11-digit NIN (e.g., 12345678901)</div>
-                </div>
-
-                <button type="submit" class="btn-primary" id="verifyBtn">
-                    <span>🔍</span> Verify NIN
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="nin">
+                    <span class="icon">🪪</span> By NIN
                 </button>
-            </form>
+                <button class="tab-btn" data-tab="phone">
+                    <span class="icon">📞</span> By Phone
+                </button>
+                <button class="tab-btn" data-tab="demographic">
+                    <span class="icon">👤</span> By Demographic
+                </button>
+            </div>
+
+            <!-- Tab 1: By NIN -->
+            <div class="tab-content active" id="tab-nin">
+                <form id="ninForm">
+                    <div class="form-group">
+                        <label>NIN Number <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <input type="text" id="ninInput" placeholder="Enter 11-digit NIN" maxlength="11" autocomplete="off">
+                            <button type="button" class="clear-btn" id="clearNin">✕</button>
+                        </div>
+                        <div class="hint">Enter the 11-digit NIN (e.g., 12345678901)</div>
+                    </div>
+                    <button type="submit" class="btn-primary" id="verifyNinBtn">🔍 Verify NIN</button>
+                </form>
+            </div>
+
+            <!-- Tab 2: By Phone -->
+            <div class="tab-content" id="tab-phone">
+                <form id="phoneForm">
+                    <div class="form-group">
+                        <label>Phone Number <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <input type="text" id="phoneInput" placeholder="Enter 11-digit phone number" maxlength="11" autocomplete="off">
+                            <button type="button" class="clear-btn" id="clearPhone">✕</button>
+                        </div>
+                        <div class="hint">Enter the 11-digit phone number registered with NIN</div>
+                    </div>
+                    <button type="submit" class="btn-primary" id="verifyPhoneBtn">📞 Search by Phone</button>
+                </form>
+            </div>
+
+            <!-- Tab 3: By Demographic -->
+            <div class="tab-content" id="tab-demographic">
+                <form id="demoForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>First Name <span class="required">*</span></label>
+                            <input type="text" id="firstNameInput" placeholder="First name" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name <span class="required">*</span></label>
+                            <input type="text" id="lastNameInput" placeholder="Last name" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Gender <span class="required">*</span></label>
+                            <select id="genderInput">
+                                <option value="">Select gender</option>
+                                <option value="m">Male</option>
+                                <option value="f">Female</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Date of Birth <span class="required">*</span></label>
+                            <input type="text" id="dobInput" placeholder="DD-MM-YYYY" maxlength="10" autocomplete="off">
+                            <div class="hint">Format: DD-MM-YYYY (e.g., 01-01-1990)</div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary" id="verifyDemoBtn">👤 Search by Demographic</button>
+                </form>
+            </div>
 
             <!-- Error Message -->
             <div class="error-msg" id="errorMsg">
-                <i>⚠️</i> <span id="errorText">Invalid NIN. Please try again.</span>
+                <span id="errorText">Invalid input. Please try again.</span>
             </div>
 
-            <!-- Loading State -->
+            <!-- Loading -->
             <div class="loading-overlay" id="loading">
                 <div class="spinner"></div>
-                <p>Verifying NIN<span class="loading-dots"></span></p>
-                <p style="font-size:13px; margin-top:4px; color:#bbb;">Please wait, this may take a moment</p>
+                <p>Verifying NIN<span id="loadingText">...</span></p>
             </div>
 
             <!-- Result -->
             <div class="result" id="result">
                 <div id="slipContent">
-                    <!-- Slip Header -->
                     <div class="slip-header">
                         <div class="logo-icon">🪪</div>
                         <h2>NATIONAL IDENTIFICATION NUMBER</h2>
                         <div class="sub">Federal Republic of Nigeria</div>
-                        <div class="verification-badge">✓ Verified</div>
+                        <div class="badge">✓ Verified</div>
                     </div>
 
-                    <!-- Slip Body -->
                     <div class="slip-body">
                         <div class="slip-photo">
-                            <img
-                                src="https://ui-avatars.com/api/?name=User&background=d4af37&color=fff&size=200"
-                                alt="Passport Photo"
-                                id="userPhoto"
-                            >
+                            <img src="https://ui-avatars.com/api/?name=User&background=d4af37&color=fff&size=200" alt="Photo" id="userPhoto">
                             <div class="photo-label">Passport Photo</div>
                         </div>
                         <div class="slip-details">
@@ -620,135 +614,222 @@
                             </div>
                             <div class="slip-row">
                                 <span class="label">State of Origin</span>
-                                <span class="value" id="userState">—</span>
+                                <span class="value" id="userStateOrigin">—</span>
                             </div>
                             <div class="slip-row">
-                                <span class="label">LGA</span>
-                                <span class="value" id="userLga">—</span>
+                                <span class="label">LGA of Origin</span>
+                                <span class="value" id="userLgaOrigin">—</span>
+                            </div>
+                            <div class="slip-row">
+                                <span class="label">State of Residence</span>
+                                <span class="value" id="userStateResidence">—</span>
+                            </div>
+                            <div class="slip-row">
+                                <span class="label">LGA of Residence</span>
+                                <span class="value" id="userLgaResidence">—</span>
+                            </div>
+                            <div class="slip-row" id="trackingRow">
+                                <span class="label">Tracking ID</span>
+                                <span class="value" id="userTrackingId">—</span>
+                            </div>
+                            <div class="slip-row" id="reportRow">
+                                <span class="label">Report ID</span>
+                                <span class="value" id="userReportId">—</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Slip Footer -->
                     <div class="slip-footer">
                         <div class="stamp">✓ VERIFIED</div>
                         <div>Verified on: <span id="verificationDate">—</span></div>
-                        <div class="reference">This is a computer-generated slip. No signature required.</div>
+                        <div class="ref">This is a computer-generated slip. No signature required.</div>
                     </div>
                 </div>
 
-                <!-- Actions -->
                 <div class="actions">
-                    <button class="btn-secondary btn-print" onclick="window.print()">
-                        🖨️ Print Slip
-                    </button>
-                    <button class="btn-secondary btn-download" id="downloadBtn">
-                        📥 Download PDF
-                    </button>
+                    <button class="btn-secondary btn-print" onclick="window.print()">🖨️ Print Slip</button>
+                    <button class="btn-secondary btn-download" id="downloadBtn">📥 Download PDF</button>
                 </div>
             </div>
         </div>
 
-        <!-- Privacy Notice -->
         <div class="privacy">
-            🔒 All verification requests are encrypted. We do not store your NIN data.
+            🔒 All verification requests are encrypted. We do not store your personal data.
             This service is for authorized staff only.
         </div>
     </div>
 
-    <!-- html2pdf Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js">
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // DOM Elements
-            const form = document.getElementById('ninForm');
+            const tabs = document.querySelectorAll('.tab-btn');
+            const tabContents = {
+                nin: document.getElementById('tab-nin'),
+                phone: document.getElementById('tab-phone'),
+                demographic: document.getElementById('tab-demographic')
+            };
+
+            const ninForm = document.getElementById('ninForm');
+            const phoneForm = document.getElementById('phoneForm');
+            const demoForm = document.getElementById('demoForm');
+
             const ninInput = document.getElementById('ninInput');
-            const clearBtn = document.getElementById('clearBtn');
-            const verifyBtn = document.getElementById('verifyBtn');
+            const phoneInput = document.getElementById('phoneInput');
+            const firstNameInput = document.getElementById('firstNameInput');
+            const lastNameInput = document.getElementById('lastNameInput');
+            const genderInput = document.getElementById('genderInput');
+            const dobInput = document.getElementById('dobInput');
+
+            const clearNin = document.getElementById('clearNin');
+            const clearPhone = document.getElementById('clearPhone');
+
             const errorMsg = document.getElementById('errorMsg');
             const errorText = document.getElementById('errorText');
             const loading = document.getElementById('loading');
+            const loadingText = document.getElementById('loadingText');
             const result = document.getElementById('result');
             const downloadBtn = document.getElementById('downloadBtn');
 
-            // Set current date
-            document.getElementById('verificationDate').textContent = new Date().toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
+            // Tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const tabName = this.dataset.tab;
+                    Object.keys(tabContents).forEach(key => {
+                        tabContents[key].classList.toggle('active', key === tabName);
+                    });
+
+                    // Reset error and result
+                    hideError();
+                    result.classList.remove('visible');
+                });
             });
 
-            // Clear button
-            ninInput.addEventListener('input', function() {
-                clearBtn.classList.toggle('visible', this.value.length > 0);
-            });
-
-            clearBtn.addEventListener('click', function() {
+            // Clear buttons
+            clearNin.addEventListener('click', function() {
                 ninInput.value = '';
                 this.classList.remove('visible');
                 ninInput.focus();
             });
 
-            // Only numbers
-            ninInput.addEventListener('input', function() {
-                this.value = this.value.replace(/\D/g, '');
+            clearPhone.addEventListener('click', function() {
+                phoneInput.value = '';
+                this.classList.remove('visible');
+                phoneInput.focus();
             });
 
-            // Form submission
-            form.addEventListener('submit', async function(e) {
+            // Input validation: only numbers
+            ninInput.addEventListener('input', function() {
+                this.value = this.value.replace(/\D/g, '');
+                clearNin.classList.toggle('visible', this.value.length > 0);
+            });
+
+            phoneInput.addEventListener('input', function() {
+                this.value = this.value.replace(/\D/g, '');
+                clearPhone.classList.toggle('visible', this.value.length > 0);
+            });
+
+            // DOB format: DD-MM-YYYY
+            dobInput.addEventListener('input', function() {
+                let val = this.value.replace(/\D/g, '');
+                if (val.length > 2 && val.length <= 4) {
+                    val = val.substring(0, 2) + '-' + val.substring(2);
+                } else if (val.length > 4) {
+                    val = val.substring(0, 2) + '-' + val.substring(2, 4) + '-' + val.substring(4, 8);
+                }
+                this.value = val;
+            });
+
+            // Set verification date
+            document.getElementById('verificationDate').textContent = new Date().toLocaleDateString('en-US', {
+                year: 'numeric', month: 'long', day: 'numeric'
+            });
+
+            // ============================================================
+            // SUBMIT HANDLERS
+            // ============================================================
+
+            // NIN Form Submit
+            ninForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
-
                 const nin = ninInput.value.trim();
-
-                // Validate
                 if (!nin || nin.length !== 11 || !/^\d{11}$/.test(nin)) {
                     showError('Please enter a valid 11-digit NIN number.');
                     return;
                 }
+                await verifyNIN('nin', { nin });
+            });
 
-                // Reset states
+            // Phone Form Submit
+            phoneForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const phone = phoneInput.value.trim();
+                if (!phone || phone.length !== 11 || !/^\d{11}$/.test(phone)) {
+                    showError('Please enter a valid 11-digit phone number.');
+                    return;
+                }
+                await verifyNIN('phone', { phone });
+            });
+
+            // Demographic Form Submit
+            demoForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const firstname = firstNameInput.value.trim();
+                const lastname = lastNameInput.value.trim();
+                const gender = genderInput.value;
+                const dob = dobInput.value.trim();
+
+                if (!firstname || !lastname || !gender || !dob) {
+                    showError('Please fill in all demographic fields.');
+                    return;
+                }
+
+                if (!/^\d{2}-\d{2}-\d{4}$/.test(dob)) {
+                    showError('Date of Birth must be in DD-MM-YYYY format.');
+                    return;
+                }
+
+                await verifyNIN('demographic', { firstname, lastname, gender, dob });
+            });
+
+            // ============================================================
+            // VERIFY FUNCTION
+            // ============================================================
+
+            async function verifyNIN(mode, params) {
                 hideError();
                 result.classList.remove('visible');
                 loading.classList.add('visible');
-                verifyBtn.disabled = true;
-                verifyBtn.innerHTML = '<span>⏳</span> Verifying...';
+
+                const btn = document.querySelector('.tab-content.active .btn-primary');
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerHTML = '⏳ Verifying...';
+                }
+
+                const modeNames = {
+                    nin: 'NIN',
+                    phone: 'phone number',
+                    demographic: 'demographic data'
+                };
+                loadingText.textContent = ` using ${modeNames[mode]}...`;
 
                 try {
                     const response = await fetch('/api/identity/nin/verify.js', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ nin })
+                        body: JSON.stringify({ searchMode: mode, ...params })
                     });
 
                     const data = await response.json();
 
                     if (response.ok && data.success) {
-                        // Populate all fields
-                        document.getElementById('userName').textContent = data.data.fullName || 'Not Available';
-                        document.getElementById('userDob').textContent = data.data.dob || 'Not Available';
-                        document.getElementById('userGender').textContent = data.data.gender || 'Not Available';
-                        document.getElementById('userPhone').textContent = data.data.phone || 'Not Available';
-                        document.getElementById('userAddress').textContent = data.data.address || 'Not Available';
-                        document.getElementById('userNin').textContent = nin;
-                        document.getElementById('userState').textContent = data.data.state || 'Not Available';
-                        document.getElementById('userLga').textContent = data.data.lga || 'Not Available';
-
-                        if (data.data.photo) {
-                            document.getElementById('userPhoto').src = data.data.photo;
-                        }
-
-                        // Update verification date
-                        document.getElementById('verificationDate').textContent = new Date().toLocaleDateString(
-                            'en-US', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric'
-                            });
-
+                        displayNINResult(data.data);
                         result.classList.add('visible');
-                        // Scroll to result
                         result.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     } else {
                         showError(data.error || 'Unable to verify NIN. Please try again.');
@@ -757,12 +838,55 @@
                     showError('Network error. Please check your connection and try again.');
                 } finally {
                     loading.classList.remove('visible');
-                    verifyBtn.disabled = false;
-                    verifyBtn.innerHTML = '<span>🔍</span> Verify NIN';
+                    if (btn) {
+                        btn.disabled = false;
+                        const labels = {
+                            nin: '🔍 Verify NIN',
+                            phone: '📞 Search by Phone',
+                            demographic: '👤 Search by Demographic'
+                        };
+                        btn.innerHTML = labels[mode] || 'Verify';
+                    }
                 }
-            });
+            }
 
-            // Error handling
+            // ============================================================
+            // DISPLAY RESULT
+            // ============================================================
+
+            function displayNINResult(data) {
+                document.getElementById('userName').textContent = data.fullName || 'Not Available';
+                document.getElementById('userDob').textContent = data.dob || 'Not Available';
+                document.getElementById('userGender').textContent = data.gender || 'Not Available';
+                document.getElementById('userPhone').textContent = data.phone || 'Not Available';
+                document.getElementById('userAddress').textContent = data.address || 'Not Available';
+                document.getElementById('userNin').textContent = data.nin || 'Not Available';
+                document.getElementById('userStateOrigin').textContent = data.stateOfOrigin || 'Not Available';
+                document.getElementById('userLgaOrigin').textContent = data.lgaOfOrigin || 'Not Available';
+                document.getElementById('userStateResidence').textContent = data.state || 'Not Available';
+                document.getElementById('userLgaResidence').textContent = data.lga || 'Not Available';
+                document.getElementById('userTrackingId').textContent = data.trackingId || 'Not Available';
+                document.getElementById('userReportId').textContent = data.reportID || 'Not Available';
+
+                // Show/hide optional fields
+                const trackingRow = document.getElementById('trackingRow');
+                const reportRow = document.getElementById('reportRow');
+                trackingRow.style.display = data.trackingId ? 'flex' : 'none';
+                reportRow.style.display = data.reportID ? 'flex' : 'none';
+
+                if (data.photo) {
+                    document.getElementById('userPhoto').src = data.photo;
+                }
+
+                document.getElementById('verificationDate').textContent = new Date().toLocaleDateString('en-US', {
+                    year: 'numeric', month: 'long', day: 'numeric'
+                });
+            }
+
+            // ============================================================
+            // ERROR / LOADING HELPERS
+            // ============================================================
+
             function showError(message) {
                 errorText.textContent = message;
                 errorMsg.classList.add('visible');
@@ -773,7 +897,10 @@
                 errorMsg.classList.remove('visible');
             }
 
-            // PDF Download
+            // ============================================================
+            // PDF DOWNLOAD
+            // ============================================================
+
             downloadBtn.addEventListener('click', function() {
                 const element = document.getElementById('slipContent');
                 const nin = document.getElementById('userNin').textContent;
@@ -785,24 +912,11 @@
                     margin: [10, 10, 10, 10],
                     filename: `NIN_Slip_${nin}.pdf`,
                     image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: {
-                        scale: 2,
-                        useCORS: true,
-                        letterRendering: true,
-                        logging: false
-                    },
-                    jsPDF: {
-                        unit: 'mm',
-                        format: 'a4',
-                        orientation: 'portrait'
-                    },
-                    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+                    html2canvas: { scale: 2, useCORS: true, letterRendering: true, logging: false },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
                 };
 
-                html2pdf()
-                    .set(opt)
-                    .from(element)
-                    .save()
+                html2pdf().set(opt).from(element).save()
                     .then(() => {
                         this.textContent = '📥 Download PDF';
                         this.disabled = false;
@@ -813,14 +927,6 @@
                         this.disabled = false;
                         showError('Error generating PDF. Please try again or use Print.');
                     });
-            });
-
-            // Keyboard shortcut: Enter to submit
-            ninInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    form.dispatchEvent(new Event('submit'));
-                }
             });
         });
     </script>

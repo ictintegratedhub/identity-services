@@ -1,52 +1,5 @@
 const axios = require('axios');
 
-// Cache for the access token
-let cachedToken = null;
-let tokenExpiry = null;
-
-// Function to get or refresh the access token
-async function getAccessToken() {
-    // Check if we have a valid cached token
-    if (cachedToken && tokenExpiry && Date.now() < tokenExpiry) {
-        console.log('✅ Using cached token');
-        return cachedToken;
-    }
-
-    console.log('🔄 Getting new access token...');
-    
-    try {
-        // Format: Basic base64(public_key:secret_key)
-        const authString = Buffer.from(
-            `${process.env.API_PUBLIC_KEY}:${process.env.API_SECRET_KEY}`
-        ).toString('base64');
-
-        const response = await axios.post(
-            'https://api.ninslip.com/auth/token',
-            {}, // No body required
-            {
-                headers: {
-                    'Authorization': `Basic ${authString}`,
-                    'Content-Type': 'application/json'
-                },
-                timeout: 10000
-            }
-        );
-
-        if (response.data.success && response.data.data?.access_token) {
-            cachedToken = response.data.data.access_token;
-            // Cache token for 55 minutes (expires in 1 hour)
-            tokenExpiry = Date.now() + (55 * 60 * 1000);
-            console.log('✅ Access token obtained successfully');
-            return cachedToken;
-        } else {
-            throw new Error(response.data.message || 'Failed to get access token');
-        }
-    } catch (error) {
-        console.error('❌ Failed to get access token:', error.message);
-        throw error;
-    }
-}
-
 module.exports = async (req, res) => {
     // Enable CORS
     res.setHeader('Access-Control-Allow-Credentials', true);
@@ -73,10 +26,36 @@ module.exports = async (req, res) => {
         return res.status(401).json({ error: 'Unauthorized. Please login first.' });
     }
 
-    const { nin } = req.body;
+    const { searchMode, nin, phone, firstname, lastname, gender, dob } = req.body;
 
-    if (!nin || nin.length !== 11 || !/^\d{11}$/.test(nin)) {
-        return res.status(400).json({ error: 'Invalid NIN. Please enter an 11-digit NIN.' });
+    // Determine which search mode to use
+    const mode = searchMode || 'nin';
+
+    // Validate based on search mode
+    if (mode === 'nin') {
+        if (!nin || nin.length !== 11 || !/^\d{11}$/.test(nin)) {
+            return res.status(400).json({ error: 'Invalid NIN. Please enter an 11-digit NIN.' });
+        }
+    } else if (mode === 'phone') {
+        if (!phone || phone.length !== 11 || !/^\d{11}$/.test(phone)) {
+            return res.status(400).json({ error: 'Invalid phone number. Please enter an 11-digit phone number.' });
+        }
+    } else if (mode === 'demographic') {
+        if (!firstname || !lastname || !gender || !dob) {
+            return res.status(400).json({ 
+                error: 'Please provide all demographic fields: firstname, lastname, gender, dob' 
+            });
+        }
+        // Validate gender
+        if (!['m', 'f'].includes(gender.toLowerCase())) {
+            return res.status(400).json({ error: 'Gender must be "m" or "f"' });
+        }
+        // Validate DOB format (DD-MM-YYYY)
+        if (!/^\d{2}-\d{2}-\d{4}$/.test(dob)) {
+            return res.status(400).json({ error: 'DOB must be in DD-MM-YYYY format' });
+        }
+    } else {
+        return res.status(400).json({ error: 'Invalid search mode. Use: nin, phone, or demographic' });
     }
 
     // Check if we should use mock provider
@@ -85,10 +64,12 @@ module.exports = async (req, res) => {
     try {
         console.log(`========================================`);
         console.log(`🔍 NIN Verification Request`);
-        console.log(`NIN: ${nin}`);
+        console.log(`Mode: ${mode}`);
+        if (mode === 'nin') console.log(`NIN: ${nin}`);
+        if (mode === 'phone') console.log(`Phone: ${phone}`);
+        if (mode === 'demographic') console.log(`Demographic: ${firstname} ${lastname}, ${gender}, ${dob}`);
         console.log(`Use Mock: ${useMock}`);
-        console.log(`Public Key: ${process.env.API_PUBLIC_KEY ? '✅ Present' : '❌ Missing'}`);
-        console.log(`Secret Key: ${process.env.API_SECRET_KEY ? '✅ Present' : '❌ Missing'}`);
+        console.log(`API Key: ${process.env.BINGOO_API_KEY ? '✅ Present' : '❌ Missing'}`);
         console.log(`========================================`);
 
         // ============================================================
@@ -96,7 +77,7 @@ module.exports = async (req, res) => {
         // ============================================================
         if (useMock) {
             console.log('📦 Using MOCK provider for NIN verification');
-            const mockData = generateMockNINData(nin);
+            const mockData = generateMockNINData(nin || phone || firstname);
             return res.json({
                 success: true,
                 data: mockData
@@ -104,22 +85,45 @@ module.exports = async (req, res) => {
         }
 
         // ============================================================
-        // AREWAGATE API - Get Access Token
+        // BINGOO.NG API - Check API Key
         // ============================================================
-        console.log('🌐 Getting ArewaGate access token...');
-        const accessToken = await getAccessToken();
-        console.log('✅ Access token obtained');
+        if (!process.env.BINGOO_API_KEY) {
+            return res.status(500).json({
+                error: 'API key not configured. Please set BINGOO_API_KEY in environment variables.'
+            });
+        }
 
         // ============================================================
-        // AREWAGATE API - Verify NIN
+        // BINGOO.NG API - Build request based on mode
         // ============================================================
-        console.log('🌐 Verifying NIN with ArewaGate...');
+        let endpoint = '';
+        let requestBody = {};
+
+        if (mode === 'nin') {
+            endpoint = 'https://bingoo.ng/api/v1/nin';
+            requestBody = { number: nin };
+        } else if (mode === 'phone') {
+            endpoint = 'https://bingoo.ng/api/v1/phone';
+            requestBody = { number: phone };
+        } else if (mode === 'demographic') {
+            endpoint = 'https://bingoo.ng/api/v1/demo';
+            requestBody = {
+                firstname: firstname,
+                lastname: lastname,
+                gender: gender.toLowerCase(),
+                dob: dob
+            };
+        }
+
+        console.log(`🌐 Calling Bingoo API: ${endpoint}`);
+        console.log(`📦 Request Body:`, JSON.stringify(requestBody, null, 2));
+
         const response = await axios.post(
-            'https://api.ninslip.com/verification/nin',
-            { nin: nin },
+            endpoint,
+            requestBody,
             {
                 headers: {
-                    'Authorization': `Bearer ${accessToken}`,
+                    'Authorization': `Bearer ${process.env.BINGOO_API_KEY}`,
                     'Content-Type': 'application/json'
                 },
                 timeout: 30000
@@ -127,26 +131,32 @@ module.exports = async (req, res) => {
         );
 
         console.log(`✅ API Response Status: ${response.status}`);
+        console.log(`📦 API Response:`, JSON.stringify(response.data, null, 2));
 
         // Check if verification was successful
-        if (response.data.success && response.data.data?.status === 'completed') {
-            const userData = response.data.data.data;
+        if (response.data.status === 'success') {
+            const userData = response.data.data;
             
             const formattedData = {
                 success: true,
                 data: {
-                    fullName: `${userData.firstname || ''} ${userData.middlename || ''} ${userData.lastname || ''}`.trim() || 'Not Available',
+                    fullName: `${userData.firstname || ''} ${userData.middlename || ''} ${userData.surname || ''}`.trim() || 'Not Available',
                     firstName: userData.firstname || '',
-                    lastName: userData.lastname || '',
+                    lastName: userData.surname || '',
                     middleName: userData.middlename || '',
-                    dob: userData.dob || 'Not Available',
+                    dob: userData.birthdate || 'Not Available',
                     gender: userData.gender === 'm' ? 'Male' : userData.gender === 'f' ? 'Female' : userData.gender || 'Not Available',
-                    phone: userData.phone || 'Not Available',
-                    address: userData.address || 'Not Available',
-                    nin: userData.nin || nin,
-                    state: userData.state || 'Not Available',
-                    lga: userData.lga || 'Not Available',
-                    photo: userData.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.firstname || '')}+${encodeURIComponent(userData.lastname || '')}&background=d4af37&color=fff&size=200`,
+                    phone: userData.telephoneno || 'Not Available',
+                    address: `${userData.residence_address || ''}, ${userData.residence_town || ''}, ${userData.residence_lga || ''}, ${userData.residence_state || ''}`.trim() || 'Not Available',
+                    nin: userData.nin || 'Not Available',
+                    state: userData.residence_state || 'Not Available',
+                    lga: userData.residence_lga || 'Not Available',
+                    stateOfOrigin: userData.birthstate || 'Not Available',
+                    lgaOfOrigin: userData.birthlga || 'Not Available',
+                    photo: userData.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.firstname || '')}+${encodeURIComponent(userData.surname || '')}&background=d4af37&color=fff&size=200`,
+                    signature: userData.signature || null,
+                    trackingId: userData.trackingId || null,
+                    reportID: response.data.reportID || null,
                     verified: true,
                     verificationDate: new Date().toISOString()
                 }
@@ -170,23 +180,20 @@ module.exports = async (req, res) => {
             
             // Handle specific status codes
             if (error.response.status === 401) {
-                // Reset cached token on auth failure
-                cachedToken = null;
-                tokenExpiry = null;
                 return res.status(401).json({
-                    error: '⚠️ Invalid API credentials. Please check your Public and Secret keys.'
+                    error: '⚠️ Invalid API key. Please check your Bingoo credentials.'
                 });
             }
             
             if (error.response.status === 402) {
                 return res.status(402).json({
-                    error: '⚠️ Insufficient wallet balance. Please fund your ArewaGate wallet.'
+                    error: '⚠️ Insufficient wallet balance. Please fund your Bingoo wallet.'
                 });
             }
             
-            if (error.response.status === 422) {
-                return res.status(422).json({
-                    error: error.response.data.message || 'Invalid NIN format or verification failed.'
+            if (error.response.status === 404) {
+                return res.status(404).json({
+                    error: '⚠️ Record not found. Please check the information provided.'
                 });
             }
 
@@ -208,10 +215,10 @@ module.exports = async (req, res) => {
 };
 
 // ============================================================
-// MOCK DATA GENERATOR
+// MOCK DATA GENERATOR (Same as before)
 // ============================================================
-function generateMockNINData(nin) {
-    const hash = simpleHash(nin);
+function generateMockNINData(input) {
+    const hash = simpleHash(input || '12345678901');
     const firstNames = ['John', 'Jane', 'Michael', 'Mary', 'David', 'Grace', 'Peter', 'Esther', 'Samuel', 'Ruth'];
     const lastNames = ['Okafor', 'Adebayo', 'Musa', 'Okonkwo', 'Eze', 'Bello', 'Adeyemi', 'Chukwu', 'Ibrahim', 'Adeleke'];
     const genders = ['Male', 'Female'];
@@ -241,10 +248,15 @@ function generateMockNINData(nin) {
         gender: gender,
         phone: phoneNumber,
         address: `${123 + (hash * 7) % 999} ${['Main St', 'Victoria Island', 'Ikoyi', 'Surulere', 'Apapa'][(hash * 19) % 5]}, ${state}`,
-        nin: nin,
+        nin: String(10000000000 + hash % 90000000000).padStart(11, '0'),
         state: state,
         lga: lga,
+        stateOfOrigin: state,
+        lgaOfOrigin: lga,
         photo: `https://ui-avatars.com/api/?name=${encodeURIComponent(firstName)}+${encodeURIComponent(lastName)}&background=d4af37&color=fff&size=200`,
+        signature: null,
+        trackingId: `TRK${String(hash).padStart(6, '0')}`,
+        reportID: `${String(100000 + hash % 900000)}-${String(hash).substring(0, 10)}`,
         verified: true,
         verificationDate: new Date().toISOString()
     };

@@ -16,6 +16,7 @@
             --success: #27ae60;
             --error: #e74c3c;
             --shadow: 0 10px 40px rgba(0,0,0,0.06);
+            --border-radius: 16px;
         }
 
         body {
@@ -25,8 +26,7 @@
             padding: 30px 20px;
         }
 
-        .container { max-width: 720px; margin: 0 auto; }
-
+        .container { max-width: 780px; margin: 0 auto; }
         .back {
             color: var(--text-muted);
             text-decoration: none;
@@ -43,19 +43,18 @@
         .card {
             background: rgba(255,255,255,0.85);
             backdrop-filter: blur(12px);
-            padding: 40px;
-            border-radius: 24px;
+            padding: 32px;
+            border-radius: var(--border-radius);
             box-shadow: var(--shadow);
             border: 1px solid rgba(255,255,255,0.3);
-            transition: all 0.3s ease;
         }
 
         .card-header {
-            margin-bottom: 30px;
+            margin-bottom: 24px;
         }
 
         .card-header h1 {
-            font-size: 28px;
+            font-size: 26px;
             color: var(--text-dark);
             font-weight: 700;
             letter-spacing: -0.5px;
@@ -64,19 +63,76 @@
         .card-header p {
             color: var(--text-muted);
             margin-top: 4px;
-            font-size: 15px;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 4px;
+            background: #f0ece6;
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 24px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: transparent;
+            color: var(--text-muted);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-dark);
+            background: rgba(255,255,255,0.5);
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: var(--text-dark);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .tab-btn .icon { font-size: 16px; }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .form-group label {
             display: block;
             font-weight: 600;
             color: var(--text-dark);
-            margin-bottom: 6px;
-            font-size: 14px;
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+
+        .form-group .required {
+            color: var(--error);
+            margin-left: 2px;
         }
 
         .input-wrapper {
@@ -85,13 +141,10 @@
 
         .input-wrapper input {
             width: 100%;
-            padding: 14px 18px;
-            padding-right: 50px;
+            padding: 12px 16px;
             border: 2px solid #e8e0d8;
-            border-radius: 12px;
-            font-size: 18px;
-            letter-spacing: 3px;
-            font-weight: 500;
+            border-radius: 10px;
+            font-size: 15px;
             transition: all 0.3s ease;
             background: rgba(255,255,255,0.8);
             color: var(--text-dark);
@@ -105,22 +158,17 @@
             background: white;
         }
 
-        .input-wrapper input:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
         .input-wrapper .clear-btn {
             position: absolute;
-            right: 14px;
+            right: 12px;
             top: 50%;
             transform: translateY(-50%);
             background: none;
             border: none;
             color: #ccc;
             cursor: pointer;
-            font-size: 18px;
-            padding: 4px 8px;
+            font-size: 16px;
+            padding: 4px 6px;
             display: none;
         }
 
@@ -129,26 +177,27 @@
 
         .hint {
             color: var(--text-muted);
-            font-size: 13px;
-            margin-top: 6px;
+            font-size: 12px;
+            margin-top: 4px;
         }
 
         .btn-primary {
             width: 100%;
-            padding: 16px;
+            padding: 14px;
             background: linear-gradient(135deg, var(--gold), #f5c518);
             color: white;
             border: none;
-            border-radius: 12px;
-            font-size: 16px;
+            border-radius: 10px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             font-family: 'Inter', sans-serif;
+            margin-top: 8px;
         }
 
         .btn-primary:hover:not(:disabled) {
@@ -217,73 +266,45 @@
         }
 
         .spinner {
-            width: 48px;
-            height: 48px;
+            width: 44px;
+            height: 44px;
             border: 4px solid rgba(212, 175, 55, 0.15);
             border-top-color: var(--gold);
             border-radius: 50%;
             animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-            margin: 0 auto 16px;
-        }
-
-        .loading-overlay p {
-            color: var(--text-muted);
-            font-size: 15px;
-        }
-
-        .loading-overlay .loading-dots::after {
-            content: '';
-            animation: dots 1.5s steps(4, end) infinite;
+            margin: 0 auto 14px;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
-        @keyframes dots {
-            0% { content: ''; }
-            25% { content: '.'; }
-            50% { content: '..'; }
-            75% { content: '...'; }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         .error-msg {
             display: none;
-            padding: 14px 18px;
+            padding: 12px 16px;
             background: #fdf2f2;
             border: 1px solid #f5c6c6;
             border-radius: 10px;
             color: var(--error);
             font-size: 14px;
-            margin-top: 16px;
+            margin-top: 12px;
             animation: fadeIn 0.3s ease;
         }
 
-        .error-msg.visible {
-            display: block;
-        }
-
-        .error-msg i { margin-right: 8px; }
+        .error-msg.visible { display: block; }
 
         .result {
             display: none;
-            margin-top: 30px;
+            margin-top: 28px;
             animation: fadeIn 0.5s ease;
         }
 
-        .result.visible {
-            display: block;
-        }
+        .result.visible { display: block; }
 
         #slipContent {
             background: white;
-            border-radius: 16px;
-            padding: 32px;
+            border-radius: var(--border-radius);
+            padding: 28px;
             border: 1px solid #e8e0d8;
             box-shadow: 0 4px 20px rgba(0,0,0,0.03);
         }
@@ -291,42 +312,28 @@
         .slip-header {
             text-align: center;
             border-bottom: 3px solid var(--gold);
-            padding-bottom: 20px;
-            margin-bottom: 24px;
+            padding-bottom: 16px;
+            margin-bottom: 20px;
         }
 
-        .slip-header .logo-icon {
-            font-size: 32px;
-            margin-bottom: 4px;
-        }
-
-        .slip-header h2 {
-            color: var(--text-dark);
-            font-size: 20px;
-            font-weight: 700;
-        }
-
-        .slip-header .sub {
-            color: var(--text-muted);
-            font-size: 13px;
-            margin-top: 2px;
-        }
-
-        .slip-header .verification-badge {
+        .slip-header .logo-icon { font-size: 28px; margin-bottom: 2px; }
+        .slip-header h2 { color: var(--text-dark); font-size: 20px; font-weight: 700; }
+        .slip-header .sub { color: var(--text-muted); font-size: 13px; }
+        .slip-header .badge {
             display: inline-block;
             background: #eafaf1;
             color: var(--success);
-            padding: 4px 16px;
+            padding: 3px 14px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
-            margin-top: 8px;
+            margin-top: 6px;
         }
 
         .slip-body {
             display: flex;
-            gap: 30px;
-            margin-bottom: 20px;
+            gap: 24px;
+            margin-bottom: 16px;
         }
 
         .slip-photo {
@@ -335,8 +342,8 @@
         }
 
         .slip-photo img {
-            width: 140px;
-            height: 140px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             border: 4px solid var(--gold);
             object-fit: cover;
@@ -349,24 +356,20 @@
             margin-top: 4px;
         }
 
-        .slip-details {
-            flex: 1;
-        }
+        .slip-details { flex: 1; }
 
         .slip-row {
             display: flex;
-            padding: 10px 0;
+            padding: 7px 0;
             border-bottom: 1px solid #f5f0e8;
         }
 
-        .slip-row:last-child {
-            border-bottom: none;
-        }
+        .slip-row:last-child { border-bottom: none; }
 
         .slip-row .label {
             color: var(--text-muted);
             width: 38%;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 500;
         }
 
@@ -374,12 +377,13 @@
             color: var(--text-dark);
             width: 62%;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
+            word-break: break-word;
         }
 
         .slip-footer {
-            margin-top: 20px;
-            padding-top: 20px;
+            margin-top: 16px;
+            padding-top: 16px;
             border-top: 2px solid #f5f0e8;
             text-align: center;
             color: var(--text-muted);
@@ -389,124 +393,58 @@
         .slip-footer .stamp {
             color: var(--gold);
             font-weight: 700;
-            font-size: 16px;
+            font-size: 14px;
             letter-spacing: 2px;
         }
 
-        .slip-footer .reference {
-            margin-top: 4px;
+        .slip-footer .ref {
+            margin-top: 3px;
             font-size: 11px;
         }
 
         .actions {
             display: flex;
             gap: 12px;
-            margin-top: 20px;
+            margin-top: 16px;
         }
 
         .privacy {
-            margin-top: 20px;
-            padding: 14px 20px;
+            margin-top: 16px;
+            padding: 12px 16px;
             background: rgba(255,255,255,0.6);
             border-radius: 12px;
             text-align: center;
             color: var(--text-muted);
-            font-size: 13px;
+            font-size: 12px;
             backdrop-filter: blur(4px);
         }
 
         .privacy i { margin-right: 6px; color: var(--gold); }
 
         @media print {
-            body {
-                background: white !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-
-            .card-header,
-            .form-group,
-            .btn-primary,
-            .error-msg,
-            .loading-overlay,
-            .actions,
-            .back,
-            .privacy,
-            .hint {
-                display: none !important;
-            }
-
-            .result {
-                display: block !important;
-                margin: 0 !important;
-            }
-
-            #slipContent {
-                box-shadow: none !important;
-                border: 1px solid #ddd !important;
-                border-radius: 0 !important;
-                padding: 20px !important;
-                margin: 0 !important;
-            }
-
-            .slip-photo img {
-                border-width: 2px !important;
-            }
-
-            .slip-header .verification-badge {
-                background: #eafaf1 !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-
-            .slip-footer .stamp {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
+            body { background: white !important; padding: 0 !important; margin: 0 !important; }
+            .card-header, .tabs, .form-group, .btn-primary, .error-msg,
+            .loading-overlay, .actions, .back, .privacy, .hint { display: none !important; }
+            .result { display: block !important; margin: 0 !important; }
+            #slipContent { box-shadow: none !important; border: 1px solid #ddd !important; border-radius: 0 !important; padding: 16px !important; margin: 0 !important; }
+            .slip-photo img { border-width: 2px !important; }
+            .slip-header .badge { background: #eafaf1 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            .slip-footer .stamp { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
 
         @media (max-width: 640px) {
-            .card { padding: 24px; }
+            .card { padding: 20px; }
             .card-header h1 { font-size: 22px; }
-            .slip-body {
-                flex-direction: column;
-                align-items: center;
-            }
-            .slip-photo img {
-                width: 120px;
-                height: 120px;
-            }
-            .slip-row {
-                flex-direction: column;
-                gap: 2px;
-                padding: 8px 0;
-            }
-            .slip-row .label,
-            .slip-row .value {
-                width: 100%;
-            }
-            .slip-row .label {
-                font-size: 12px;
-            }
-            .slip-row .value {
-                font-size: 14px;
-            }
-            .actions {
-                flex-direction: column;
-            }
-            .btn-secondary {
-                padding: 14px;
-            }
-        }
-
-        @media (max-width: 400px) {
-            .card { padding: 18px; }
-            .card-header h1 { font-size: 20px; }
-            .input-wrapper input {
-                font-size: 16px;
-                padding: 12px 14px;
-                padding-right: 44px;
-            }
+            .slip-body { flex-direction: column; align-items: center; }
+            .slip-photo img { width: 100px; height: 100px; }
+            .slip-row { flex-direction: column; gap: 2px; padding: 6px 0; }
+            .slip-row .label, .slip-row .value { width: 100%; }
+            .slip-row .label { font-size: 11px; }
+            .slip-row .value { font-size: 13px; }
+            .actions { flex-direction: column; }
+            .btn-secondary { padding: 14px; }
+            .tabs { flex-wrap: wrap; }
+            .tab-btn { font-size: 12px; padding: 8px 12px; }
         }
     </style>
 </head>
@@ -517,57 +455,91 @@
         <div class="card">
             <div class="card-header">
                 <h1>BVN Verification</h1>
-                <p>Verify and generate official Bank Verification Number slip</p>
+                <p>Verify Bank Verification Number using multiple search methods</p>
             </div>
 
-            <form id="bvnForm">
-                <div class="form-group">
-                    <label for="bvnInput">BVN Number</label>
-                    <div class="input-wrapper">
-                        <input
-                            type="text"
-                            id="bvnInput"
-                            placeholder="Enter 11-digit BVN"
-                            maxlength="11"
-                            autocomplete="off"
-                            required
-                        >
-                        <button type="button" class="clear-btn" id="clearBtn">✕</button>
-                    </div>
-                    <div class="hint">Enter the 11-digit BVN (e.g., 12345678901)</div>
-                </div>
-
-                <button type="submit" class="btn-primary" id="verifyBtn">
-                    <span>🔍</span> Verify BVN
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="bvn">
+                    <span class="icon">🏦</span> By BVN
                 </button>
-            </form>
-
-            <div class="error-msg" id="errorMsg">
-                <i>⚠️</i> <span id="errorText">Invalid BVN. Please try again.</span>
+                <button class="tab-btn" data-tab="phone">
+                    <span class="icon">📞</span> By Phone
+                </button>
+                <button class="tab-btn" data-tab="card">
+                    <span class="icon">💳</span> Card Data
+                </button>
             </div>
 
+            <!-- Tab 1: By BVN -->
+            <div class="tab-content active" id="tab-bvn">
+                <form id="bvnForm">
+                    <div class="form-group">
+                        <label>BVN Number <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <input type="text" id="bvnInput" placeholder="Enter 11-digit BVN" maxlength="11" autocomplete="off">
+                            <button type="button" class="clear-btn" id="clearBvn">✕</button>
+                        </div>
+                        <div class="hint">Enter the 11-digit BVN (e.g., 12345678901)</div>
+                    </div>
+                    <button type="submit" class="btn-primary" id="verifyBvnBtn">🔍 Verify BVN</button>
+                </form>
+            </div>
+
+            <!-- Tab 2: By Phone -->
+            <div class="tab-content" id="tab-phone">
+                <form id="phoneForm">
+                    <div class="form-group">
+                        <label>Phone Number <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <input type="text" id="phoneInput" placeholder="Enter 11-digit phone number" maxlength="11" autocomplete="off">
+                            <button type="button" class="clear-btn" id="clearPhone">✕</button>
+                        </div>
+                        <div class="hint">Enter the 11-digit phone number linked to BVN</div>
+                    </div>
+                    <button type="submit" class="btn-primary" id="verifyPhoneBtn">📞 Search by Phone</button>
+                </form>
+            </div>
+
+            <!-- Tab 3: Card Data -->
+            <div class="tab-content" id="tab-card">
+                <form id="cardForm">
+                    <div class="form-group">
+                        <label>BVN Number <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <input type="text" id="cardInput" placeholder="Enter 11-digit BVN" maxlength="11" autocomplete="off">
+                            <button type="button" class="clear-btn" id="clearCard">✕</button>
+                        </div>
+                        <div class="hint">Enter the 11-digit BVN to fetch full card data</div>
+                    </div>
+                    <button type="submit" class="btn-primary" id="verifyCardBtn">💳 Get Card Data</button>
+                </form>
+            </div>
+
+            <!-- Error Message -->
+            <div class="error-msg" id="errorMsg">
+                <span id="errorText">Invalid input. Please try again.</span>
+            </div>
+
+            <!-- Loading -->
             <div class="loading-overlay" id="loading">
                 <div class="spinner"></div>
-                <p>Verifying BVN<span class="loading-dots"></span></p>
-                <p style="font-size:13px; margin-top:4px; color:#bbb;">Please wait, this may take a moment</p>
+                <p>Verifying BVN<span id="loadingText">...</span></p>
             </div>
 
+            <!-- Result -->
             <div class="result" id="result">
                 <div id="slipContent">
                     <div class="slip-header">
                         <div class="logo-icon">🏦</div>
                         <h2>BANK VERIFICATION NUMBER</h2>
                         <div class="sub">Central Bank of Nigeria</div>
-                        <div class="verification-badge">✓ Verified</div>
+                        <div class="badge">✓ Verified</div>
                     </div>
 
                     <div class="slip-body">
                         <div class="slip-photo">
-                            <img
-                                src="https://ui-avatars.com/api/?name=User&background=d4af37&color=fff&size=200"
-                                alt="Passport Photo"
-                                id="userPhoto"
-                            >
+                            <img src="https://ui-avatars.com/api/?name=User&background=d4af37&color=fff&size=200" alt="Photo" id="userPhoto">
                             <div class="photo-label">Passport Photo</div>
                         </div>
                         <div class="slip-details">
@@ -584,6 +556,10 @@
                                 <span class="value" id="userGender">—</span>
                             </div>
                             <div class="slip-row">
+                                <span class="label">Marital Status</span>
+                                <span class="value" id="userMarital">—</span>
+                            </div>
+                            <div class="slip-row">
                                 <span class="label">Phone Number</span>
                                 <span class="value" id="userPhone">—</span>
                             </div>
@@ -596,8 +572,36 @@
                                 <span class="value" id="userBvn">—</span>
                             </div>
                             <div class="slip-row">
+                                <span class="label">NIN</span>
+                                <span class="value" id="userNin">—</span>
+                            </div>
+                            <div class="slip-row">
                                 <span class="label">Bank Name</span>
                                 <span class="value" id="userBank">—</span>
+                            </div>
+                            <div class="slip-row">
+                                <span class="label">Enrollment Branch</span>
+                                <span class="value" id="userBranch">—</span>
+                            </div>
+                            <div class="slip-row">
+                                <span class="label">State of Origin</span>
+                                <span class="value" id="userStateOrigin">—</span>
+                            </div>
+                            <div class="slip-row">
+                                <span class="label">LGA of Origin</span>
+                                <span class="value" id="userLgaOrigin">—</span>
+                            </div>
+                            <div class="slip-row">
+                                <span class="label">State of Residence</span>
+                                <span class="value" id="userStateResidence">—</span>
+                            </div>
+                            <div class="slip-row">
+                                <span class="label">LGA of Residence</span>
+                                <span class="value" id="userLgaResidence">—</span>
+                            </div>
+                            <div class="slip-row" id="reportRow">
+                                <span class="label">Report ID</span>
+                                <span class="value" id="userReportId">—</span>
                             </div>
                         </div>
                     </div>
@@ -605,104 +609,175 @@
                     <div class="slip-footer">
                         <div class="stamp">✓ VERIFIED</div>
                         <div>Verified on: <span id="verificationDate">—</span></div>
-                        <div class="reference">This is a computer-generated slip. No signature required.</div>
+                        <div class="ref">This is a computer-generated slip. No signature required.</div>
                     </div>
                 </div>
 
                 <div class="actions">
-                    <button class="btn-secondary btn-print" onclick="window.print()">
-                        🖨️ Print Slip
-                    </button>
-                    <button class="btn-secondary btn-download" id="downloadBtn">
-                        📥 Download PDF
-                    </button>
+                    <button class="btn-secondary btn-print" onclick="window.print()">🖨️ Print Slip</button>
+                    <button class="btn-secondary btn-download" id="downloadBtn">📥 Download PDF</button>
                 </div>
             </div>
         </div>
 
         <div class="privacy">
-            🔒 All verification requests are encrypted. We do not store your BVN data.
+            🔒 All verification requests are encrypted. We do not store your personal data.
             This service is for authorized staff only.
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js">
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('bvnForm');
+            // DOM Elements
+            const tabs = document.querySelectorAll('.tab-btn');
+            const tabContents = {
+                bvn: document.getElementById('tab-bvn'),
+                phone: document.getElementById('tab-phone'),
+                card: document.getElementById('tab-card')
+            };
+
+            const bvnForm = document.getElementById('bvnForm');
+            const phoneForm = document.getElementById('phoneForm');
+            const cardForm = document.getElementById('cardForm');
+
             const bvnInput = document.getElementById('bvnInput');
-            const clearBtn = document.getElementById('clearBtn');
-            const verifyBtn = document.getElementById('verifyBtn');
+            const phoneInput = document.getElementById('phoneInput');
+            const cardInput = document.getElementById('cardInput');
+
+            const clearBvn = document.getElementById('clearBvn');
+            const clearPhone = document.getElementById('clearPhone');
+            const clearCard = document.getElementById('clearCard');
+
             const errorMsg = document.getElementById('errorMsg');
             const errorText = document.getElementById('errorText');
             const loading = document.getElementById('loading');
+            const loadingText = document.getElementById('loadingText');
             const result = document.getElementById('result');
             const downloadBtn = document.getElementById('downloadBtn');
 
-            document.getElementById('verificationDate').textContent = new Date().toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
+            // Tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const tabName = this.dataset.tab;
+                    Object.keys(tabContents).forEach(key => {
+                        tabContents[key].classList.toggle('active', key === tabName);
+                    });
+
+                    hideError();
+                    result.classList.remove('visible');
+                });
             });
 
-            bvnInput.addEventListener('input', function() {
-                clearBtn.classList.toggle('visible', this.value.length > 0);
-                this.value = this.value.replace(/\D/g, '');
-            });
-
-            clearBtn.addEventListener('click', function() {
+            // Clear buttons
+            clearBvn.addEventListener('click', function() {
                 bvnInput.value = '';
                 this.classList.remove('visible');
                 bvnInput.focus();
             });
 
-            form.addEventListener('submit', async function(e) {
+            clearPhone.addEventListener('click', function() {
+                phoneInput.value = '';
+                this.classList.remove('visible');
+                phoneInput.focus();
+            });
+
+            clearCard.addEventListener('click', function() {
+                cardInput.value = '';
+                this.classList.remove('visible');
+                cardInput.focus();
+            });
+
+            // Input validation: only numbers
+            [bvnInput, phoneInput, cardInput].forEach(input => {
+                input.addEventListener('input', function() {
+                    this.value = this.value.replace(/\D/g, '');
+                    const clearBtn = this.parentElement.querySelector('.clear-btn');
+                    if (clearBtn) {
+                        clearBtn.classList.toggle('visible', this.value.length > 0);
+                    }
+                });
+            });
+
+            // Set verification date
+            document.getElementById('verificationDate').textContent = new Date().toLocaleDateString('en-US', {
+                year: 'numeric', month: 'long', day: 'numeric'
+            });
+
+            // ============================================================
+            // SUBMIT HANDLERS
+            // ============================================================
+
+            // BVN Form Submit
+            bvnForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
-
                 const bvn = bvnInput.value.trim();
-
                 if (!bvn || bvn.length !== 11 || !/^\d{11}$/.test(bvn)) {
                     showError('Please enter a valid 11-digit BVN number.');
                     return;
                 }
+                await verifyBVN('bvn', { bvn });
+            });
 
+            // Phone Form Submit
+            phoneForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const phone = phoneInput.value.trim();
+                if (!phone || phone.length !== 11 || !/^\d{11}$/.test(phone)) {
+                    showError('Please enter a valid 11-digit phone number.');
+                    return;
+                }
+                await verifyBVN('phone', { phone });
+            });
+
+            // Card Form Submit
+            cardForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const bvn = cardInput.value.trim();
+                if (!bvn || bvn.length !== 11 || !/^\d{11}$/.test(bvn)) {
+                    showError('Please enter a valid 11-digit BVN number.');
+                    return;
+                }
+                await verifyBVN('card', { bvn });
+            });
+
+            // ============================================================
+            // VERIFY FUNCTION
+            // ============================================================
+
+            async function verifyBVN(mode, params) {
                 hideError();
                 result.classList.remove('visible');
                 loading.classList.add('visible');
-                verifyBtn.disabled = true;
-                verifyBtn.innerHTML = '<span>⏳</span> Verifying...';
+
+                const btn = document.querySelector('.tab-content.active .btn-primary');
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerHTML = '⏳ Verifying...';
+                }
+
+                const modeNames = {
+                    bvn: 'BVN',
+                    phone: 'phone number',
+                    card: 'card data'
+                };
+                loadingText.textContent = ` using ${modeNames[mode]}...`;
 
                 try {
                     const response = await fetch('/api/identity/bvn/verify.js', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ bvn })
+                        body: JSON.stringify({ searchMode: mode, ...params })
                     });
 
                     const data = await response.json();
 
                     if (response.ok && data.success) {
-                        document.getElementById('userName').textContent = data.data.fullName || 'Not Available';
-                        document.getElementById('userDob').textContent = data.data.dob || 'Not Available';
-                        document.getElementById('userGender').textContent = data.data.gender || 'Not Available';
-                        document.getElementById('userPhone').textContent = data.data.phone || 'Not Available';
-                        document.getElementById('userAddress').textContent = data.data.address || 'Not Available';
-                        document.getElementById('userBvn').textContent = bvn;
-                        document.getElementById('userBank').textContent = data.data.bankName || 'Not Available';
-
-                        if (data.data.photo) {
-                            document.getElementById('userPhoto').src = data.data.photo;
-                        }
-
-                        document.getElementById('verificationDate').textContent = new Date().toLocaleDateString(
-                            'en-US', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric'
-                            });
-
+                        displayBVNResult(data.data);
                         result.classList.add('visible');
                         result.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     } else {
@@ -712,10 +787,55 @@
                     showError('Network error. Please check your connection and try again.');
                 } finally {
                     loading.classList.remove('visible');
-                    verifyBtn.disabled = false;
-                    verifyBtn.innerHTML = '<span>🔍</span> Verify BVN';
+                    if (btn) {
+                        btn.disabled = false;
+                        const labels = {
+                            bvn: '🔍 Verify BVN',
+                            phone: '📞 Search by Phone',
+                            card: '💳 Get Card Data'
+                        };
+                        btn.innerHTML = labels[mode] || 'Verify';
+                    }
                 }
-            });
+            }
+
+            // ============================================================
+            // DISPLAY RESULT
+            // ============================================================
+
+            function displayBVNResult(data) {
+                document.getElementById('userName').textContent = data.fullName || 'Not Available';
+                document.getElementById('userDob').textContent = data.dob || 'Not Available';
+                document.getElementById('userGender').textContent = data.gender || 'Not Available';
+                document.getElementById('userMarital').textContent = data.maritalStatus || 'Not Available';
+                document.getElementById('userPhone').textContent = data.phone || 'Not Available';
+                document.getElementById('userAddress').textContent = data.address || 'Not Available';
+                document.getElementById('userBvn').textContent = data.bvn || 'Not Available';
+                document.getElementById('userNin').textContent = data.nin || 'Not Available';
+                document.getElementById('userBank').textContent = data.bankName || 'Not Available';
+                document.getElementById('userBranch').textContent = data.enrollmentBranch || 'Not Available';
+                document.getElementById('userStateOrigin').textContent = data.stateOfOrigin || 'Not Available';
+                document.getElementById('userLgaOrigin').textContent = data.lgaOfOrigin || 'Not Available';
+                document.getElementById('userStateResidence').textContent = data.stateOfResidence || 'Not Available';
+                document.getElementById('userLgaResidence').textContent = data.lgaOfResidence || 'Not Available';
+                document.getElementById('userReportId').textContent = data.reportID || 'Not Available';
+
+                // Show/hide optional fields
+                const reportRow = document.getElementById('reportRow');
+                reportRow.style.display = data.reportID ? 'flex' : 'none';
+
+                if (data.photo) {
+                    document.getElementById('userPhoto').src = data.photo;
+                }
+
+                document.getElementById('verificationDate').textContent = new Date().toLocaleDateString('en-US', {
+                    year: 'numeric', month: 'long', day: 'numeric'
+                });
+            }
+
+            // ============================================================
+            // ERROR / LOADING HELPERS
+            // ============================================================
 
             function showError(message) {
                 errorText.textContent = message;
@@ -726,6 +846,10 @@
             function hideError() {
                 errorMsg.classList.remove('visible');
             }
+
+            // ============================================================
+            // PDF DOWNLOAD
+            // ============================================================
 
             downloadBtn.addEventListener('click', function() {
                 const element = document.getElementById('slipContent');
@@ -738,24 +862,11 @@
                     margin: [10, 10, 10, 10],
                     filename: `BVN_Slip_${bvn}.pdf`,
                     image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: {
-                        scale: 2,
-                        useCORS: true,
-                        letterRendering: true,
-                        logging: false
-                    },
-                    jsPDF: {
-                        unit: 'mm',
-                        format: 'a4',
-                        orientation: 'portrait'
-                    },
-                    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+                    html2canvas: { scale: 2, useCORS: true, letterRendering: true, logging: false },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
                 };
 
-                html2pdf()
-                    .set(opt)
-                    .from(element)
-                    .save()
+                html2pdf().set(opt).from(element).save()
                     .then(() => {
                         this.textContent = '📥 Download PDF';
                         this.disabled = false;
@@ -766,13 +877,6 @@
                         this.disabled = false;
                         showError('Error generating PDF. Please try again or use Print.');
                     });
-            });
-
-            bvnInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    form.dispatchEvent(new Event('submit'));
-                }
             });
         });
     </script>
