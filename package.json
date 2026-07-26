@@ -1,7 +1,8 @@
 {
-  "name": "identity-services",
+  "name": "ict-identity-services",
   "version": "1.0.0",
-  "description": "NIN and BVN verification services",
+  "description": "NIN and BVN verification services for ICT Integrated Hub",
+  "main": "index.js",
   "scripts": {
     "build": "echo 'No build step required'"
   },
@@ -11,4 +12,4 @@
   "engines": {
     "node": "24.x"
   }
-} 
+}

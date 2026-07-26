@@ -65,7 +65,7 @@ module.exports = async (req, res) => {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    // Check authentication
+    // Check authentication (staff login)
     const cookies = req.headers.cookie || '';
     const token = cookies.split('; ').find(row => row.startsWith('staffToken='))?.split('=')[1];
 
@@ -127,7 +127,6 @@ module.exports = async (req, res) => {
         );
 
         console.log(`✅ API Response Status: ${response.status}`);
-        console.log(`📦 API Response:`, JSON.stringify(response.data, null, 2));
 
         // Check if verification was successful
         if (response.data.success && response.data.data?.status === 'completed') {
@@ -209,7 +208,7 @@ module.exports = async (req, res) => {
 };
 
 // ============================================================
-// MOCK DATA GENERATOR (Keep the same as before)
+// MOCK DATA GENERATOR
 // ============================================================
 function generateMockNINData(nin) {
     const hash = simpleHash(nin);
