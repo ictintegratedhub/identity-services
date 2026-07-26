@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "public": true,
   "builds": [
     {
       "src": "api/**/*.js",
@@ -12,6 +13,22 @@
       "dest": "/api/$1"
     },
     {
+      "src": "/identity/login.html",
+      "dest": "/identity/login.html"
+    },
+    {
+      "src": "/identity/nin.html",
+      "dest": "/identity/nin.html"
+    },
+    {
+      "src": "/identity/bvn.html",
+      "dest": "/identity/bvn.html"
+    },
+    {
+      "src": "/identity/index.html",
+      "dest": "/identity/index.html"
+    },
+    {
       "src": "/identity/login",
       "dest": "/identity/login.html"
     },
@@ -22,10 +39,6 @@
     {
       "src": "/identity/bvn",
       "dest": "/identity/bvn.html"
-    },
-    {
-      "src": "/identity/logout",
-      "dest": "/api/identity/logout.js"
     },
     {
       "src": "/identity",
