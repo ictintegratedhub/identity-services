@@ -1,5 +1,5 @@
+// api/identity/login.js
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
 
 module.exports = async (req, res) => {
     // Enable CORS
@@ -11,47 +11,61 @@ module.exports = async (req, res) => {
         'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
     );
 
+    // Handle preflight OPTIONS request
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
     }
 
+    // CRITICAL: Explicitly handle POST
     if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed' });
-    }
-
-    const { password } = req.body;
-
-    if (!password) {
-        return res.status(400).json({ success: false, error: 'Password required' });
+        return res.status(405).json({ 
+            error: 'Method not allowed. Please use POST.' 
+        });
     }
 
     try {
-        // For testing, use a simple password check
-        // Remove this in production and use the hashed password
-        if (password === 'AIIH@Staff') {
-            const token = jwt.sign(
-                { role: 'staff', timestamp: Date.now() },
-                process.env.JWT_SECRET || 'fallback-secret-for-testing',
-                { expiresIn: '24h' }
-            );
+        const { password } = req.body;
 
-            res.setHeader('Set-Cookie', [
-                `staffToken=${token}; HttpOnly; Secure; SameSite=Lax; Max-Age=86400; Path=/`
-            ]);
-
-            return res.json({ success: true, redirect: '/identity' });
+        if (!password) {
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Password required' 
+            });
         }
 
-        // Use the hashed password check for production
-        // const isValid = await bcrypt.compare(password, process.env.STAFF_PASSWORD_HASH);
-        // if (!isValid) {
-        //     return res.status(401).json({ success: false, error: 'Invalid password' });
-        // }
+        // Simple password check (change this to your password)
+        const validPassword = 'staff123';
 
-        return res.status(401).json({ success: false, error: 'Invalid password' });
+        if (password !== validPassword) {
+            return res.status(401).json({ 
+                success: false, 
+                error: 'Invalid password' 
+            });
+        }
+
+        // Generate JWT token
+        const token = jwt.sign(
+            { role: 'staff', timestamp: Date.now() },
+            process.env.JWT_SECRET || 'fallback-secret-key-12345',
+            { expiresIn: '24h' }
+        );
+
+        // Set the cookie
+        res.setHeader('Set-Cookie', [
+            `staffToken=${token}; HttpOnly; SameSite=Lax; Max-Age=86400; Path=/`
+        ]);
+
+        // Send success response
+        return res.json({ 
+            success: true, 
+            redirect: '/identity' 
+        });
 
     } catch (error) {
         console.error('Login error:', error);
-        return res.status(500).json({ success: false, error: 'Server error' });
+        return res.status(500).json({ 
+            success: false, 
+            error: 'Server error. Please try again.' 
+        });
     }
 };

@@ -2,6 +2,10 @@
   "version": 2,
   "rewrites": [
     {
+      "source": "/api/identity/login.js",
+      "destination": "/api/identity/login.js"
+    },
+    {
       "source": "/api/(.*)",
       "destination": "/api/$1"
     },
