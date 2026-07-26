@@ -18,6 +18,10 @@
       "dest": "/identity/bvn.html"
     },
     {
+      "src": "/identity/logout",
+      "dest": "/api/identity/logout.js"
+    },
+    {
       "src": "/identity",
       "dest": "/identity/index.html"
     },
