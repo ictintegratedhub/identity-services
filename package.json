@@ -3,19 +3,10 @@
   "version": "1.0.0",
   "description": "NIN and BVN verification services",
   "scripts": {
-    "start": "node api/index.js",
     "build": "echo 'No build step required'"
   },
   "dependencies": {
-    "axios": "^1.4.0",
-    "bcryptjs": "^2.4.3",
-    "cookie-parser": "^1.4.6",
-    "cors": "^2.8.5",
-    "dotenv": "^16.0.3",
-    "jsonwebtoken": "^9.0.0"
-  },
-  "devDependencies": {
-    "vercel": "^32.0.0"
+    "axios": "^1.6.0"
   },
   "engines": {
     "node": "24.x"
