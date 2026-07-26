@@ -1,33 +1,29 @@
 {
   "version": 2,
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
     },
     {
-      "src": "/identity/login",
-      "dest": "/identity/login.html"
+      "source": "/identity/login",
+      "destination": "/identity/login.html"
     },
     {
-      "src": "/identity/nin",
-      "dest": "/identity/nin.html"
+      "source": "/identity/nin",
+      "destination": "/identity/nin.html"
     },
     {
-      "src": "/identity/bvn",
-      "dest": "/identity/bvn.html"
+      "source": "/identity/bvn",
+      "destination": "/identity/bvn.html"
     },
     {
-      "src": "/identity",
-      "dest": "/identity/index.html"
+      "source": "/identity",
+      "destination": "/identity/index.html"
     },
     {
-      "src": "/",
-      "dest": "/identity/index.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
+      "source": "/",
+      "destination": "/identity/index.html"
     }
   ]
 }
