@@ -1,56 +1,37 @@
 {
   "version": 2,
-  "public": true,
-  "builds": [
-    {
-      "src": "api/**/*.js",
-      "use": "@vercel/node"
-    }
-  ],
   "routes": [
     {
       "src": "/api/(.*)",
       "dest": "/api/$1"
     },
     {
-      "src": "/identity/login.html",
-      "dest": "/identity/login.html"
-    },
-    {
-      "src": "/identity/nin.html",
-      "dest": "/identity/nin.html"
-    },
-    {
-      "src": "/identity/bvn.html",
-      "dest": "/identity/bvn.html"
-    },
-    {
-      "src": "/identity/index.html",
-      "dest": "/identity/index.html"
-    },
-    {
       "src": "/identity/login",
-      "dest": "/identity/login.html"
+      "dest": "/public/identity/login.html"
     },
     {
       "src": "/identity/nin",
-      "dest": "/identity/nin.html"
+      "dest": "/public/identity/nin.html"
     },
     {
       "src": "/identity/bvn",
-      "dest": "/identity/bvn.html"
+      "dest": "/public/identity/bvn.html"
+    },
+    {
+      "src": "/identity/logout",
+      "dest": "/api/identity/logout.js"
     },
     {
       "src": "/identity",
-      "dest": "/identity/index.html"
+      "dest": "/public/identity/index.html"
     },
     {
       "src": "/",
-      "dest": "/identity/index.html"
+      "dest": "/public/identity/index.html"
     },
     {
       "src": "/(.*)",
-      "dest": "/$1"
+      "dest": "/public/$1"
     }
   ]
 }
