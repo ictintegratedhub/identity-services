@@ -6,44 +6,28 @@
       "dest": "/api/$1"
     },
     {
-      "src": "/identity/login.html",
-      "dest": "/public/identity/login.html"
-    },
-    {
-      "src": "/identity/nin.html",
-      "dest": "/public/identity/nin.html"
-    },
-    {
-      "src": "/identity/bvn.html",
-      "dest": "/public/identity/bvn.html"
-    },
-    {
-      "src": "/identity/index.html",
-      "dest": "/public/identity/index.html"
-    },
-    {
       "src": "/identity/login",
-      "dest": "/public/identity/login.html"
+      "dest": "/identity/login.html"
     },
     {
       "src": "/identity/nin",
-      "dest": "/public/identity/nin.html"
+      "dest": "/identity/nin.html"
     },
     {
       "src": "/identity/bvn",
-      "dest": "/public/identity/bvn.html"
+      "dest": "/identity/bvn.html"
     },
     {
       "src": "/identity",
-      "dest": "/public/identity/index.html"
+      "dest": "/identity/index.html"
     },
     {
       "src": "/",
-      "dest": "/public/identity/index.html"
+      "dest": "/identity/index.html"
     },
     {
       "src": "/(.*)",
-      "dest": "/public/$1"
+      "dest": "/$1"
     }
   ]
 }
