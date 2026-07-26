@@ -6,6 +6,22 @@
       "dest": "/api/$1"
     },
     {
+      "src": "/identity/login.html",
+      "dest": "/public/identity/login.html"
+    },
+    {
+      "src": "/identity/nin.html",
+      "dest": "/public/identity/nin.html"
+    },
+    {
+      "src": "/identity/bvn.html",
+      "dest": "/public/identity/bvn.html"
+    },
+    {
+      "src": "/identity/index.html",
+      "dest": "/public/identity/index.html"
+    },
+    {
       "src": "/identity/login",
       "dest": "/public/identity/login.html"
     },
