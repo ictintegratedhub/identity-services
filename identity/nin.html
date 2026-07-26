@@ -819,9 +819,10 @@
                 loadingText.textContent = ` using ${modeNames[mode]}...`;
 
                 try {
-                    const response = await fetch('/api/identity/nin/verify.js', {
+                    const response = await fetch('/api/identity/nin/verify', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',          // ← add this
                         body: JSON.stringify({ searchMode: mode, ...params })
                     });
 

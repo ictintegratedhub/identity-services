@@ -768,9 +768,10 @@
                 loadingText.textContent = ` using ${modeNames[mode]}...`;
 
                 try {
-                    const response = await fetch('/api/identity/bvn/verify.js', {
+                    const response = await fetch('/api/identity/bvn/verify', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
                         body: JSON.stringify({ searchMode: mode, ...params })
                     });
 
