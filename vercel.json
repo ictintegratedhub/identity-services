@@ -22,8 +22,8 @@
       "dest": "/identity/index.html"
     },
     {
-      "src": "/(.*)",
-      "dest": "/public/$1"
+      "src": "/",
+      "dest": "/identity/index.html"
     }
   ]
 }

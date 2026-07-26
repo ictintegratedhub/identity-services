@@ -6,36 +6,71 @@
     <title>Identity Services</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #faf6ef 0%, #f5f0e8 100%);
             min-height: 100vh;
             padding: 40px 20px;
         }
+
         .container { max-width: 1000px; margin: 0 auto; }
-        h1 { 
-            text-align: center; 
-            color: #5a4a3a;
-            font-size: 36px;
-            margin-bottom: 10px;
-        }
-        .subtitle { 
-            text-align: center; 
-            color: #888;
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(200, 180, 160, 0.2);
         }
+
+        .header h1 {
+            font-size: 28px;
+            color: #5a4a3a;
+        }
+
+        .header .staff-badge {
+            background: #d4af37;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .header .logout-btn {
+            color: #a89888;
+            text-decoration: none;
+            font-weight: 500;
+            margin-left: 12px;
+            font-size: 14px;
+        }
+
+        .header .logout-btn:hover { color: #c0392b; }
+
+        .subtitle {
+            text-align: center;
+            color: #a89888;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+
         .cards {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 30px;
-            margin: 40px 0;
+            max-width: 800px;
+            margin: 0 auto 40px;
         }
+
         @media (max-width: 700px) {
             .cards { grid-template-columns: 1fr; }
         }
+
         .card {
             background: rgba(255,255,255,0.8);
-            padding: 40px;
+            padding: 40px 30px;
             border-radius: 20px;
             text-align: center;
             text-decoration: none;
@@ -44,60 +79,68 @@
             border: 1px solid rgba(255,255,255,0.3);
             transition: transform 0.3s, box-shadow 0.3s;
         }
+
         .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 20px 50px rgba(0,0,0,0.08);
         }
-        .card .icon { font-size: 48px; margin-bottom: 15px; }
-        .card h2 { font-size: 24px; margin-bottom: 10px; }
-        .card p { color: #888; line-height: 1.6; }
-        .btn {
+
+        .card .icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .card h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            color: #a89888;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .card .btn {
             display: inline-block;
             margin-top: 20px;
             padding: 10px 30px;
             background: linear-gradient(135deg, #d4af37, #f5c518);
             color: white;
             border-radius: 50px;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 14px;
+            transition: transform 0.2s;
         }
-        .logout {
-            text-align: right;
-            margin-bottom: 20px;
-        }
-        .logout a {
-            color: #888;
-            text-decoration: none;
-        }
-        .logout a:hover { color: #c0392b; }
+
+        .card .btn:hover { transform: translateY(-2px); }
+
         .privacy {
             text-align: center;
-            color: #888;
-            font-size: 14px;
-            padding: 20px;
+            color: #a89888;
+            font-size: 13px;
+            padding: 16px;
             background: rgba(255,255,255,0.6);
             border-radius: 12px;
-            margin-top: 30px;
+            max-width: 700px;
+            margin: 0 auto;
         }
-        .staff-badge {
-            display: inline-block;
-            background: #d4af37;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-        }
+
+        .privacy i { margin-right: 6px; color: #d4af37; }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="logout">
-            <span class="staff-badge">👤 Staff</span>
-            <a href="/identity/logout">Logout</a>
+        <div class="header">
+            <h1>Identity Verification Services</h1>
+            <div>
+                <span class="staff-badge">👤 Staff</span>
+                <a href="/identity/logout" class="logout-btn">Logout</a>
+            </div>
         </div>
-        
-        <h1>Identity Verification Services</h1>
+
         <p class="subtitle">Verify and print NIN and BVN slips securely</p>
-        
+
         <div class="cards">
             <a href="/identity/nin" class="card">
                 <div class="icon">🪪</div>
@@ -105,7 +148,7 @@
                 <p>Verify National Identification Numbers and print official slips</p>
                 <span class="btn">Verify NIN →</span>
             </a>
-            
+
             <a href="/identity/bvn" class="card">
                 <div class="icon">🏦</div>
                 <h2>BVN Services</h2>
@@ -113,9 +156,14 @@
                 <span class="btn">Verify BVN →</span>
             </a>
         </div>
-        
+
+        <div class="logout">
+            <span class="staff-badge">👤 Staff</span>
+            <a href="/api/identity/logout.js">Logout</a>
+        </div>
+
         <div class="privacy">
-            🔒 All verification requests are encrypted. We do not store your NIN or BVN data.
+            All verification requests are encrypted. We do not store your personal data.
         </div>
     </div>
 </body>
