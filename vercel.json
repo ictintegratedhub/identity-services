@@ -4,10 +4,6 @@
     {
       "src": "api/**/*.js",
       "use": "@vercel/node"
-    },
-    {
-      "src": "identity/**/*.html",
-      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -16,8 +12,20 @@
       "dest": "/api/$1"
     },
     {
-      "src": "/identity/(.*)",
-      "dest": "/identity/$1"
+      "src": "/identity/login",
+      "dest": "/identity/login.html"
+    },
+    {
+      "src": "/identity/nin",
+      "dest": "/identity/nin.html"
+    },
+    {
+      "src": "/identity/bvn",
+      "dest": "/identity/bvn.html"
+    },
+    {
+      "src": "/identity/logout",
+      "dest": "/api/identity/logout.js"
     },
     {
       "src": "/identity",
@@ -26,6 +34,10 @@
     {
       "src": "/",
       "dest": "/identity/index.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
     }
   ]
 }
