@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logging out...</title>
+  <style>
+    body { font-family: system-ui, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f5f5f5; }
+    .box { text-align: center; padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Logging you out...</h2>
+    <p>Please wait a moment.</p>
+  </div>
+
+  <script>
+    // Call the logout API then redirect
+    fetch('/api/identity/logout', { method: 'POST', credentials: 'include' })
+      .then(() => {
+        // Clear any client-side storage if you use it
+        localStorage.removeItem('staffToken');
+        sessionStorage.clear();
+        window.location.href = '/identity/login';
+      })
+      .catch(() => {
+        // Even if API fails, still send user to login
+        window.location.href = '/identity/login';
+      });
+  </script>
+</body>
+</html>
