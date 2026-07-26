@@ -1,58 +1,370 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-
-module.exports = async (req, res) => {
-    // Enable CORS
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-    res.setHeader(
-        'Access-Control-Allow-Headers',
-        'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-    );
-
-    if (req.method === 'OPTIONS') {
-        return res.status(200).end();
-    }
-
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed' });
-    }
-
-    const { password } = req.body;
-
-    if (!password) {
-        return res.status(400).json({ success: false, error: 'Password required' });
-    }
-
-    try {
-        // Simple password check for testing
-        // You can change 'staff123' to your preferred password
-        const validPassword = 'staff123';
-        
-        // For production, use bcrypt:
-        // const isValid = await bcrypt.compare(password, process.env.STAFF_PASSWORD_HASH);
-        // if (!isValid) {
-        //     return res.status(401).json({ success: false, error: 'Invalid password' });
-        // }
-
-        if (password === validPassword) {
-            const token = jwt.sign(
-                { role: 'staff', timestamp: Date.now() },
-                process.env.JWT_SECRET || 'fallback-secret-for-testing',
-                { expiresIn: '24h' }
-            );
-
-            res.setHeader('Set-Cookie', [
-                `staffToken=${token}; HttpOnly; Secure; SameSite=Lax; Max-Age=86400; Path=/`
-            ]);
-
-            return res.json({ success: true, redirect: '/identity' });
-        } else {
-            return res.status(401).json({ success: false, error: 'Invalid password' });
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Login | ICT Integrated Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-    } catch (error) {
-        console.error('Login error:', error);
-        return res.status(500).json({ success: false, error: 'Server error' });
-    }
-};
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #faf6ef 0%, #f5f0e8 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: rgba(255, 252, 248, 0.85);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 50px 40px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 25px 50px rgba(160, 140, 120, 0.12);
+            border: 1px solid rgba(220, 200, 185, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .login-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 30px 60px rgba(160, 140, 120, 0.15);
+        }
+
+        .login-icon {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .login-icon i {
+            font-size: 3.5rem;
+            color: #c4a882;
+            background: rgba(200, 180, 160, 0.12);
+            padding: 20px;
+            border-radius: 50%;
+            transition: background 0.3s ease;
+        }
+
+        .login-icon i:hover {
+            background: rgba(200, 180, 160, 0.2);
+        }
+
+        .login-container h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.8rem;
+            color: #5a4a3a;
+            text-align: center;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .login-container p {
+            color: #a89888;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #5a4a3a;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255, 252, 248, 0.8);
+            border: 1px solid rgba(200, 180, 160, 0.2);
+            border-radius: 14px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            color: #5a4a3a;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #f5e6a3;
+            box-shadow: 0 0 0 4px rgba(245, 230, 163, 0.25);
+            background: white;
+        }
+
+        .form-group input::placeholder {
+            color: #c4b8a8;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #d4af37, #f5c518);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-login:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-login:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-login .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        .btn-login.loading .spinner {
+            display: inline-block;
+        }
+
+        .btn-login.loading .btn-text {
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-msg {
+            display: none;
+            background: rgba(200, 160, 150, 0.12);
+            border: 1px solid rgba(200, 160, 150, 0.2);
+            color: #a07060;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .error-msg.visible {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 0.8rem;
+            color: #a89888;
+        }
+
+        .login-footer a {
+            color: #5a4a3a;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .login-footer a:hover {
+            color: #d4af37;
+            text-decoration: underline;
+        }
+
+        .login-footer .lock-icon {
+            margin-right: 4px;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: rgba(200, 180, 160, 0.15);
+            color: #a89888;
+            font-size: 0.65rem;
+            padding: 2px 10px;
+            border-radius: 20px;
+            margin-top: 12px;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 35px 25px;
+            }
+            .login-container h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-icon">
+            <i class="fas fa-lock"></i>
+        </div>
+        <h1>Staff Login</h1>
+        <p>Enter your staff password to access identity verification services.</p>
+
+        <div class="error-msg" id="errorMsg">
+            <span id="errorText">Invalid password. Please try again.</span>
+        </div>
+
+        <form id="loginForm" autocomplete="off">
+            <div class="form-group">
+                <label for="password">Staff Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter staff password"
+                    required
+                    autofocus
+                    autocomplete="current-password"
+                >
+            </div>
+            <button type="submit" class="btn-login" id="loginBtn">
+                <span class="btn-text">Access Identity Services →</span>
+                <span class="spinner"></span>
+            </button>
+        </form>
+
+        <div class="login-footer">
+            <p><span class="lock-icon">🔒</span> This area is for authorized staff only.</p>
+            <div class="version-badge">v2.0 • Secure Access</div>
+        </div>
+    </div>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('loginForm');
+            const passwordInput = document.getElementById('password');
+            const errorMsg = document.getElementById('errorMsg');
+            const errorText = document.getElementById('errorText');
+            const loginBtn = document.getElementById('loginBtn');
+
+            // Focus the password field on load
+            passwordInput.focus();
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const password = passwordInput.value.trim();
+
+                // Basic validation
+                if (!password) {
+                    showError('Please enter your staff password.');
+                    return;
+                }
+
+                // Reset states
+                hideError();
+                setLoading(true);
+
+                try {
+                    const response = await fetch('/api/identity/login.js', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ password })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // Redirect to the identity dashboard
+                        window.location.href = data.redirect || '/identity';
+                    } else {
+                        showError(data.error || 'Invalid password. Please try again.');
+                        setLoading(false);
+                        passwordInput.value = '';
+                        passwordInput.focus();
+                    }
+                } catch (err) {
+                    console.error('Login error:', err);
+                    showError('Network error. Please check your connection and try again.');
+                    setLoading(false);
+                }
+            });
+
+            // Allow Enter key to submit
+            passwordInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    form.dispatchEvent(new Event('submit'));
+                }
+            });
+
+            // Clear error on input
+            passwordInput.addEventListener('input', function() {
+                if (errorMsg.classList.contains('visible')) {
+                    hideError();
+                }
+            });
+
+            function showError(message) {
+                errorText.textContent = message;
+                errorMsg.classList.add('visible');
+            }
+
+            function hideError() {
+                errorMsg.classList.remove('visible');
+            }
+
+            function setLoading(loading) {
+                if (loading) {
+                    loginBtn.classList.add('loading');
+                    loginBtn.disabled = true;
+                } else {
+                    loginBtn.classList.remove('loading');
+                    loginBtn.disabled = false;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
