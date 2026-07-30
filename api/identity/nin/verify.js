@@ -253,7 +253,7 @@ function generateMockNINData(input) {
         lga: lga,
         stateOfOrigin: state,
         lgaOfOrigin: lga,
-        photo: "public/assets/mock/pp.png",
+        photo: "/assets/mock/pp.png",
         signature: null,
         trackingId: `TRK${String(hash).padStart(6, '0')}`,
         reportID: `${String(100000 + hash % 900000)}-${String(hash).substring(0, 10)}`,
