@@ -1640,6 +1640,15 @@
       Use actual API photo first.
     */
 
+    console.log("Photo from API:", photo);
+
+    const test = new Image();
+
+    test.onload = () => console.log("✅ Photo URL is reachable");
+
+    test.onerror = () => console.error("❌ Photo URL cannot be reached");
+
+    test.src = photo;
     if (
       photo &&
       typeof photo === 'string' &&
