@@ -1,29 +1,14 @@
 {
   "version": 2,
+  "cleanUrls": true,
   "rewrites": [
     {
       "source": "/api/(.*)",
       "destination": "/api/$1"
     },
     {
-      "source": "/identity/login",
-      "destination": "/identity/login.html"
-    },
-    {
-      "source": "/identity/logout",
-      "destination": "/identity/logout.html"
-    },
-    {
-      "source": "/identity/nin",
-      "destination": "/identity/nin.html"
-    },
-    {
-      "source": "/identity/bvn",
-      "destination": "/identity/bvn.html"
-    },
-    {
-      "source": "/identity",
-      "destination": "/identity/index.html"
+      "source": "/identity/:path*",
+      "destination": "/identity/:path*"
     },
     {
       "source": "/",
