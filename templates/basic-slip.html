@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Basic NIN Slip</title>
+
+<style>
+
+/* ============================================================
+   PAGE SETUP
+============================================================ */
+
+@page{
+    size:A4 portrait;
+    margin:10mm;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+}
+
+body{
+    background:#f2f2f2;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+.page{
+
+    width:210mm;
+    min-height:297mm;
+
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+
+    padding:10mm;
+}
+
+/* ============================================================
+   BASIC SLIP
+============================================================ */
+
+.basic-slip{
+
+    width:185mm;
+
+    background:#fff;
+
+    border:1px solid #000;
+
+    overflow:hidden;
+
+}
+
+/* ============================================================
+   HEADER
+============================================================ */
+
+.header{
+
+    display:grid;
+
+    grid-template-columns:70px 1fr 70px;
+
+    align-items:center;
+
+    border-bottom:2px solid #000;
+
+    padding:12px;
+}
+
+.logo{
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.logo img{
+
+    width:60px;
+    height:60px;
+    object-fit:contain;
+}
+
+.header-text{
+
+    text-align:center;
+}
+
+.header-text h1{
+
+    font-size:21px;
+    font-weight:bold;
+}
+
+.header-text h2{
+
+    font-size:17px;
+    margin-top:3px;
+}
+
+.header-text h3{
+
+    font-size:15px;
+    margin-top:3px;
+}
+
+/* ============================================================
+   BODY GRID
+============================================================ */
+
+.grid{
+
+    display:grid;
+
+    grid-template-columns:45mm 55mm 60mm 25mm;
+
+    border-bottom:1px solid #000;
+}
+
+.cell{
+
+    border:1px solid #000;
+
+    padding:6px;
+}
+
+.label{
+
+    font-size:10px;
+
+    color:#444;
+
+    margin-bottom:3px;
+}
+
+.value{
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    text-transform:uppercase;
+
+    word-break:break-word;
+}
+
+/* ============================================================
+   PHOTO
+============================================================ */
+
+.photo{
+
+    grid-column:4;
+
+    grid-row:1 / span 7;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+}
+
+.photo img{
+
+    width:100%;
+
+    height:180px;
+
+    object-fit:cover;
+
+    border:1px solid #555;
+}
+
+/* ============================================================
+   ADDRESS
+============================================================ */
+
+.address{
+
+    grid-column:3;
+
+    grid-row:1 / span 4;
+}
+
+/* ============================================================
+   NOTICE
+============================================================ */
+
+.notice{
+
+    padding:10px;
+
+    font-size:11px;
+
+    line-height:1.45;
+
+    border-bottom:1px solid #000;
+}
+
+/* ============================================================
+   FOOTER
+============================================================ */
+
+.footer{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    font-size:11px;
+}
+
+.footer div{
+
+    border-right:1px solid #000;
+
+    padding:8px;
+
+    text-align:center;
+}
+
+.footer div:last-child{
+
+    border-right:none;
+}
+
+.footer strong{
+
+    display:block;
+
+    margin-bottom:3px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="page">
+
+<div class="basic-slip">
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+
+<div class="header">
+
+<div class="logo">
+
+<img id="coatOfArms"
+src="assets/coat-of-arms.png">
+
+</div>
+
+<div class="header-text">
+
+<h1>
+National Identity Management Commission
+</h1>
+
+<h2>
+Federal Republic of Nigeria
+</h2>
+
+<h3>
+National Identification Number Slip (NINS)
+</h3>
+
+</div>
+
+<div class="logo">
+
+<img id="nimcLogo"
+src="assets/nimc-logo.png">
+
+</div>
+
+</div>
+
+<!-- =========================================================
+     GRID
+========================================================= -->
+
+<div class="grid">
+
+<div class="cell">
+
+<div class="label">
+Tracking ID
+</div>
+
+<div class="value"
+id="trackingId"></div>
+
+</div>
+
+<div class="cell">
+
+<div class="label">
+Surname
+</div>
+
+<div class="value"
+id="surname"></div>
+
+</div>
+
+<div class="cell address">
+
+<div class="label">
+Residential Address
+</div>
+
+<div class="value"
+id="address"></div>
+
+</div>
+
+<div class="cell photo">
+
+<img
+id="photo">
+
+</div>
+
+<!-- Row 2 -->
+
+<div class="cell">
+
+<div class="label">
+National Identification Number
+</div>
+
+<div
+class="value"
+id="nin"
+style="font-size:16px;letter-spacing:1px;">
+</div>
+
+</div>
+
+<div class="cell">
+
+<div class="label">
+First Name
+</div>
+
+<div
+class="value"
+id="firstName">
+</div>
+
+</div>
+
+<!-- Row 3 -->
+
+<div class="cell">
+
+<div class="label">
+Date of Birth
+</div>
+
+<div
+class="value"
+id="dob">
+</div>
+
+</div>
+
+<div class="cell">
+
+<div class="label">
+Middle Name
+</div>
+
+<div
+class="value"
+id="middleName">
+</div>
+
+</div>
+
+<!-- Row 4 -->
+
+<div class="cell">
+
+<div class="label">
+Gender
+</div>
+
+<div
+class="value"
+id="gender">
+</div>
+
+</div>
+
+<div class="cell">
+
+<div class="label">
+Phone Number
+</div>
+
+<div
+class="value"
+id="phone">
+</div>
+
+</div>
+
+<!-- Row 5 -->
+
+<div class="cell">
+
+<div class="label">
+Email
+</div>
+
+<div
+class="value"
+id="email">
+</div>
+
+</div>
+
+<div class="cell">
+
+<div class="label">
+Issue Date
+</div>
+
+<div
+class="value"
+id="issueDate">
+</div>
+
+</div>
+
+<!-- Row 6 -->
+
+<div class="cell">
+
+<div class="label">
+State
+</div>
+
+<div
+class="value"
+id="state">
+</div>
+
+</div>
+
+<div class="cell">
+
+<div class="label">
+Local Government Area
+</div>
+
+<div
+class="value"
+id="lga">
+</div>
+
+</div>
+
+<!-- Row 7 -->
+
+<div class="cell">
+
+<div class="label">
+QR Verification
+</div>
+
+<img
+id="qr"
+style="width:65px;height:65px;">
+
+</div>
+
+<div class="cell">
+
+<div class="label">
+Status
+</div>
+
+<div
+class="value"
+style="color:#008751;">
+VERIFIED
+</div>
+
+</div>
+
+</div>
+
+<!-- =========================================================
+     NOTICE
+========================================================= -->
+
+<div class="notice">
+
+<strong>NOTICE</strong><br><br>
+
+The National Identification Number (NIN) uniquely identifies an individual.
+Present this slip only for legitimate identity verification purposes.
+The information contained herein should be handled responsibly.
+Verify the QR Code before relying on the information presented.
+
+</div>
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<div class="footer">
+
+<div>
+
+<strong>Email</strong>
+
+helpdesk@nimc.gov.ng
+
+</div>
+
+<div>
+
+<strong>Website</strong>
+
+www.nimc.gov.ng
+
+</div>
+
+<div>
+
+<strong>Phone</strong>
+
+0700-CALL-NIMC
+
+</div>
+
+<div>
+
+<strong>Head Office</strong>
+
+11 Sokode Crescent,
+Wuse Zone 5,
+Abuja,
+Nigeria.
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+/* ============================================================
+   SAMPLE DATA
+   Replace window.slipData with your API object.
+============================================================ */
+
+const slipData = window.slipData || {
+
+trackingId:"A1B2C3D4E5F",
+
+nin:"1234 5678 901",
+
+surname:"ADEBAYO",
+
+firstName:"CHUKWUEMEKA",
+
+middleName:"IBRAHIM",
+
+dateOfBirth:"14 APR 1992",
+
+gender:"MALE",
+
+phone:"08012345678",
+
+email:"example@email.com",
+
+address:"123 Commercial Avenue, Ikeja, Lagos State",
+
+state:"Lagos",
+
+lga:"Ikeja",
+
+photo:"assets/photo.jpg",
+
+qr:"assets/qr.png"
+
+};
+
+/* ============================================================
+   ISSUE DATE
+============================================================ */
+
+const today=new Date();
+
+const months=[
+"JAN","FEB","MAR","APR","MAY","JUN",
+"JUL","AUG","SEP","OCT","NOV","DEC"
+];
+
+slipData.issueDate=
+String(today.getDate()).padStart(2,"0")
++" "+
+months[today.getMonth()]
++" "+
+today.getFullYear();
+
+/* ============================================================
+   POPULATE
+============================================================ */
+
+document.getElementById("trackingId").textContent=slipData.trackingId;
+document.getElementById("nin").textContent=slipData.nin;
+document.getElementById("surname").textContent=slipData.surname;
+document.getElementById("firstName").textContent=slipData.firstName;
+document.getElementById("middleName").textContent=slipData.middleName;
+document.getElementById("dob").textContent=slipData.dateOfBirth;
+document.getElementById("gender").textContent=slipData.gender;
+document.getElementById("phone").textContent=slipData.phone;
+document.getElementById("email").textContent=slipData.email;
+document.getElementById("address").textContent=slipData.address;
+document.getElementById("state").textContent=slipData.state;
+document.getElementById("lga").textContent=slipData.lga;
+document.getElementById("issueDate").textContent=slipData.issueDate;
+
+document.getElementById("photo").src=slipData.photo;
+document.getElementById("qr").src=slipData.qr;
+
+</script>
+
+</body>
+</html>

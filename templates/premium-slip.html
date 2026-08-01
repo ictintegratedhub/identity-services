@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Premium NIN Slip</title>
+
+<style>
+
+/* ==========================================================
+   PRINT SETTINGS
+========================================================== */
+
+@page{
+    size:A4 portrait;
+    margin:10mm;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+}
+
+body{
+
+    background:#ececec;
+
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+/* ==========================================================
+   PAGE
+========================================================== */
+
+.page{
+
+    width:210mm;
+    min-height:297mm;
+
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+
+    padding:10mm;
+}
+
+/* ==========================================================
+   CARD CONTAINER
+========================================================== */
+
+.card-stack{
+
+    display:flex;
+    flex-direction:column;
+
+    gap:5mm;
+}
+
+.card{
+
+    position:relative;
+
+    width:85.6mm;
+    height:54mm;
+
+    overflow:hidden;
+
+    border-radius:2mm;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.25);
+
+    background:#fff;
+}
+
+/* ==========================================================
+   BACKGROUND PNG
+========================================================== */
+
+.card-bg{
+
+    position:absolute;
+
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+    z-index:1;
+}
+
+/* ==========================================================
+   OVERLAY
+========================================================== */
+
+.overlay{
+
+    position:absolute;
+
+    inset:0;
+
+    z-index:5;
+}
+
+/* ==========================================================
+   PHOTO
+========================================================== */
+
+.photo{
+
+    position:absolute;
+
+    left:6.5mm;
+    top:15.5mm;
+
+    width:19mm;
+    height:23mm;
+
+    border-radius:1mm;
+
+    object-fit:cover;
+
+    border:0.5mm solid rgba(255,255,255,.8);
+}
+
+/* ==========================================================
+   QR
+========================================================== */
+
+.qr{
+
+    position:absolute;
+
+    right:5.5mm;
+    top:6mm;
+
+    width:20mm;
+    height:20mm;
+
+    background:#fff;
+
+    padding:1.2mm;
+
+    border-radius:1mm;
+}
+
+/* ==========================================================
+   COMMON TEXT
+========================================================== */
+
+.label{
+
+    font-size:1.55mm;
+
+    color:#4b4b4b;
+
+    text-transform:uppercase;
+
+    font-weight:bold;
+}
+
+.value{
+
+    font-size:2.25mm;
+
+    color:#111;
+
+    font-weight:bold;
+
+    text-transform:uppercase;
+}
+
+.field{
+
+    position:absolute;
+}
+
+/* ==========================================================
+   FIELD POSITIONS
+========================================================== */
+
+.surname{
+
+    left:31mm;
+    top:15mm;
+}
+
+.firstname{
+
+    left:31mm;
+    top:22.5mm;
+}
+
+.middlename{
+
+    left:31mm;
+    top:30mm;
+}
+
+.gender{
+
+    left:31mm;
+    top:38mm;
+}
+
+.dob{
+
+    left:47mm;
+    top:38mm;
+}
+
+.issue{
+
+    right:6mm;
+    top:30mm;
+
+    text-align:right;
+}
+
+/* ==========================================================
+   NIN
+========================================================== */
+
+.nin-title{
+
+    position:absolute;
+
+    bottom:8mm;
+
+    width:100%;
+
+    text-align:center;
+
+    font-size:1.8mm;
+
+    font-weight:bold;
+
+    color:#222;
+}
+
+.nin{
+
+    position:absolute;
+
+    bottom:2.5mm;
+
+    width:100%;
+
+    text-align:center;
+
+    font-size:5.2mm;
+
+    font-weight:800;
+
+    letter-spacing:1.1mm;
+
+    color:#0f4f2b;
+}
+
+@media print{
+
+    body{
+
+        background:#fff;
+    }
+
+    .card{
+
+        box-shadow:none;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="page">
+
+<div class="card-stack">
+
+<!-- =======================================================
+     PREMIUM FRONT
+======================================================= -->
+
+<div class="card">
+
+<img
+class="card-bg"
+src="assets/premium-front.png">
+
+<div class="overlay">
+
+<img
+id="photo"
+class="photo">
+
+<img
+id="qr"
+class="qr">
+
+<div class="field surname">
+
+<div class="label">
+Surname
+</div>
+
+<div
+class="value"
+id="surname">
+</div>
+
+</div>
+
+<div class="field firstname">
+
+<div class="label">
+Given Names
+</div>
+
+<div
+class="value"
+id="firstName">
+</div>
+
+</div>
+
+<div class="field middlename">
+
+<div class="label">
+Middle Name
+</div>
+
+<div
+class="value"
+id="middleName">
+</div>
+
+</div>
+
+<div class="field gender">
+
+<div class="label">
+Gender
+</div>
+
+<div
+class="value"
+id="gender">
+</div>
+
+</div>
+
+<div class="field dob">
+
+<div class="label">
+Date of Birth
+</div>
+
+<div
+class="value"
+id="dob">
+</div>
+
+</div>
+
+<div class="field issue">
+
+<div class="label">
+Issue Date
+</div>
+
+<div
+class="value"
+id="issueDate">
+</div>
+
+</div>
+
+<div class="nin-title">
+
+National Identification Number (NIN)
+
+</div>
+
+<div
+class="nin"
+id="nin">
+</div>
+
+</div>
+
+</div>
+
+<!-- =======================================================
+     PREMIUM BACK
+======================================================= -->
+
+<div class="card">
+
+<img
+class="card-bg"
+src="assets/premium-back.png">
+
+<div class="overlay">
+
+<!--
+Future dynamic fields may be added here if required.
+
+Examples:
+
+Tracking ID
+Verification URL
+Serial Number
+Security Code
+Barcode
+
+For now the premium-back.png already
+contains the entire artwork.
+-->
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+/* ==========================================================
+   DATA SOURCE
+========================================================== */
+
+const slipData = window.slipData || {
+
+    nin: "1234 5678 901",
+
+    surname: "ADEBAYO",
+
+    firstName: "CHUKWUEMEKA",
+
+    middleName: "IBRAHIM",
+
+    gender: "M",
+
+    dateOfBirth: "14 APR 1992",
+
+    photo: "assets/sample-photo.jpg",
+
+    qr: "assets/sample-qr.png"
+
+};
+
+/* ==========================================================
+   ISSUE DATE
+========================================================== */
+
+const now = new Date();
+
+const months = [
+
+"JAN","FEB","MAR","APR","MAY","JUN",
+
+"JUL","AUG","SEP","OCT","NOV","DEC"
+
+];
+
+const issueDate =
+String(now.getDate()).padStart(2,"0")
++
+" "
++
+months[now.getMonth()]
++
+" "
++
+now.getFullYear();
+
+/* ==========================================================
+   POPULATE
+========================================================== */
+
+document.getElementById("surname").textContent =
+slipData.surname || "";
+
+document.getElementById("firstName").textContent =
+slipData.firstName || "";
+
+document.getElementById("middleName").textContent =
+slipData.middleName || "";
+
+document.getElementById("gender").textContent =
+slipData.gender || "";
+
+document.getElementById("dob").textContent =
+slipData.dateOfBirth || "";
+
+document.getElementById("nin").textContent =
+slipData.nin || "";
+
+document.getElementById("issueDate").textContent =
+issueDate;
+
+document.getElementById("photo").src =
+slipData.photo || "";
+
+document.getElementById("qr").src =
+slipData.qr || "";
+
+/* ==========================================================
+    IMAGE FALLBACKS
+========================================================== */
+
+document.getElementById("photo").onerror = function(){
+
+    this.src = "assets/default-photo.png";
+
+};
+
+document.getElementById("qr").onerror = function(){
+
+    this.style.display = "none";
+
+};
+
+/* ==========================================================
+   PRINT HELPERS
+========================================================== */
+
+function printSlip(){
+
+    window.print();
+
+}
+
+/* ==========================================================
+   EXPORT PDF
+========================================================== */
+
+function exportPDF(){
+
+    if(typeof html2pdf === "undefined"){
+
+        printSlip();
+
+        return;
+
+    }
+
+    const element = document.querySelector(".page");
+
+    const options = {
+
+        margin:0,
+
+        filename:
+            `Premium_NIN_Slip_${slipData.nin.replace(/\s+/g,"")}.pdf`,
+
+        image:{
+            type:"jpeg",
+            quality:1
+        },
+
+        html2canvas:{
+
+            scale:4,
+
+            useCORS:true,
+
+            allowTaint:true,
+
+            logging:false,
+
+            backgroundColor:"#ffffff"
+
+        },
+
+        jsPDF:{
+
+            unit:"mm",
+
+            format:"a4",
+
+            orientation:"portrait"
+
+        },
+
+        pagebreak:{
+
+            mode:["avoid-all"]
+
+        }
+
+    };
+
+    html2pdf()
+
+        .set(options)
+
+        .from(element)
+
+        .save();
+
+}
+
+/* ==========================================================
+   AUTO CENTER CARDS
+========================================================== */
+
+(function(){
+
+    const stack = document.querySelector(".card-stack");
+
+    stack.style.display = "flex";
+    stack.style.flexDirection = "column";
+    stack.style.gap = "5mm";
+    stack.style.alignItems = "flex-start";
+    stack.style.justifyContent = "flex-start";
+
+})();
+
+/* ==========================================================
+   PRELOAD BACKGROUND IMAGES
+========================================================== */
+
+[
+"assets/premium-front.png",
+"assets/premium-back.png"
+].forEach(src=>{
+
+    const img=new Image();
+
+    img.src=src;
+
+});
+
+/* ==========================================================
+   WAIT FOR IMAGES BEFORE EXPORT
+========================================================== */
+
+window.addEventListener("load",()=>{
+
+    const images=[...document.images];
+
+    Promise.all(
+
+        images.map(img=>{
+
+            if(img.complete){
+
+                return Promise.resolve();
+
+            }
+
+            return new Promise(resolve=>{
+
+                img.onload=resolve;
+                img.onerror=resolve;
+
+            });
+
+        })
+
+    ).then(()=>{
+
+        console.log("Premium Slip Ready");
+
+    });
+
+});
+
+window.exportPremiumPDF = exportPDF;
+
+window.printPremiumSlip = printSlip;
+
+</script>
+
+</body>
+</html>
