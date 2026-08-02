@@ -617,3 +617,185 @@ function updateSlip(data){
 }
 
 window.updateImprovedSlip = updateSlip;
+/* ==========================================================
+   PRINT
+========================================================== */
+
+function printSlip(){
+
+    window.print();
+
+}
+
+/* ==========================================================
+   PDF EXPORT
+
+   If html2pdf.js is available,
+   export directly to PDF.
+
+   Otherwise,
+   open the browser print dialog.
+========================================================== */
+
+function exportPDF(){
+
+    if(typeof html2pdf === "undefined"){
+
+        printSlip();
+
+        return;
+
+    }
+
+    const element = document.querySelector(".page");
+
+    const options = {
+
+        margin:0,
+
+        filename:
+            `Improved_NIN_Slip_${(slipData.nin || "NIN").replace(/\s+/g,"")}.pdf`,
+
+        image:{
+
+            type:"jpeg",
+
+            quality:1
+
+        },
+
+        html2canvas:{
+
+            scale:4,
+
+            useCORS:true,
+
+            allowTaint:true,
+
+            backgroundColor:"#ffffff",
+
+            logging:false,
+
+            scrollX:0,
+
+            scrollY:0
+
+        },
+
+        jsPDF:{
+
+            unit:"mm",
+
+            format:"a4",
+
+            orientation:"portrait"
+
+        },
+
+        pagebreak:{
+
+            mode:["avoid-all"]
+
+        }
+
+    };
+
+    html2pdf()
+
+        .set(options)
+
+        .from(element)
+
+        .save();
+
+}
+
+/* ==========================================================
+   PRELOAD BACKGROUND IMAGES
+========================================================== */
+
+[
+"assets/improved-front.png",
+"assets/improved-back.png"
+
+].forEach(src=>{
+
+    const img=new Image();
+
+    img.src=src;
+
+});
+
+/* ==========================================================
+   WAIT UNTIL EVERYTHING HAS LOADED
+========================================================== */
+
+window.addEventListener("load",()=>{
+
+    const images=[...document.images];
+
+    Promise.all(
+
+        images.map(img=>{
+
+            if(img.complete){
+
+                return Promise.resolve();
+
+            }
+
+            return new Promise(resolve=>{
+
+                img.onload=resolve;
+                img.onerror=resolve;
+
+            });
+
+        })
+
+    ).then(()=>{
+
+        console.log("Improved Slip Ready");
+
+    });
+
+});
+
+/* ==========================================================
+   KEEP CARDS PROPERLY STACKED
+
+   Front
+      ↓ 5mm
+   Back
+
+   Both fit on one A4 page.
+========================================================== */
+
+(function(){
+
+    const stack=document.querySelector(".card-stack");
+
+    stack.style.display="flex";
+
+    stack.style.flexDirection="column";
+
+    stack.style.gap="5mm";
+
+    stack.style.alignItems="flex-start";
+
+    stack.style.justifyContent="flex-start";
+
+})();
+
+/* ==========================================================
+   PUBLIC METHODS
+========================================================== */
+
+window.exportImprovedPDF = exportPDF;
+
+window.printImprovedSlip = printSlip;
+
+</script>
+
+</body>
+</html>

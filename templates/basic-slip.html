@@ -1,244 +1,221 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
 <title>Basic NIN Slip</title>
 
+<link rel="stylesheet" href="css/slip-common.css">
+
 <style>
 
-/* ============================================================
-   PAGE SETUP
-============================================================ */
+.basic-card{
 
-@page{
-    size:A4 portrait;
-    margin:10mm;
-}
+    position:relative;
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    -webkit-print-color-adjust:exact;
-    print-color-adjust:exact;
-}
-
-body{
-    background:#f2f2f2;
-    font-family:Arial,Helvetica,sans-serif;
-}
-
-.page{
-
-    width:210mm;
-    min-height:297mm;
-
-    display:flex;
-    justify-content:center;
-    align-items:flex-start;
-
-    padding:10mm;
-}
-
-/* ============================================================
-   BASIC SLIP
-============================================================ */
-
-.basic-slip{
-
-    width:185mm;
-
-    background:#fff;
-
-    border:1px solid #000;
+    width:190mm;
+    height:120mm;
 
     overflow:hidden;
 
+    background:#fff;
+
 }
 
-/* ============================================================
-   HEADER
-============================================================ */
+.basic-bg{
 
-.header{
+    position:absolute;
 
-    display:grid;
+    inset:0;
 
-    grid-template-columns:70px 1fr 70px;
+    width:100%;
+    height:100%;
 
-    align-items:center;
-
-    border-bottom:2px solid #000;
-
-    padding:12px;
-}
-
-.logo{
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
-
-.logo img{
-
-    width:60px;
-    height:60px;
     object-fit:contain;
+
+    z-index:1;
+
 }
 
-.header-text{
+.overlay{
 
-    text-align:center;
+    position:absolute;
+
+    inset:0;
+
+    z-index:5;
+
+    font-family:Arial,Helvetica,sans-serif;
+
 }
 
-.header-text h1{
+/* Photo */
 
-    font-size:21px;
-    font-weight:bold;
+.photo{
+
+    position:absolute;
+
+    left:149.5mm;
+
+    top:24.5mm;
+
+    width:30mm;
+
+    height:47mm;
+
+    object-fit:cover;
+
 }
 
-.header-text h2{
+/* Common Text */
 
-    font-size:17px;
-    margin-top:3px;
-}
+.field{
 
-.header-text h3{
+    position:absolute;
 
-    font-size:15px;
-    margin-top:3px;
-}
+    color:#000;
 
-/* ============================================================
-   BODY GRID
-============================================================ */
-
-.grid{
-
-    display:grid;
-
-    grid-template-columns:45mm 55mm 60mm 25mm;
-
-    border-bottom:1px solid #000;
-}
-
-.cell{
-
-    border:1px solid #000;
-
-    padding:6px;
 }
 
 .label{
 
-    font-size:10px;
+    display:none;
 
-    color:#444;
-
-    margin-bottom:3px;
 }
 
 .value{
 
-    font-size:13px;
+    font-size:3.2mm;
 
-    font-weight:bold;
+    font-weight:700;
+
+    color:#111;
 
     text-transform:uppercase;
 
-    word-break:break-word;
 }
 
-/* ============================================================
-   PHOTO
-============================================================ */
+/* Left Column */
 
-.photo{
+.tracking{
 
-    grid-column:4;
+    left:2mm;
 
-    grid-row:1 / span 7;
+    top:30mm;
 
-    display:flex;
+    width:47mm;
 
-    justify-content:center;
-
-    align-items:center;
 }
 
-.photo img{
+.nin{
 
-    width:100%;
+    left:2mm;
 
-    height:180px;
+    top:47mm;
 
-    object-fit:cover;
+    width:47mm;
 
-    border:1px solid #555;
 }
 
-/* ============================================================
-   ADDRESS
-============================================================ */
+/* Middle Column */
+
+.surname{
+
+    left:52mm;
+
+    top:30mm;
+
+    width:50mm;
+
+}
+
+.firstname{
+
+    left:52mm;
+
+    top:47mm;
+
+    width:50mm;
+
+}
+
+.middlename{
+
+    left:52mm;
+
+    top:58.5mm;
+
+    width:50mm;
+
+}
+
+.gender{
+
+    left:52mm;
+
+    top:70mm;
+
+    width:50mm;
+
+}
+
+/* Address */
 
 .address{
 
-    grid-column:3;
+    left:104mm;
 
-    grid-row:1 / span 4;
+    top:30mm;
+
+    width:42mm;
+
 }
 
-/* ============================================================
-   NOTICE
-============================================================ */
+.address .value{
 
-.notice{
+    font-size:2.8mm;
 
-    padding:10px;
+    line-height:1.35;
 
-    font-size:11px;
+    text-transform:none;
 
-    line-height:1.45;
-
-    border-bottom:1px solid #000;
 }
 
-/* ============================================================
-   FOOTER
-============================================================ */
+/* Footer (optional) */
 
 .footer{
 
-    display:grid;
+    position:absolute;
 
-    grid-template-columns:repeat(4,1fr);
+    left:0;
 
-    font-size:11px;
+    right:0;
+
+    bottom:0;
+
+    display:none;
+
 }
 
-.footer div{
+@media print{
 
-    border-right:1px solid #000;
+    body{
 
-    padding:8px;
+        background:#fff;
 
-    text-align:center;
-}
+    }
 
-.footer div:last-child{
+    .basic-card{
 
-    border-right:none;
-}
+        box-shadow:none;
 
-.footer strong{
+    }
 
-    display:block;
-
-    margin-bottom:3px;
 }
 
 </style>
@@ -249,316 +226,78 @@ body{
 
 <div class="page">
 
-<div class="basic-slip">
-
-<!-- =========================================================
-     HEADER
-========================================================= -->
-
-<div class="header">
-
-<div class="logo">
-
-<img id="coatOfArms"
-src="assets/coat-of-arms.png">
-
-</div>
-
-<div class="header-text">
-
-<h1>
-National Identity Management Commission
-</h1>
-
-<h2>
-Federal Republic of Nigeria
-</h2>
-
-<h3>
-National Identification Number Slip (NINS)
-</h3>
-
-</div>
-
-<div class="logo">
-
-<img id="nimcLogo"
-src="assets/nimc-logo.png">
-
-</div>
-
-</div>
-
-<!-- =========================================================
-     GRID
-========================================================= -->
-
-<div class="grid">
-
-<div class="cell">
-
-<div class="label">
-Tracking ID
-</div>
-
-<div class="value"
-id="trackingId"></div>
-
-</div>
-
-<div class="cell">
-
-<div class="label">
-Surname
-</div>
-
-<div class="value"
-id="surname"></div>
-
-</div>
-
-<div class="cell address">
-
-<div class="label">
-Residential Address
-</div>
-
-<div class="value"
-id="address"></div>
-
-</div>
-
-<div class="cell photo">
+<div class="basic-card">
 
 <img
-id="photo">
+src="assets/basic-slip.png"
+class="basic-bg">
+
+<div class="overlay">
+
+<img
+id="photo"
+class="photo">
+
+<div class="field tracking">
+
+<div class="value"
+id="trackingId">
 
 </div>
 
-<!-- Row 2 -->
-
-<div class="cell">
-
-<div class="label">
-National Identification Number
 </div>
 
-<div
-class="value"
-id="nin"
-style="font-size:16px;letter-spacing:1px;">
+<div class="field nin">
+
+<div class="value"
+id="nin">
+
 </div>
 
 </div>
 
-<div class="cell">
+<div class="field surname">
 
-<div class="label">
-First Name
+<div class="value"
+id="surname">
+
 </div>
 
-<div
-class="value"
+</div>
+
+<div class="field firstname">
+
+<div class="value"
 id="firstName">
-</div>
 
-</div>
-
-<!-- Row 3 -->
-
-<div class="cell">
-
-<div class="label">
-Date of Birth
-</div>
-
-<div
-class="value"
-id="dob">
 </div>
 
 </div>
 
-<div class="cell">
+<div class="field middlename">
 
-<div class="label">
-Middle Name
-</div>
-
-<div
-class="value"
+<div class="value"
 id="middleName">
-</div>
 
 </div>
 
-<!-- Row 4 -->
-
-<div class="cell">
-
-<div class="label">
-Gender
 </div>
 
-<div
-class="value"
+<div class="field gender">
+
+<div class="value"
 id="gender">
-</div>
-
-</div>
-
-<div class="cell">
-
-<div class="label">
-Phone Number
-</div>
-
-<div
-class="value"
-id="phone">
-</div>
-
-</div>
-
-<!-- Row 5 -->
-
-<div class="cell">
-
-<div class="label">
-Email
-</div>
-
-<div
-class="value"
-id="email">
-</div>
-
-</div>
-
-<div class="cell">
-
-<div class="label">
-Issue Date
-</div>
-
-<div
-class="value"
-id="issueDate">
-</div>
-
-</div>
-
-<!-- Row 6 -->
-
-<div class="cell">
-
-<div class="label">
-State
-</div>
-
-<div
-class="value"
-id="state">
-</div>
-
-</div>
-
-<div class="cell">
-
-<div class="label">
-Local Government Area
-</div>
-
-<div
-class="value"
-id="lga">
-</div>
-
-</div>
-
-<!-- Row 7 -->
-
-<div class="cell">
-
-<div class="label">
-QR Verification
-</div>
-
-<img
-id="qr"
-style="width:65px;height:65px;">
-
-</div>
-
-<div class="cell">
-
-<div class="label">
-Status
-</div>
-
-<div
-class="value"
-style="color:#008751;">
-VERIFIED
-</div>
 
 </div>
 
 </div>
 
-<!-- =========================================================
-     NOTICE
-========================================================= -->
+<div class="field address">
 
-<div class="notice">
-
-<strong>NOTICE</strong><br><br>
-
-The National Identification Number (NIN) uniquely identifies an individual.
-Present this slip only for legitimate identity verification purposes.
-The information contained herein should be handled responsibly.
-Verify the QR Code before relying on the information presented.
+<div class="value"
+id="address">
 
 </div>
-
-<!-- =========================================================
-     FOOTER
-========================================================= -->
-
-<div class="footer">
-
-<div>
-
-<strong>Email</strong>
-
-helpdesk@nimc.gov.ng
-
-</div>
-
-<div>
-
-<strong>Website</strong>
-
-www.nimc.gov.ng
-
-</div>
-
-<div>
-
-<strong>Phone</strong>
-
-0700-CALL-NIMC
-
-</div>
-
-<div>
-
-<strong>Head Office</strong>
-
-11 Sokode Crescent,
-Wuse Zone 5,
-Abuja,
-Nigeria.
 
 </div>
 
@@ -570,83 +309,251 @@ Nigeria.
 
 <script>
 
-/* ============================================================
-   SAMPLE DATA
-   Replace window.slipData with your API object.
-============================================================ */
-
 const slipData = window.slipData || {
 
-trackingId:"A1B2C3D4E5F",
+    trackingId: "R0A1B2C3D4",
 
-nin:"1234 5678 901",
+    nin: "12345678901",
 
-surname:"ADEBAYO",
+    surname: "ADEBAYO",
 
-firstName:"CHUKWUEMEKA",
+    firstName: "CHUKWUEMEKA",
 
-middleName:"IBRAHIM",
+    middleName: "IBRAHIM",
 
-dateOfBirth:"14 APR 1992",
+    gender: "MALE",
 
-gender:"MALE",
+    address: "123 COMMERCIAL AVENUE, IKEJA, LAGOS STATE",
 
-phone:"08012345678",
-
-email:"example@email.com",
-
-address:"123 Commercial Avenue, Ikeja, Lagos State",
-
-state:"Lagos",
-
-lga:"Ikeja",
-
-photo:"assets/photo.jpg",
-
-qr:"assets/qr.png"
+    photo: "assets/sample-photo.jpg"
 
 };
 
-/* ============================================================
-   ISSUE DATE
-============================================================ */
 
-const today=new Date();
+/* Populate Fields */
 
-const months=[
-"JAN","FEB","MAR","APR","MAY","JUN",
-"JUL","AUG","SEP","OCT","NOV","DEC"
-];
+document.getElementById("trackingId").textContent =
+    slipData.trackingId || "";
 
-slipData.issueDate=
-String(today.getDate()).padStart(2,"0")
-+" "+
-months[today.getMonth()]
-+" "+
-today.getFullYear();
+document.getElementById("nin").textContent =
+    formatNIN(slipData.nin);
 
-/* ============================================================
-   POPULATE
-============================================================ */
+document.getElementById("surname").textContent =
+    slipData.surname || "";
 
-document.getElementById("trackingId").textContent=slipData.trackingId;
-document.getElementById("nin").textContent=slipData.nin;
-document.getElementById("surname").textContent=slipData.surname;
-document.getElementById("firstName").textContent=slipData.firstName;
-document.getElementById("middleName").textContent=slipData.middleName;
-document.getElementById("dob").textContent=slipData.dateOfBirth;
-document.getElementById("gender").textContent=slipData.gender;
-document.getElementById("phone").textContent=slipData.phone;
-document.getElementById("email").textContent=slipData.email;
-document.getElementById("address").textContent=slipData.address;
-document.getElementById("state").textContent=slipData.state;
-document.getElementById("lga").textContent=slipData.lga;
-document.getElementById("issueDate").textContent=slipData.issueDate;
+document.getElementById("firstName").textContent =
+    slipData.firstName || "";
 
-document.getElementById("photo").src=slipData.photo;
-document.getElementById("qr").src=slipData.qr;
+document.getElementById("middleName").textContent =
+    slipData.middleName || "";
+
+document.getElementById("gender").textContent =
+    slipData.gender || "";
+
+document.getElementById("address").textContent =
+    slipData.address || "";
+
+
+/* Photo */
+
+const photo = document.getElementById("photo");
+
+photo.src = slipData.photo || "";
+
+photo.onerror = function(){
+
+    this.src = "assets/default-photo.png";
+
+};
+
+
+/* Format NIN */
+
+function formatNIN(nin){
+
+    if(!nin) return "";
+
+    nin = nin.toString().replace(/\D/g,"");
+
+    if(nin.length !== 11) return nin;
+
+    return nin.replace(
+        /(\d{4})(\d{3})(\d{4})/,
+        "$1 $2 $3"
+    );
+
+}
+
+
+/* Public Update */
+
+function updateBasicSlip(data){
+
+    document.getElementById("trackingId").textContent =
+        data.trackingId || "";
+
+    document.getElementById("nin").textContent =
+        formatNIN(data.nin);
+
+    document.getElementById("surname").textContent =
+        data.surname || "";
+
+    document.getElementById("firstName").textContent =
+        data.firstName || "";
+
+    document.getElementById("middleName").textContent =
+        data.middleName || "";
+
+    document.getElementById("gender").textContent =
+        data.gender || "";
+
+    document.getElementById("address").textContent =
+        data.address || "";
+
+    document.getElementById("photo").src =
+        data.photo || "assets/default-photo.png";
+
+}
+
+window.updateBasicSlip = updateBasicSlip;
+
+/* Print */
+
+function printSlip(){
+
+    window.print();
+
+}
+
+
+/* PDF Export */
+
+function exportPDF(){
+
+    if(typeof html2pdf === "undefined"){
+
+        printSlip();
+
+        return;
+
+    }
+
+    const element = document.querySelector(".page");
+
+    html2pdf()
+
+        .set({
+
+            margin:0,
+
+            filename:
+            `Basic_NIN_Slip_${(slipData.nin || "NIN").replace(/\s+/g,"")}.pdf`,
+
+            image:{
+
+                type:"jpeg",
+
+                quality:1
+
+            },
+
+            html2canvas:{
+
+                scale:4,
+
+                useCORS:true,
+
+                allowTaint:true,
+
+                backgroundColor:"#ffffff",
+
+                scrollX:0,
+
+                scrollY:0,
+
+                logging:false
+
+            },
+
+            jsPDF:{
+
+                unit:"mm",
+
+                format:"a4",
+
+                orientation:"portrait"
+
+            },
+
+            pagebreak:{
+
+                mode:["avoid-all"]
+
+            }
+
+        })
+
+        .from(element)
+
+        .save();
+
+}
+
+
+/* Preload */
+
+[
+"assets/basic-slip.png",
+"assets/default-photo.png"
+
+].forEach(src=>{
+
+    const img = new Image();
+
+    img.src = src;
+
+});
+
+
+/* Wait for Images */
+
+window.addEventListener("load",()=>{
+
+    Promise.all(
+
+        [...document.images].map(img=>{
+
+            if(img.complete){
+
+                return Promise.resolve();
+
+            }
+
+            return new Promise(resolve=>{
+
+                img.onload = resolve;
+
+                img.onerror = resolve;
+
+            });
+
+        })
+
+    ).then(()=>{
+
+        console.log("Basic Slip Ready");
+
+    });
+
+});
+
+
+window.printBasicSlip = printSlip;
+
+window.exportBasicPDF = exportPDF;
 
 </script>
 
 </body>
+
 </html>

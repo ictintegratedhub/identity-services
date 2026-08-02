@@ -1,3 +1,53 @@
+/* ==========================================================
+   VERIFICATION CHANNELS
+========================================================== */
+
+const CHANNELS = {
+
+    channel1: {
+
+        id: "channel1",
+
+        name: "Channel 1",
+
+        provider: "Bingoo",
+
+        endpoint: process.env.BINGOO_ENDPOINT,
+
+        apiKey: process.env.BINGOO_API_KEY
+
+    },
+
+    channel2: {
+
+        id: "channel2",
+
+        name: "Channel 2",
+
+        provider: "Dj",
+
+        endpoint: process.env.CHANNEL2_ENDPOINT,
+
+        apiKey: process.env.CHANNEL2_API_KEY
+
+    },
+
+    channel3: {
+
+        id: "channel3",
+
+        name: "Channel 3",
+
+        provider: "Pr",
+
+        endpoint: process.env.CHANNEL3_ENDPOINT,
+
+        apiKey: process.env.CHANNEL3_API_KEY
+
+    }
+
+};
+
 const axios = require('axios');
 
 module.exports = async (req, res) => {
@@ -118,16 +168,28 @@ module.exports = async (req, res) => {
         console.log(`🌐 Calling Bingoo API: ${endpoint}`);
         console.log(`📦 Request Body:`, JSON.stringify(requestBody, null, 2));
 
+        const channel = getCurrentChannel();
+
         const response = await axios.post(
-            endpoint,
+
+            channel.endpoint,
+
             requestBody,
+
             {
-                headers: {
-                    'Authorization': `Bearer ${process.env.BINGOO_API_KEY}`,
-                    'Content-Type': 'application/json'
+
+                headers:{
+
+                    Authorization:`Bearer ${channel.apiKey}`,
+
+                    "Content-Type":"application/json"
+
                 },
-                timeout: 30000
+
+                timeout:30000
+
             }
+
         );
 
         console.log(`✅ API Response Status: ${response.status}`);
