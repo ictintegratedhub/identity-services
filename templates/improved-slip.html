@@ -1,799 +1,709 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Improved NIN Slip</title>
+<title>Improved NIN Slip | AIIH</title>
+
+<!-- QR Code Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<!-- PDF Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
+/* ============================================================
+   PRINT SETTINGS
+============================================================ */
 
-/* ==========================================================
-   PRINT
-========================================================== */
-
-@page{
-
-    size:A4 portrait;
-
-    margin:10mm;
-
+@page {
+    size: A4 portrait;
+    margin: 10mm;
 }
 
-*{
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-
-    -webkit-print-color-adjust:exact;
-    print-color-adjust:exact;
-
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
 }
 
-body{
-
-    background:#ececec;
-
-    font-family:Arial,Helvetica,sans-serif;
-
+body {
+    background: #ececec;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-/* ==========================================================
+/* ============================================================
    PAGE
-========================================================== */
+============================================================ */
 
-.page{
+.page {
+    width: 210mm;
+    min-height: 297mm;
 
-    width:210mm;
-    min-height:297mm;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
 
-    display:flex;
-
-    justify-content:center;
-
-    align-items:flex-start;
-
-    padding:10mm;
-
+    padding: 10mm;
 }
 
-/* ==========================================================
-   CARD STACK
-========================================================== */
+/* ============================================================
+   CARD CONTAINER
+============================================================ */
 
-.card-stack{
+.card-stack {
+    display: flex;
+    flex-direction: column;
 
-    display:flex;
+    gap: 5mm;
 
-    flex-direction:column;
-
-    gap:5mm;
-
+    align-items: flex-start;
+    justify-content: flex-start;
 }
 
-/* ==========================================================
+/* ============================================================
    CARD
-========================================================== */
+============================================================ */
 
-.card{
+.card {
+    position: relative;
 
-    position:relative;
+    width: 85.6mm;
+    height: 54mm;
 
-    width:85.6mm;
-    height:54mm;
+    overflow: hidden;
 
-    overflow:hidden;
+    border-radius: 2mm;
 
-    border-radius:2mm;
+    background: #fff;
 
-    background:#fff;
-
-    box-shadow:0 2px 8px rgba(0,0,0,.18);
-
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .18);
 }
 
-/* ==========================================================
-   BACKGROUND
-========================================================== */
+/* ============================================================
+   BACKGROUND PNG
+============================================================ */
 
-.card-bg{
+.card-bg {
+    position: absolute;
 
-    position:absolute;
+    inset: 0;
 
-    inset:0;
+    width: 100%;
+    height: 100%;
 
-    width:100%;
-    height:100%;
+    object-fit: cover;
 
-    object-fit:cover;
-
-    z-index:1;
-
+    z-index: 1;
 }
 
-/* ==========================================================
+/* ============================================================
    OVERLAY
-========================================================== */
+============================================================ */
 
-.overlay{
+.overlay {
+    position: absolute;
 
-    position:absolute;
+    inset: 0;
 
-    inset:0;
-
-    z-index:5;
-
+    z-index: 5;
 }
 
-/* ==========================================================
+/* ============================================================
    PHOTO
-========================================================== */
+============================================================ */
 
-.photo{
+.photo {
+    position: absolute;
 
-    position:absolute;
+    left: 6.5mm;
+    top: 15mm;
 
-    left:6.5mm;
-    top:15mm;
+    width: 18mm;
+    height: 22mm;
 
-    width:18mm;
-    height:22mm;
+    border: 0.4mm solid #444;
 
-    border:.4mm solid #444;
+    object-fit: cover;
 
-    object-fit:cover;
-
+    background: #f3f3f3;
 }
 
-/* ==========================================================
+/* ============================================================
    QR
-========================================================== */
+============================================================ */
 
-.qr{
+.qr {
+    position: absolute;
 
-    position:absolute;
+    right: 6mm;
+    top: 9mm;
 
-    right:6mm;
-    top:9mm;
+    width: 18mm;
+    height: 18mm;
 
-    width:18mm;
-    height:18mm;
+    background: #ffffff;
 
-    background:#fff;
+    padding: 1mm;
 
-    padding:1mm;
-
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* ==========================================================
-   LABELS
-========================================================== */
-
-.field{
-
-    position:absolute;
-
+.qr canvas,
+.qr img {
+    width: 100% !important;
+    height: 100% !important;
 }
 
-.label{
+/* ============================================================
+   LABELS & VALUES
+============================================================ */
 
-    font-size:1.5mm;
+.label {
+    font-size: 1.5mm;
 
-    color:#444;
+    color: #444;
 
-    text-transform:uppercase;
+    text-transform: uppercase;
 
-    font-weight:bold;
-
+    font-weight: bold;
 }
 
-.value{
+.value {
+    font-size: 2.2mm;
 
-    font-size:2.2mm;
+    color: #000;
 
-    color:#000;
+    font-weight: bold;
 
-    font-weight:bold;
-
-    text-transform:uppercase;
-
+    text-transform: uppercase;
 }
 
-/* ==========================================================
-   POSITIONS
-========================================================== */
-
-.surname{
-
-    left:30mm;
-    top:15mm;
-
+.field {
+    position: absolute;
 }
 
-.firstname{
+/* ============================================================
+   FIELD POSITIONS
+============================================================ */
 
-    left:30mm;
-    top:22mm;
-
+.surname {
+    left: 30mm;
+    top: 15mm;
 }
 
-.middlename{
-
-    left:30mm;
-    top:29mm;
-
+.firstname {
+    left: 30mm;
+    top: 22mm;
 }
 
-.gender{
-
-    left:30mm;
-    top:36mm;
-
+.middlename {
+    left: 30mm;
+    top: 29mm;
 }
 
-.dob{
-
-    left:48mm;
-    top:36mm;
-
+.gender {
+    left: 30mm;
+    top: 36mm;
 }
 
-.issue{
-
-    right:6mm;
-    top:31mm;
-
-    text-align:right;
-
+.dob {
+    left: 48mm;
+    top: 36mm;
 }
 
-/* ==========================================================
+.issue {
+    right: 6mm;
+    top: 31mm;
+
+    text-align: right;
+}
+
+/* ============================================================
    NIN
-========================================================== */
+============================================================ */
 
-.nin-title{
+.nin-title {
+    position: absolute;
 
-    position:absolute;
+    width: 100%;
 
-    width:100%;
+    bottom: 8mm;
 
-    bottom:8mm;
+    text-align: center;
 
-    text-align:center;
+    font-size: 1.8mm;
 
-    font-size:1.8mm;
+    font-weight: bold;
 
-    font-weight:bold;
-
+    color: #222;
 }
 
-.nin{
+.nin {
+    position: absolute;
 
-    position:absolute;
+    width: 100%;
 
-    width:100%;
+    bottom: 2.5mm;
 
-    bottom:2.5mm;
+    text-align: center;
 
-    text-align:center;
+    font-size: 4.8mm;
 
-    font-size:4.8mm;
+    letter-spacing: 1mm;
 
-    letter-spacing:1mm;
+    font-weight: 800;
 
-    font-weight:800;
-
-    color:#000;
-
+    color: #000;
 }
 
-@media print{
+/* ============================================================
+   PRINT OVERRIDES
+============================================================ */
 
-.card{
+@media print {
+    body {
+        background: #fff;
+    }
 
-box-shadow:none;
+    .card {
+        box-shadow: none;
+    }
 
+    .page {
+        padding: 10mm;
+    }
 }
 
+/* ============================================================
+   LOADING STATE
+============================================================ */
+
+.loading {
+    opacity: 0.5;
+    pointer-events: none;
 }
 
+.ready {
+    opacity: 1;
+}
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+
+@media screen and (max-width: 900px) {
+    .page {
+        width: 100%;
+        min-height: auto;
+        padding: 20px;
+    }
+
+    .card-stack {
+        width: 100%;
+        align-items: center;
+    }
+}
 </style>
 
 </head>
 
 <body>
 
+<!-- ============================================================
+     PAGE
+============================================================= -->
+
 <div class="page">
 
-<div class="card-stack">
+    <div class="card-stack">
 
-<!-- =======================================================
-     FRONT
-======================================================= -->
+        <!-- ====================================================
+             IMPROVED FRONT
+        ====================================================== -->
 
-<div class="card">
+        <div class="card">
 
-<img
-class="card-bg"
-src="assets/improved-front.png">
+            <img class="card-bg" src="/assets/improved-front.png" alt="Improved Card Front">
 
-<div class="overlay">
+            <div class="overlay">
 
-<img
-id="photo"
-class="photo">
+                <img id="photo" class="photo" alt="ID Holder Photo">
 
-<img
-id="qr"
-class="qr">
+                <div id="qr" class="qr"></div>
 
-<div class="field surname">
+                <div class="field surname">
+                    <div class="label">Surname</div>
+                    <div class="value" id="surname">—</div>
+                </div>
 
-<div class="label">
+                <div class="field firstname">
+                    <div class="label">Given Names</div>
+                    <div class="value" id="firstName">—</div>
+                </div>
 
-Surname
+                <div class="field middlename">
+                    <div class="label">Middle Name</div>
+                    <div class="value" id="middleName">—</div>
+                </div>
 
-</div>
+                <div class="field gender">
+                    <div class="label">Gender</div>
+                    <div class="value" id="gender">—</div>
+                </div>
 
-<div
-class="value"
-id="surname">
+                <div class="field dob">
+                    <div class="label">Date of Birth</div>
+                    <div class="value" id="dob">—</div>
+                </div>
 
-</div>
+                <div class="field issue">
+                    <div class="label">Issue Date</div>
+                    <div class="value" id="issueDate">—</div>
+                </div>
 
-</div>
+                <div class="nin-title">National Identification Number (NIN)</div>
+                <div class="nin" id="nin">—</div>
 
-<div class="field firstname">
+            </div>
 
-<div class="label">
+        </div>
 
-Given Names
+        <!-- ====================================================
+             IMPROVED BACK
+        ====================================================== -->
 
-</div>
+        <div class="card">
 
-<div
-class="value"
-id="firstName">
+            <img class="card-bg" src="/assets/improved-back.png" alt="Improved Card Back">
 
-</div>
+            <div class="overlay">
+                <!--
+                    The improved-back.png already contains the artwork.
+                    No dynamic fields needed on the back.
+                -->
+            </div>
 
-</div>
+        </div>
 
-<div class="field middlename">
-
-<div class="label">
-
-Middle Name
-
-</div>
-
-<div
-class="value"
-id="middleName">
-
-</div>
-
-</div>
-
-<div class="field gender">
-
-<div class="label">
-
-Gender
+    </div>
 
 </div>
 
-<div
-class="value"
-id="gender">
 
-</div>
-
-</div>
-
-<div class="field dob">
-
-<div class="label">
-
-Date of Birth
-
-</div>
-
-<div
-class="value"
-id="dob">
-
-</div>
-
-</div>
-
-<div class="field issue">
-
-<div class="label">
-
-Issue Date
-
-</div>
-
-<div
-class="value"
-id="issueDate">
-
-</div>
-
-</div>
-
-<div class="nin-title">
-
-National Identification Number (NIN)
-
-</div>
-
-<div
-class="nin"
-id="nin">
-
-</div>
-
-</div>
-
-</div>
-
-<!-- =======================================================
-     IMPROVED BACK
-======================================================= -->
-
-<div class="card">
-
-<img
-class="card-bg"
-src="assets/improved-back.png">
-
-<div class="overlay">
-
-<!--
-Reserved for future dynamic content.
-
-Examples:
-
-Tracking ID
-Verification URL
-Serial Number
-Support QR
-Version Number
-
-Currently the artwork is entirely contained
-inside improved-back.png.
--->
-
-</div>
-
-</div>
-
-</div>
-
-</div>
+<!-- ============================================================
+   SCRIPTS
+============================================================= -->
 
 <script>
 
-/* ==========================================================
-   DATA SOURCE
+/* ============================================================
+   1. LOAD SLIP DATA FROM SESSIONSTORAGE
+============================================================ */
 
-   The application should inject
-   window.slipData before loading this page.
+(function loadSlipData() {
+    try {
+        const stored = sessionStorage.getItem('slipData');
+        if (stored) {
+            window.slipData = JSON.parse(stored);
+            console.log('✅ Improved Slip: Data loaded from sessionStorage');
+            console.log('📦 Data:', window.slipData);
+        } else {
+            console.warn('⚠️ No slip data found in sessionStorage, using fallback data');
+            // Fallback data for testing
+            window.slipData = {
+                nin: "1234 5678 901",
+                surname: "ADEBAYO",
+                firstName: "CHUKWUEMEKA",
+                middleName: "IBRAHIM",
+                gender: "M",
+                dateOfBirth: "14 APR 1992",
+                photo: "",
+                fullName: "CHUKWUEMEKA IBRAHIM ADEBAYO"
+            };
+        }
+    } catch (e) {
+        console.error('Error loading slip data:', e);
+        window.slipData = {
+            nin: "1234 5678 901",
+            surname: "ADEBAYO",
+            firstName: "CHUKWUEMEKA",
+            middleName: "IBRAHIM",
+            gender: "M",
+            dateOfBirth: "14 APR 1992",
+            photo: "",
+            fullName: "CHUKWUEMEKA IBRAHIM ADEBAYO"
+        };
+    }
+})();
 
-   Fallback data below is only for testing.
-========================================================== */
 
-const slipData = window.slipData || {
+/* ============================================================
+   2. HELPERS
+============================================================ */
 
-    nin: "1234 5678 901",
+function formatNIN(nin) {
+    if (!nin) return "";
+    nin = nin.toString().replace(/\D/g, "");
+    if (nin.length !== 11) return nin;
+    return nin.replace(/(\d{4})(\d{3})(\d{4})/, "$1 $2 $3");
+}
 
-    surname: "ADEBAYO",
+function getFullName(data) {
+    if (data.fullName) return data.fullName;
+    return [data.firstName, data.middleName, data.surname]
+        .filter(Boolean)
+        .join(' ')
+        .trim() || 'Not Available';
+}
 
-    firstName: "CHUKWUEMEKA",
 
-    middleName: "IBRAHIM",
+/* ============================================================
+   3. ISSUE DATE
+============================================================ */
 
-    gender: "M",
-
-    dateOfBirth: "14 APR 1992",
-
-    photo: "assets/sample-photo.jpg",
-
-    qr: "assets/sample-qr.png"
-
-};
-
-/* ==========================================================
-   ISSUE DATE
-
-   Generated every time
-   the slip is created.
-========================================================== */
-
-const today = new Date();
-
-const months = [
-
-"JAN","FEB","MAR","APR","MAY","JUN",
-
-"JUL","AUG","SEP","OCT","NOV","DEC"
-
+const now = new Date();
+const MONTHS = [
+    "JAN", "FEB", "MAR", "APR", "MAY", "JUN",
+    "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
 ];
 
 const issueDate =
-String(today.getDate()).padStart(2,"0")
-+
-" "
-+
-months[today.getMonth()]
-+
-" "
-+
-today.getFullYear();
+    String(now.getDate()).padStart(2, "0") +
+    " " +
+    MONTHS[now.getMonth()] +
+    " " +
+    now.getFullYear();
 
-/* ==========================================================
-   POPULATE FRONT
-========================================================== */
 
-document.getElementById("surname").textContent =
-slipData.surname || "";
+/* ============================================================
+   4. POPULATE FIELDS
+============================================================ */
 
-document.getElementById("firstName").textContent =
-slipData.firstName || "";
+function populateFields() {
+    const d = window.slipData || {};
 
-document.getElementById("middleName").textContent =
-slipData.middleName || "";
+    document.getElementById('surname').textContent = d.surname || '—';
+    document.getElementById('firstName').textContent = d.firstName || '—';
+    document.getElementById('middleName').textContent = d.middleName || '—';
+    document.getElementById('gender').textContent = d.gender || '—';
+    document.getElementById('dob').textContent = d.dateOfBirth || '—';
+    document.getElementById('nin').textContent = formatNIN(d.nin);
+    document.getElementById('issueDate').textContent = issueDate;
 
-document.getElementById("gender").textContent =
-slipData.gender || "";
-
-document.getElementById("dob").textContent =
-slipData.dateOfBirth || "";
-
-document.getElementById("nin").textContent =
-slipData.nin || "";
-
-document.getElementById("issueDate").textContent =
-issueDate;
-
-document.getElementById("photo").src =
-slipData.photo || "";
-
-document.getElementById("qr").src =
-slipData.qr || "";
-
-/* ==========================================================
-   IMAGE FALLBACKS
-========================================================== */
-
-document.getElementById("photo").onerror = function(){
-
-    this.src = "assets/default-photo.png";
-
-};
-
-document.getElementById("qr").onerror = function(){
-
-    this.style.display = "none";
-
-};
-
-/* ==========================================================
-   OPTIONAL HELPERS
-========================================================== */
-
-function updateSlip(data){
-
-    document.getElementById("surname").textContent =
-        data.surname || "";
-
-    document.getElementById("firstName").textContent =
-        data.firstName || "";
-
-    document.getElementById("middleName").textContent =
-        data.middleName || "";
-
-    document.getElementById("gender").textContent =
-        data.gender || "";
-
-    document.getElementById("dob").textContent =
-        data.dateOfBirth || "";
-
-    document.getElementById("nin").textContent =
-        data.nin || "";
-
-    document.getElementById("photo").src =
-        data.photo || "";
-
-    document.getElementById("qr").src =
-        data.qr || "";
-
+    // Photo
+    const photo = document.getElementById('photo');
+    if (d.photo && d.photo.trim() !== '') {
+        photo.src = d.photo;
+        photo.onerror = function() {
+            this.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(getFullName(d)) + '&background=d4af37&color=fff&size=200';
+        };
+    } else {
+        photo.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(getFullName(d)) + '&background=d4af37&color=fff&size=200';
+    }
 }
 
-window.updateImprovedSlip = updateSlip;
-/* ==========================================================
-   PRINT
-========================================================== */
 
-function printSlip(){
+/* ============================================================
+   5. GENERATE QR CODE
+============================================================ */
 
-    window.print();
+function generateQRCode() {
+    const qrContainer = document.getElementById('qr');
+    if (!qrContainer) return;
 
-}
+    const d = window.slipData || {};
 
-/* ==========================================================
-   PDF EXPORT
+    // Build QR data: NIN, Full Name, DOB, Gender
+    const qrData = JSON.stringify({
+        nin: d.nin || '',
+        fullName: getFullName(d),
+        dob: d.dateOfBirth || '',
+        gender: d.gender || ''
+    });
 
-   If html2pdf.js is available,
-   export directly to PDF.
+    // Clear container
+    qrContainer.innerHTML = '';
 
-   Otherwise,
-   open the browser print dialog.
-========================================================== */
-
-function exportPDF(){
-
-    if(typeof html2pdf === "undefined"){
-
-        printSlip();
-
+    // Check if QRCode library is available
+    if (typeof QRCode === 'undefined') {
+        console.warn('QRCode library not loaded');
+        qrContainer.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:8px;color:#999;text-align:center;">QR<br>Library<br>Loading...</div>';
         return;
-
     }
 
-    const element = document.querySelector(".page");
+    try {
+        new QRCode(qrContainer, {
+            text: qrData,
+            width: 120,
+            height: 120,
+            colorDark: '#000000',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.M
+        });
+        console.log('✅ Improved QR Code generated with identity data');
+    } catch (e) {
+        console.error('Error generating QR:', e);
+        qrContainer.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:8px;color:#999;text-align:center;">QR<br>Error</div>';
+    }
+}
+
+
+/* ============================================================
+   6. RENDER
+============================================================ */
+
+function renderSlip() {
+    populateFields();
+    generateQRCode();
+}
+
+
+/* ============================================================
+   7. PRINT FUNCTION
+============================================================ */
+
+function printSlip() {
+    window.print();
+}
+
+
+/* ============================================================
+   8. PDF EXPORT
+============================================================ */
+
+function exportPDF() {
+    if (typeof html2pdf === 'undefined') {
+        console.warn('html2pdf not loaded, using print fallback');
+        printSlip();
+        return;
+    }
+
+    const element = document.querySelector('.page');
 
     const options = {
-
-        margin:0,
-
-        filename:
-            `Improved_NIN_Slip_${(slipData.nin || "NIN").replace(/\s+/g,"")}.pdf`,
-
-        image:{
-
-            type:"jpeg",
-
-            quality:1
-
+        margin: 0,
+        filename: `Improved_NIN_Slip_${(window.slipData?.nin || 'NIN').replace(/\s+/g, '')}.pdf`,
+        image: {
+            type: 'jpeg',
+            quality: 1
         },
-
-        html2canvas:{
-
-            scale:4,
-
-            useCORS:true,
-
-            allowTaint:true,
-
-            backgroundColor:"#ffffff",
-
-            logging:false,
-
-            scrollX:0,
-
-            scrollY:0
-
+        html2canvas: {
+            scale: 4,
+            useCORS: true,
+            allowTaint: true,
+            logging: false,
+            backgroundColor: '#ffffff',
+            scrollX: 0,
+            scrollY: 0
         },
-
-        jsPDF:{
-
-            unit:"mm",
-
-            format:"a4",
-
-            orientation:"portrait"
-
+        jsPDF: {
+            unit: 'mm',
+            format: 'a4',
+            orientation: 'portrait'
         },
-
-        pagebreak:{
-
-            mode:["avoid-all"]
-
+        pagebreak: {
+            mode: ['avoid-all']
         }
-
     };
 
     html2pdf()
-
         .set(options)
-
         .from(element)
-
-        .save();
-
+        .save()
+        .then(function() {
+            console.log('✅ Improved PDF exported successfully');
+        })
+        .catch(function(error) {
+            console.error('PDF export error:', error);
+        });
 }
 
-/* ==========================================================
-   PRELOAD BACKGROUND IMAGES
-========================================================== */
 
-[
-"assets/improved-front.png",
-"assets/improved-back.png"
+/* ============================================================
+   9. AUTO PDF GENERATION ON LOAD
+============================================================ */
 
-].forEach(src=>{
+(function autoGeneratePDF() {
+    // Check if we should auto-generate
+    const shouldAutoGenerate = sessionStorage.getItem('autoGeneratePDF') !== 'false';
 
-    const img=new Image();
+    if (!shouldAutoGenerate) {
+        console.log('🔄 Auto-generate disabled, showing preview only');
+        return;
+    }
 
-    img.src=src;
-
-});
-
-/* ==========================================================
-   WAIT UNTIL EVERYTHING HAS LOADED
-========================================================== */
-
-window.addEventListener("load",()=>{
-
-    const images=[...document.images];
-
-    Promise.all(
-
-        images.map(img=>{
-
-            if(img.complete){
-
-                return Promise.resolve();
-
-            }
-
-            return new Promise(resolve=>{
-
-                img.onload=resolve;
-                img.onerror=resolve;
-
-            });
-
-        })
-
-    ).then(()=>{
-
-        console.log("Improved Slip Ready");
-
+    // Wait for everything to load
+    window.addEventListener('load', function() {
+        // Wait for images to load
+        Promise.all(
+            [...document.images].map(img => {
+                if (img.complete) return Promise.resolve();
+                return new Promise(resolve => {
+                    img.onload = resolve;
+                    img.onerror = resolve;
+                });
+            })
+        ).then(function() {
+            // Small delay for rendering
+            setTimeout(function() {
+                if (typeof exportPDF === 'function') {
+                    console.log('📄 Auto-generating Improved PDF...');
+                    try {
+                        exportPDF();
+                        // Clear the auto-generate flag so user can manually print later
+                        sessionStorage.setItem('autoGeneratePDF', 'false');
+                    } catch (e) {
+                        console.error('Error generating PDF:', e);
+                    }
+                } else {
+                    console.warn('⚠️ exportPDF function not found');
+                }
+            }, 800);
+        });
     });
-
-});
-
-/* ==========================================================
-   KEEP CARDS PROPERLY STACKED
-
-   Front
-      ↓ 5mm
-   Back
-
-   Both fit on one A4 page.
-========================================================== */
-
-(function(){
-
-    const stack=document.querySelector(".card-stack");
-
-    stack.style.display="flex";
-
-    stack.style.flexDirection="column";
-
-    stack.style.gap="5mm";
-
-    stack.style.alignItems="flex-start";
-
-    stack.style.justifyContent="flex-start";
-
 })();
 
-/* ==========================================================
-   PUBLIC METHODS
-========================================================== */
+
+/* ============================================================
+   10. PRELOAD BACKGROUND IMAGES
+============================================================ */
+
+[
+    '/assets/improved-front.png',
+    '/assets/improved-back.png'
+].forEach(function(src) {
+    const img = new Image();
+    img.src = src;
+});
+
+
+/* ============================================================
+   11. RENDER ON LOAD
+============================================================ */
+
+document.addEventListener('DOMContentLoaded', function() {
+    renderSlip();
+});
+
+
+/* ============================================================
+   12. PUBLIC API
+============================================================ */
 
 window.exportImprovedPDF = exportPDF;
-
 window.printImprovedSlip = printSlip;
+window.renderSlip = renderSlip;
+window.exportPDF = exportPDF;
+
+console.log('✅ Improved Slip Ready');
 
 </script>
 

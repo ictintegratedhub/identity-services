@@ -30,6 +30,8 @@
       --error: #e74c3c;
       --green: #1b5e20;
       --green-dark: #0b3d14;
+      --success: #27ae60;
+      --warning: #f39c12;
     }
 
     body {
@@ -87,6 +89,86 @@
       color: var(--muted);
       margin-top: 5px;
       font-size: 14px;
+    }
+
+    /* =========================================================
+       CHANNEL SELECTOR
+    ========================================================= */
+
+    .channel-selector {
+      background: rgba(255, 255, 255, 0.5);
+      padding: 12px 16px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      border: 1px solid var(--border);
+    }
+
+    .channel-selector label {
+      font-weight: 600;
+      color: var(--brown);
+      font-size: 13px;
+    }
+
+    .channel-selector select {
+      padding: 8px 14px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      background: white;
+      color: var(--brown);
+      cursor: pointer;
+      flex: 1;
+      min-width: 150px;
+      transition: border-color 0.3s ease;
+    }
+
+    .channel-selector select:focus {
+      border-color: var(--gold);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12);
+    }
+
+    .channel-selector select:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .channel-status {
+      font-size: 12px;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .channel-status.active {
+      background: #eafaf1;
+      color: var(--success);
+    }
+
+    .channel-status.inactive {
+      background: #fdf2f2;
+      color: var(--error);
+    }
+
+    .channel-status.unknown {
+      background: #fef9e7;
+      color: var(--warning);
+    }
+
+    .channel-status.loading {
+      background: #f0f0f0;
+      color: var(--muted);
+    }
+
+    .channel-info {
+      font-size: 12px;
+      color: var(--muted);
+      margin-left: auto;
     }
 
     /* =========================================================
@@ -179,9 +261,10 @@
       font-weight: 650;
       cursor: pointer;
       margin-top: 7px;
+      transition: opacity 0.2s ease;
     }
 
-    .btn-primary:hover {
+    .btn-primary:hover:not(:disabled) {
       opacity: 0.94;
     }
 
@@ -260,6 +343,7 @@
       align-items: center;
       margin-bottom: 18px;
       gap: 15px;
+      flex-wrap: wrap;
     }
 
     .verification-header h2 {
@@ -274,6 +358,16 @@
       border-radius: 30px;
       font-size: 12px;
       font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .channel-badge {
+      background: #f0ece6;
+      color: var(--brown);
+      padding: 5px 12px;
+      border-radius: 30px;
+      font-size: 11px;
+      font-weight: 600;
       white-space: nowrap;
     }
 
@@ -384,11 +478,16 @@
       cursor: pointer;
       opacity: 0.45;
       pointer-events: none;
+      transition: opacity 0.3s ease;
     }
 
     .confirm-btn.enabled {
       opacity: 1;
       pointer-events: auto;
+    }
+
+    .confirm-btn.enabled:hover {
+      opacity: 0.9;
     }
 
     /* =========================================================
@@ -420,7 +519,7 @@
 
     .download-buttons {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 12px;
     }
 
@@ -432,6 +531,16 @@
       font-weight: 700;
       cursor: pointer;
       color: white;
+      transition: opacity 0.2s ease;
+    }
+
+    .btn-download:hover:not(:disabled) {
+      opacity: 0.9;
+    }
+
+    .btn-download:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
     }
 
     .btn-premium {
@@ -442,9 +551,8 @@
       background: linear-gradient(135deg, #111, #333);
     }
 
-    .btn-download:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
+    .btn-basic {
+      background: linear-gradient(135deg, #6c757d, #495057);
     }
 
     /* =========================================================
@@ -459,369 +567,6 @@
       text-align: center;
       color: var(--muted);
       font-size: 12px;
-    }
-
-    /* =========================================================
-       PDF RENDER AREA
-       
-       IMPORTANT:
-       We do NOT put this at left:-9999px.
-       This prevents blank html2canvas output.
-    ========================================================= */
-
-    #pdfRenderHost {
-      position: fixed;
-      left: 0;
-      top: 0;
-      width: 210mm;
-      min-height: 297mm;
-      opacity: 0;
-      pointer-events: none;
-      z-index: -1000;
-      overflow: hidden;
-    }
-
-    /* =========================================================
-       A4 PORTRAIT PDF SHEET
-    ========================================================= */
-
-    .pdf-sheet {
-      width: 210mm;
-      height: 297mm;
-      background: white;
-      position: relative;
-      box-sizing: border-box;
-      padding: 60mm 0 0 16.2mm;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-
-    /*
-      Front + back:
-      85.6mm x 54mm each
-      5mm gap
-
-      Total width:
-      85.6 + 5 + 85.6 = 176.2mm
-
-      Left margin:
-      (210 - 176.2) / 2 = 16.9mm
-
-      We use 16.9mm for exact centering.
-    */
-
-    .pdf-card-row {
-      display: flex;
-      gap: 5mm;
-      width: 176.2mm;
-      height: 54mm;
-    }
-
-    .id-card {
-      width: 85.6mm;
-      height: 54mm;
-      flex: 0 0 85.6mm;
-      position: relative;
-      overflow: hidden;
-      box-sizing: border-box;
-      border: 0.3mm solid #222;
-      background: white;
-    }
-
-    /* =========================================================
-       PREMIUM ID
-    ========================================================= */
-
-    .premium-card {
-      background:
-        radial-gradient(circle at 90% 10%, rgba(255,255,255,0.35), transparent 30%),
-        linear-gradient(135deg, #e8f5e9 0%, #b8ddb9 42%, #6caf72 100%);
-    }
-
-    .premium-card::before {
-      content: "";
-      position: absolute;
-      width: 70mm;
-      height: 70mm;
-      border-radius: 50%;
-      background: rgba(27,94,32,0.12);
-      right: -28mm;
-      top: -30mm;
-    }
-
-    .premium-card::after {
-      content: "";
-      position: absolute;
-      width: 60mm;
-      height: 60mm;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.12);
-      left: -30mm;
-      bottom: -35mm;
-    }
-
-    .premium-header {
-      height: 8mm;
-      background: rgba(27,94,32,0.95);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.6mm;
-      font-weight: bold;
-      position: relative;
-      z-index: 2;
-    }
-
-    .premium-content {
-      display: flex;
-      gap: 3mm;
-      padding: 3mm;
-      position: relative;
-      z-index: 2;
-    }
-
-    .premium-photo {
-      width: 22mm;
-      height: 28mm;
-      object-fit: cover;
-      border: 0.5mm solid white;
-      box-shadow: 0 0 0 0.3mm rgba(27,94,32,0.4);
-      background: #eee;
-      flex-shrink: 0;
-    }
-
-    .premium-info {
-      flex: 1;
-      min-width: 0;
-      font-size: 2.35mm;
-      line-height: 1.38;
-    }
-
-    .premium-title {
-      font-size: 3.3mm;
-      font-weight: bold;
-      color: #124c19;
-      margin-bottom: 1.5mm;
-    }
-
-    .premium-name {
-      font-size: 3mm;
-      font-weight: bold;
-      text-transform: uppercase;
-      margin-bottom: 2mm;
-      line-height: 1.15;
-    }
-
-    .premium-row {
-      display: flex;
-      margin-bottom: 0.8mm;
-    }
-
-    .premium-label {
-      width: 24mm;
-      font-weight: bold;
-      color: #24562a;
-    }
-
-    .premium-value {
-      flex: 1;
-      font-weight: 600;
-      color: #172b19;
-      overflow-wrap: anywhere;
-    }
-
-    .premium-nin {
-      position: absolute;
-      left: 3mm;
-      right: 3mm;
-      bottom: 2.5mm;
-      background: rgba(255,255,255,0.8);
-      border-radius: 1.5mm;
-      padding: 1.3mm;
-      text-align: center;
-      font-size: 3.5mm;
-      font-weight: bold;
-      letter-spacing: 1mm;
-      color: #123c17;
-    }
-
-    .premium-back {
-      background:
-        radial-gradient(circle at 10% 90%, rgba(27,94,32,0.15), transparent 35%),
-        linear-gradient(135deg, #f1f8e9, #dcedc8);
-    }
-
-    .premium-back-title {
-      text-align: center;
-      font-size: 3.4mm;
-      font-weight: bold;
-      color: #124c19;
-      padding: 4mm 3mm 2mm;
-    }
-
-    .premium-back-text {
-      padding: 0 4mm;
-      font-size: 2.35mm;
-      line-height: 1.45;
-      color: #1f3021;
-      text-align: justify;
-    }
-
-    .premium-qr {
-      position: absolute;
-      right: 4mm;
-      bottom: 4mm;
-      width: 17mm;
-      height: 17mm;
-      background: white;
-      padding: 1mm;
-    }
-
-    .premium-back-note {
-      position: absolute;
-      left: 4mm;
-      right: 24mm;
-      bottom: 5mm;
-      font-size: 2.1mm;
-      line-height: 1.35;
-      color: #355439;
-    }
-
-    /* =========================================================
-       NEW IMPROVED ID
-    ========================================================= */
-
-    .improved-card {
-      background: white;
-    }
-
-    .improved-header {
-      height: 8mm;
-      background: #111;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 4mm;
-      font-size: 2.5mm;
-      font-weight: bold;
-    }
-
-    .improved-content {
-      display: flex;
-      gap: 3mm;
-      padding: 3mm;
-    }
-
-    .improved-photo {
-      width: 22mm;
-      height: 28mm;
-      object-fit: cover;
-      border: 0.4mm solid #222;
-      flex-shrink: 0;
-      background: #eee;
-    }
-
-    .improved-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .improved-title {
-      font-size: 3.3mm;
-      font-weight: bold;
-      margin-bottom: 1mm;
-    }
-
-    .improved-subtitle {
-      font-size: 2.2mm;
-      color: #666;
-      margin-bottom: 2mm;
-    }
-
-    .improved-name {
-      font-size: 3mm;
-      font-weight: bold;
-      text-transform: uppercase;
-      margin-bottom: 2mm;
-      line-height: 1.15;
-    }
-
-    .improved-row {
-      display: flex;
-      font-size: 2.25mm;
-      line-height: 1.45;
-      margin-bottom: 0.6mm;
-    }
-
-    .improved-label {
-      width: 22mm;
-      color: #555;
-      font-weight: bold;
-    }
-
-    .improved-value {
-      flex: 1;
-      color: #111;
-      font-weight: 600;
-      overflow-wrap: anywhere;
-    }
-
-    .improved-nin {
-      position: absolute;
-      left: 3mm;
-      right: 3mm;
-      bottom: 2.5mm;
-      border-top: 0.4mm solid #222;
-      padding-top: 1.2mm;
-      text-align: center;
-      font-size: 3.5mm;
-      font-weight: bold;
-      letter-spacing: 1mm;
-    }
-
-    .improved-back {
-      background: white;
-    }
-
-    .improved-back-title {
-      background: #111;
-      color: white;
-      padding: 3mm;
-      text-align: center;
-      font-size: 3.2mm;
-      font-weight: bold;
-    }
-
-    .improved-disclaimer {
-      padding: 3.5mm;
-      font-size: 2.25mm;
-      line-height: 1.45;
-      color: #222;
-      text-align: justify;
-    }
-
-    .improved-disclaimer p {
-      margin-bottom: 2mm;
-    }
-
-    .improved-qr {
-      position: absolute;
-      right: 4mm;
-      bottom: 4mm;
-      width: 17mm;
-      height: 17mm;
-      background: white;
-      padding: 1mm;
-    }
-
-    .improved-verified {
-      position: absolute;
-      left: 4mm;
-      bottom: 5mm;
-      font-size: 2.3mm;
-      font-weight: bold;
-      color: #1b5e20;
     }
 
     /* =========================================================
@@ -862,6 +607,19 @@
         align-items: flex-start;
         flex-direction: column;
       }
+
+      .channel-selector {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .channel-selector label {
+        margin-bottom: 4px;
+      }
+
+      .channel-info {
+        margin-left: 0;
+      }
     }
   </style>
 </head>
@@ -881,6 +639,30 @@
       <p>
         Verify National Identification Number using multiple search methods
       </p>
+    </div>
+
+    <!-- =======================================================
+         CHANNEL SELECTOR
+    ======================================================== -->
+
+    <div class="channel-selector">
+
+      <label for="channelSelect">
+        🔌 Verification Channel:
+      </label>
+
+      <select id="channelSelect" disabled>
+        <option value="auto">🔄 Auto (Default)</option>
+      </select>
+
+      <span class="channel-status loading" id="channelStatus">
+        Loading...
+      </span>
+
+      <span class="channel-info" id="channelInfo">
+        Select a provider
+      </span>
+
     </div>
 
     <!-- =======================================================
@@ -1125,8 +907,16 @@
           Verification Result
         </h2>
 
-        <div class="verified-badge">
-          ✓ VERIFIED IDENTITY
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+
+          <span class="verified-badge">
+            ✓ VERIFIED IDENTITY
+          </span>
+
+          <span class="channel-badge" id="resultChannelBadge">
+            📡 Channel: —
+          </span>
+
         </div>
 
       </div>
@@ -1361,7 +1151,7 @@
         </h3>
 
         <p>
-          Choose the format you want to generate. Both formats will
+          Choose the format you want to generate. All formats will
           contain the verified identity information.
         </p>
 
@@ -1375,12 +1165,18 @@
             📥 Premium ID Slip
           </button>
 
-
           <button
             class="btn-download btn-improved"
             id="improvedDownloadBtn"
           >
             📥 New Improved Slip
+          </button>
+
+          <button
+            class="btn-download btn-basic"
+            id="basicDownloadBtn"
+          >
+            📥 Basic Slip
           </button>
 
         </div>
@@ -1400,11 +1196,8 @@
 
 
 <!-- ============================================================
-     PDF RENDER HOST
+   SCRIPTS
 ============================================================= -->
-
-<div id="pdfRenderHost"></div>
-
 
 <script>
 
@@ -1413,6 +1206,152 @@
   ============================================================= */
 
   let currentData = null;
+  let currentChannel = null;
+  let availableChannels = [];
+
+
+  /* ============================================================
+     CHANNEL LOADER
+  ============================================================= */
+
+  async function loadChannels() {
+
+    const select = document.getElementById('channelSelect');
+    const statusEl = document.getElementById('channelStatus');
+    const infoEl = document.getElementById('channelInfo');
+
+    statusEl.textContent = 'Loading...';
+    statusEl.className = 'channel-status loading';
+    select.disabled = true;
+
+    try {
+
+      const response = await fetch('/api/identity/channels.js', {
+        credentials: 'include'
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+
+        availableChannels = data.channels;
+
+        // Clear existing options (keep only the first "Auto" option)
+        while (select.options.length > 1) {
+          select.remove(1);
+        }
+
+        // Add each channel
+        let hasActive = false;
+
+        availableChannels.forEach(channel => {
+
+          const option = document.createElement('option');
+          option.value = channel.id;
+          option.textContent = `${channel.icon || '📡'} ${channel.name}`;
+
+          // Mark if this is the default
+          if (channel.id === data.defaultChannel) {
+            option.textContent += ' (Default)';
+          }
+
+          // Mark if not configured
+          if (channel.status !== 'active') {
+            option.disabled = true;
+            option.textContent += ' ⚠️ (Not Configured)';
+          } else {
+            hasActive = true;
+          }
+
+          select.appendChild(option);
+
+        });
+
+        // Set default selection
+        if (data.defaultChannel) {
+          select.value = data.defaultChannel;
+        }
+
+        // Enable select if there are active channels
+        select.disabled = !hasActive;
+
+        // Update status
+        const selected = availableChannels.find(c => c.id === select.value);
+        updateChannelStatus(selected);
+
+        // Show info
+        const activeCount = availableChannels.filter(c => c.status === 'active').length;
+        infoEl.textContent = `${activeCount} active provider(s)`;
+
+      } else {
+
+        statusEl.textContent = '⚠️ Failed to load';
+        statusEl.className = 'channel-status error';
+        infoEl.textContent = 'Please refresh';
+
+      }
+
+    } catch (error) {
+
+      console.error('Error loading channels:', error);
+      statusEl.textContent = '⚠️ Error loading';
+      statusEl.className = 'channel-status error';
+      infoEl.textContent = 'Check connection';
+
+    }
+
+    // Add change listener
+    select.addEventListener('change', function() {
+      const selected = availableChannels.find(c => c.id === this.value);
+      updateChannelStatus(selected);
+    });
+
+  }
+
+
+  /* ============================================================
+     UPDATE CHANNEL STATUS
+  ============================================================= */
+
+  function updateChannelStatus(channel) {
+
+    const statusEl = document.getElementById('channelStatus');
+
+    if (!channel) {
+      statusEl.textContent = 'Auto (Default)';
+      statusEl.className = 'channel-status active';
+      return;
+    }
+
+    const statusMap = {
+      active: { text: '✅ Active', class: 'active' },
+      inactive: { text: '❌ Inactive', class: 'inactive' },
+      unknown: { text: '❓ Unknown', class: 'unknown' }
+    };
+
+    const status = statusMap[channel.status] || statusMap.unknown;
+    statusEl.textContent = status.text;
+    statusEl.className = `channel-status ${status.class}`;
+
+  }
+
+
+  /* ============================================================
+     GET SELECTED CHANNEL
+  ============================================================= */
+
+  function getSelectedChannel() {
+
+    const select = document.getElementById('channelSelect');
+    const value = select.value;
+
+    if (value === 'auto') {
+      return null; // Use default
+    }
+
+    return value;
+
+  }
 
 
   /* ============================================================
@@ -1500,6 +1439,19 @@
       .getElementById('loading')
       .classList.add('visible');
 
+    // Get selected channel
+    const selectedChannel = getSelectedChannel();
+
+    // Build request body
+    const requestBody = {
+      searchMode: mode,
+      ...params
+    };
+
+    // Add channel if selected (not 'auto')
+    if (selectedChannel) {
+      requestBody.channel = selectedChannel;
+    }
 
     try {
 
@@ -1507,17 +1459,11 @@
         '/api/identity/nin/verify',
         {
           method: 'POST',
-
           headers: {
             'Content-Type': 'application/json'
           },
-
           credentials: 'include',
-
-          body: JSON.stringify({
-            searchMode: mode,
-            ...params
-          })
+          body: JSON.stringify(requestBody)
         }
       );
 
@@ -1527,9 +1473,18 @@
 
       if (res.ok && data.success) {
 
-        currentData = data.data;
+        currentData = data.identity;
+        currentChannel = data.channel || null;
 
         populatePreview(currentData);
+
+        // Show which channel was used
+        const badge = document.getElementById('resultChannelBadge');
+        if (currentChannel) {
+          badge.textContent = `📡 Channel: ${currentChannel.displayName || currentChannel.name}`;
+        } else {
+          badge.textContent = '📡 Channel: Default';
+        }
 
         document
           .getElementById('result')
@@ -1568,16 +1523,6 @@
 
   /* ============================================================
      PHOTO HANDLING
-     
-     IMPORTANT:
-     API PHOTO FIRST.
-     
-     We only generate a placeholder if:
-     - photo is missing
-     - photo is empty
-     - photo cannot be loaded
-     
-     We do NOT replace a valid API photo with an avatar.
   ============================================================= */
 
   function getFallbackPhoto(data) {
@@ -1607,14 +1552,7 @@
 
     img.onload = () => {
 
-      /*
-        The API photo successfully loaded.
-        Keep it.
-      */
-
-      console.log(
-        '✅ Actual ID holder photo loaded.'
-      );
+      console.log('✅ Actual ID holder photo loaded.');
 
     };
 
@@ -1627,28 +1565,15 @@
 
       fallbackUsed = true;
 
-      console.warn(
-        '⚠️ API photo could not be loaded. Using fallback photo.'
-      );
+      console.warn('⚠️ API photo could not be loaded. Using fallback photo.');
 
       img.src = fallback;
 
     };
 
 
-    /*
-      Use actual API photo first.
-    */
-
     console.log("Photo from API:", photo);
 
-    const test = new Image();
-
-    test.onload = () => console.log("✅ Photo URL is reachable");
-
-    test.onerror = () => console.error("❌ Photo URL cannot be reached");
-
-    test.src = photo;
     if (
       photo &&
       typeof photo === 'string' &&
@@ -1659,13 +1584,7 @@
 
     } else {
 
-      /*
-        API did not provide a photo.
-      */
-
-      console.warn(
-        '⚠️ API returned no photo. Using fallback.'
-      );
+      console.warn('⚠️ API returned no photo. Using fallback.');
 
       fallbackUsed = true;
 
@@ -1742,6 +1661,62 @@
       .textContent =
       data.address || 'Not Available';
 
+  }
+
+
+  /* ============================================================
+     SLIP DATA PIPELINE
+  ============================================================ */
+
+  function saveSlipData(data) {
+    const slipData = {
+      nin: data.nin || '',
+      surname: data.surname || data.lastName || '',
+      firstName: data.firstName || '',
+      middleName: data.middleName || '',
+      fullName: data.fullName || '',
+      gender: data.gender || '',
+      dateOfBirth: data.dob || data.dateOfBirth || '',
+      phone: data.phone || '',
+      address: data.address || '',
+      state: data.state || '',
+      lga: data.lga || '',
+      photo: data.photo || '',
+      trackingId: data.trackingId || `TRK-${Date.now()}`,
+      provider: data.provider || 'Bingoo',
+      verified: true,
+      verificationDate: new Date().toISOString()
+    };
+
+    try {
+      sessionStorage.setItem('slipData', JSON.stringify(slipData));
+      console.log('✅ Slip data saved to sessionStorage');
+      return slipData;
+    } catch (e) {
+      console.error('Error saving slip data:', e);
+      return null;
+    }
+  }
+
+
+  function generateSlip(template) {
+    if (!currentData) {
+      showError('No verified identity data available.');
+      return;
+    }
+
+    const saved = saveSlipData(currentData);
+    if (!saved) {
+      showError('Failed to save identity data. Please try again.');
+      return;
+    }
+
+    sessionStorage.setItem('selectedTemplate', template);
+    sessionStorage.setItem('autoGeneratePDF', 'true');
+
+    const templateUrl = `/templates/${template}-slip.html`;
+    console.log(`📄 Opening template: ${templateUrl}`);
+    window.open(templateUrl, '_blank');
   }
 
 
@@ -1933,741 +1908,75 @@
 
 
   /* ============================================================
-     HTML ESCAPE
-     
-     Prevents API-returned values from injecting HTML
-     into the generated document.
-  ============================================================= */
-
-  function escapeHtml(value) {
-
-    if (
-      value === null ||
-      value === undefined
-    ) {
-
-      return '';
-
-    }
-
-
-    return String(value)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
-
-  }
-
-
-  /* ============================================================
-     BUILD QR DATA
-     
-     QR contains:
-     - NIN
-     - Phone
-     - LGA
-     - State
-     - DOB
-  ============================================================= */
-
-  function buildQRData(data) {
-
-    return JSON.stringify({
-
-      nin:
-        data.nin || '',
-
-      phone:
-        data.phone || '',
-
-      lga:
-        data.lga || '',
-
-      state:
-        data.state || '',
-
-      dob:
-        data.dob || ''
-
-    });
-
-  }
-
-
-  /* ============================================================
-     GENERATE QR CODE
-  ============================================================= */
-
-  function generateQR(elementId, data) {
-
-    const element =
-      document.getElementById(elementId);
-
-
-    if (!element) {
-      return;
-    }
-
-
-    element.innerHTML = '';
-
-
-    new QRCode(
-      element,
-      {
-        text: buildQRData(data),
-
-        width: 120,
-
-        height: 120,
-
-        colorDark: '#000000',
-
-        colorLight: '#ffffff',
-
-        correctLevel:
-          QRCode.CorrectLevel.M
-      }
-    );
-
-  }
-
-
-  /* ============================================================
-     BUILD PDF
-  ============================================================= */
-
-  async function buildPDF(format) {
-
-    if (!currentData) {
-
-      showError(
-        'No verified identity data available.'
-      );
-
-      return;
-
-    }
-
-
-    const d = currentData;
-
-
-    const host =
-      document.getElementById('pdfRenderHost');
-
-
-    /*
-      Clear previous render.
-    */
-
-    host.innerHTML = '';
-
-
-    /*
-      Determine actual photo.
-      
-      We use the API photo directly.
-      Only if it does not exist do we use fallback.
-    */
-
-    const fallbackPhoto =
-      getFallbackPhoto(d);
-
-
-    const photo =
-      d.photo &&
-      typeof d.photo === 'string' &&
-      d.photo.trim() !== ''
-        ? d.photo
-        : fallbackPhoto;
-
-
-    const fullName =
-      d.fullName ||
-      `${d.firstName || ''} ${d.middleName || ''} ${d.lastName || ''}`
-        .replace(/\s+/g, ' ')
-        .trim();
-
-
-    const firstName =
-      d.firstName || '';
-
-
-    const middleName =
-      d.middleName || '';
-
-
-    const lastName =
-      d.lastName || '';
-
-
-    const safeFullName =
-      fullName
-        .replace(/[\\/:*?"<>|]/g, '')
-        .trim()
-        .replace(/\s+/g, '_');
-
-
-    /*
-      NIN filename:
-      
-      AIIH_PERSON'S NIN.pdf
-      
-      Example:
-      AIIH_John_Okafor_NIN.pdf
-    */
-
-    const filename =
-      `AIIH_${safeFullName || 'PERSON'}_NIN.pdf`;
-
-
-    /*
-      Build the PDF HTML.
-      
-      Important:
-      We render one A4 PORTRAIT page.
-      
-      Front:
-      85.6 x 54mm
-      
-      Gap:
-      5mm
-      
-      Back:
-      85.6 x 54mm
-      
-      Total:
-      176.2mm
-    */
-
-    host.innerHTML = `
-
-      <div
-        class="pdf-sheet"
-        id="pdfSheet"
-      >
-
-        <div class="pdf-card-row">
-
-          <!-- ==========================================
-               FRONT
-          =========================================== -->
-
-          ${
-            format === 'premium'
-              ? `
-                <div class="id-card premium-card">
-
-                  <div class="premium-header">
-                    FEDERAL REPUBLIC OF NIGERIA
-                  </div>
-
-                  <div class="premium-content">
-
-                    <img
-                      id="pdfFrontPhoto"
-                      class="premium-photo"
-                      src="${escapeHtml(photo)}"
-                      alt="ID Holder"
-                    >
-
-                    <div class="premium-info">
-
-                      <div class="premium-title">
-                        DIGITAL NIN SLIP
-                      </div>
-
-                      <div class="premium-name">
-                        ${escapeHtml(fullName)}
-                      </div>
-
-                      <div class="premium-row">
-                        <span class="premium-label">
-                          Date of Birth
-                        </span>
-                        <span class="premium-value">
-                          ${escapeHtml(d.dob || '—')}
-                        </span>
-                      </div>
-
-                      <div class="premium-row">
-                        <span class="premium-label">
-                          Sex
-                        </span>
-                        <span class="premium-value">
-                          ${escapeHtml(d.gender || '—')}
-                        </span>
-                      </div>
-
-                      <div class="premium-row">
-                        <span class="premium-label">
-                          Phone
-                        </span>
-                        <span class="premium-value">
-                          ${escapeHtml(d.phone || '—')}
-                        </span>
-                      </div>
-
-                      <div class="premium-row">
-                        <span class="premium-label">
-                          State / LGA
-                        </span>
-                        <span class="premium-value">
-                          ${escapeHtml(d.state || '—')}
-                          /
-                          ${escapeHtml(d.lga || '—')}
-                        </span>
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                  <div class="premium-nin">
-                    ${escapeHtml(d.nin || '—')}
-                  </div>
-
-                </div>
-              `
-              : `
-                <div class="id-card improved-card">
-
-                  <div class="improved-header">
-
-                    <span>
-                      FEDERAL REPUBLIC OF NIGERIA
-                    </span>
-
-                    <span>
-                      DIGITAL NIN SLIP
-                    </span>
-
-                  </div>
-
-                  <div class="improved-content">
-
-                    <img
-                      id="pdfFrontPhoto"
-                      class="improved-photo"
-                      src="${escapeHtml(photo)}"
-                      alt="ID Holder"
-                    >
-
-                    <div class="improved-info">
-
-                      <div class="improved-title">
-                        National Identification Number
-                      </div>
-
-                      <div class="improved-subtitle">
-                        Verified Identity Information
-                      </div>
-
-                      <div class="improved-name">
-                        ${escapeHtml(fullName)}
-                      </div>
-
-                      <div class="improved-row">
-                        <span class="improved-label">
-                          DOB
-                        </span>
-                        <span class="improved-value">
-                          ${escapeHtml(d.dob || '—')}
-                        </span>
-                      </div>
-
-                      <div class="improved-row">
-                        <span class="improved-label">
-                          Sex
-                        </span>
-                        <span class="improved-value">
-                          ${escapeHtml(d.gender || '—')}
-                        </span>
-                      </div>
-
-                      <div class="improved-row">
-                        <span class="improved-label">
-                          Phone
-                        </span>
-                        <span class="improved-value">
-                          ${escapeHtml(d.phone || '—')}
-                        </span>
-                      </div>
-
-                      <div class="improved-row">
-                        <span class="improved-label">
-                          State / LGA
-                        </span>
-                        <span class="improved-value">
-                          ${escapeHtml(d.state || '—')}
-                          /
-                          ${escapeHtml(d.lga || '—')}
-                        </span>
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                  <div class="improved-nin">
-                    ${escapeHtml(d.nin || '—')}
-                  </div>
-
-                </div>
-              `
-          }
-
-
-          <!-- ==========================================
-               BACK
-          =========================================== -->
-
-          ${
-            format === 'premium'
-              ? `
-                <div class="id-card premium-card premium-back">
-
-                  <div class="premium-back-title">
-                    IDENTITY VERIFICATION INFORMATION
-                  </div>
-
-                  <div class="premium-back-text">
-
-                    <p>
-                      <strong>Trust, but verify.</strong>
-                    </p>
-
-                    <p>
-                      Kindly ensure each time this ID is presented
-                      that you verify the credentials using a
-                      Government APPROVED verification resource.
-                    </p>
-
-                    <p>
-                      The details on the front of this NIN Slip
-                      must EXACTLY match the verification result.
-                    </p>
-
-                    <p>
-                      If this NIN was not issued to the person on
-                      the front of this document, please DO NOT
-                      attempt to scan, photocopy or replicate the
-                      personal data contained herein.
-                    </p>
-
-                  </div>
-
-                  <div
-                    id="premiumQR"
-                    class="premium-qr"
-                  ></div>
-
-                  <div class="premium-back-note">
-
-                    QR contains verified NIN, phone number,
-                    LGA/state and date of birth.
-
-                  </div>
-
-                </div>
-              `
-              : `
-                <div class="id-card improved-card improved-back">
-
-                  <div class="improved-back-title">
-                    DISCLAIMER
-                  </div>
-
-                  <div class="improved-disclaimer">
-
-                    <p>
-                      <strong>Trust, but verify.</strong>
-                    </p>
-
-                    <p>
-                      Kindly ensure each time this ID is presented,
-                      that you verify the credentials using a
-                      Government APPROVED verification resource.
-                    </p>
-
-                    <p>
-                      The details on the front of this NIN Slip
-                      must EXACTLY match the verification result.
-                    </p>
-
-                    <p>
-                      <strong>CAUTION!</strong>
-                    </p>
-
-                    <p>
-                      If this NIN was not issued to the person on
-                      the front of this document, please DO NOT
-                      attempt to scan, photocopy or replicate the
-                      personal data contained herein.
-                    </p>
-
-                  </div>
-
-                  <div
-                    id="improvedQR"
-                    class="improved-qr"
-                  ></div>
-
-                  <div class="improved-verified">
-                    ✓ VERIFIED IDENTITY
-                  </div>
-
-                </div>
-              `
-          }
-
-        </div>
-
-      </div>
-    `;
-
-
-    /*
-      Wait for image to load.
-      
-      This is important because html2canvas can otherwise
-      capture the card before the passport photo is ready.
-    */
-
-    const image =
-      document.getElementById('pdfFrontPhoto');
-
-
-    if (image) {
-
-      await waitForImage(image);
-
-    }
-
-
-    /*
-      Generate QR.
-    */
-
-    if (format === 'premium') {
-
-      generateQR(
-        'premiumQR',
-        d
-      );
-
-    } else {
-
-      generateQR(
-        'improvedQR',
-        d
-      );
-
-    }
-
-
-    /*
-      Allow QR DOM to finish rendering.
-    */
-
-    await new Promise(
-      resolve =>
-        setTimeout(resolve, 300)
-    );
-
-
-    const pdfElement =
-      document.getElementById('pdfSheet');
-
-
-    /*
-      Generate A4 portrait PDF.
-    */
-
-    const options = {
-
-      margin: 0,
-
-      filename: filename,
-
-      image: {
-        type: 'jpeg',
-        quality: 0.98
-      },
-
-      html2canvas: {
-
-        scale: 3,
-
-        useCORS: true,
-
-        allowTaint: false,
-
-        backgroundColor: '#ffffff',
-
-        logging: false
-
-      },
-
-      jsPDF: {
-
-        unit: 'mm',
-
-        format: 'a4',
-
-        orientation: 'portrait',
-
-        compress: true
-
-      },
-
-      pagebreak: {
-        mode: ['avoid-all']
-      }
-
-    };
-
-
-    try {
-
-      /*
-        Disable download buttons while generating.
-      */
-
-      setDownloadButtonsDisabled(true);
-
-
-      await html2pdf()
-        .set(options)
-        .from(pdfElement)
-        .save();
-
-
-    } catch (error) {
-
-      console.error(
-        'PDF generation error:',
-        error
-      );
-
-      showError(
-        'Unable to generate PDF. Please try again.'
-      );
-
-
-    } finally {
-
-      setDownloadButtonsDisabled(false);
-
-      /*
-        Clear render area after PDF generation.
-      */
-
-      setTimeout(() => {
-
-        host.innerHTML = '';
-
-      }, 1000);
-
-    }
-
-  }
-
-
-  /* ============================================================
-     WAIT FOR IMAGE
-  ============================================================= */
-
-  function waitForImage(img) {
-
-    return new Promise(resolve => {
-
-      if (img.complete && img.naturalWidth > 0) {
-
-        resolve();
-
-        return;
-
-      }
-
-
-      img.onload = () => resolve();
-
-      img.onerror = () => {
-
-        /*
-          If API image fails, replace it with fallback.
-        */
-
-        const fallback =
-          getFallbackPhoto(currentData);
-
-
-        img.src = fallback;
-
-
-        img.onload = () => resolve();
-
-        img.onerror = () => resolve();
-
-      };
-
-    });
-
-  }
-
-
-  /* ============================================================
-     DOWNLOAD BUTTON STATE
-  ============================================================= */
-
-  function setDownloadButtonsDisabled(disabled) {
-
-    document
-      .getElementById('premiumDownloadBtn')
-      .disabled = disabled;
-
-
-    document
-      .getElementById('improvedDownloadBtn')
-      .disabled = disabled;
-
-  }
-
-
-  /* ============================================================
-     PREMIUM DOWNLOAD
+     DOWNLOAD BUTTONS
   ============================================================= */
 
   document
     .getElementById('premiumDownloadBtn')
-    .addEventListener(
-      'click',
-      () => {
-
-        buildPDF('premium');
-
+    .addEventListener('click', function() {
+      if (!currentData) {
+        showError('No verified identity data available.');
+        return;
       }
-    );
+      this.disabled = true;
+      this.textContent = '⏳ Opening...';
 
+      generateSlip('premium');
 
-  /* ============================================================
-     NEW IMPROVED DOWNLOAD
-  ============================================================= */
+      setTimeout(() => {
+        this.disabled = false;
+        this.textContent = '📥 Premium ID Slip';
+      }, 2000);
+    });
+
 
   document
     .getElementById('improvedDownloadBtn')
-    .addEventListener(
-      'click',
-      () => {
-
-        buildPDF('improved');
-
+    .addEventListener('click', function() {
+      if (!currentData) {
+        showError('No verified identity data available.');
+        return;
       }
-    );
+      this.disabled = true;
+      this.textContent = '⏳ Opening...';
+
+      generateSlip('improved');
+
+      setTimeout(() => {
+        this.disabled = false;
+        this.textContent = '📥 New Improved Slip';
+      }, 2000);
+    });
+
+
+  document
+    .getElementById('basicDownloadBtn')
+    .addEventListener('click', function() {
+      if (!currentData) {
+        showError('No verified identity data available.');
+        return;
+      }
+      this.disabled = true;
+      this.textContent = '⏳ Opening...';
+
+      generateSlip('basic');
+
+      setTimeout(() => {
+        this.disabled = false;
+        this.textContent = '📥 Basic Slip';
+      }, 2000);
+    });
+
+
+  /* ============================================================
+     INIT - LOAD CHANNELS ON PAGE LOAD
+  ============================================================= */
+
+  document.addEventListener('DOMContentLoaded', function() {
+
+    loadChannels();
+
+  });
 
 </script>
 

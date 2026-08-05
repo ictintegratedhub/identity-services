@@ -6,6 +6,14 @@
       "destination": "/api/$1"
     },
     {
+      "source": "/templates/(.*)",
+      "destination": "/templates/$1"
+    },
+    {
+      "source": "/assets/(.*)",
+      "destination": "/assets/$1"
+    },
+    {
       "source": "/identity/login",
       "destination": "/identity/login.html"
     },
@@ -30,4 +38,4 @@
       "destination": "/identity/index.html"
     }
   ]
-} 
+}

@@ -1,3 +1,18 @@
+// At the very top of the template, before any other code
+(function loadSlipData() {
+    try {
+        const stored = sessionStorage.getItem('slipData');
+        if (stored) {
+            window.slipData = JSON.parse(stored);
+            console.log('✅ Slip data loaded from sessionStorage');
+        } else {
+            console.warn('⚠️ No slip data found in sessionStorage, using fallback');
+        }
+    } catch (e) {
+        console.error('Error loading slip data:', e);
+    }
+})();
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -557,3 +572,42 @@ window.exportBasicPDF = exportPDF;
 </body>
 
 </html>
+
+/* ============================================================
+   AUTO PDF GENERATION ON LOAD
+============================================================ */
+
+(function autoGeneratePDF() {
+    // Check if we should auto-generate
+    const shouldAutoGenerate = sessionStorage.getItem('autoGeneratePDF') !== 'false';
+    
+    if (!shouldAutoGenerate) {
+        console.log('🔄 Auto-generate disabled, showing preview only');
+        return;
+    }
+    
+    // Wait for everything to load
+    window.addEventListener('load', function() {
+        // Wait for images
+        Promise.all(
+            [...document.images].map(img => {
+                if (img.complete) return Promise.resolve();
+                return new Promise(resolve => {
+                    img.onload = resolve;
+                    img.onerror = resolve;
+                });
+            })
+        ).then(() => {
+            // Small delay for rendering
+            setTimeout(() => {
+                if (typeof exportPDF === 'function') {
+                    console.log('📄 Generating PDF...');
+                    exportPDF();
+                    
+                    // Clear the auto-generate flag so user can manually print later
+                    sessionStorage.setItem('autoGeneratePDF', 'false');
+                }
+            }, 800);
+        });
+    });
+})();

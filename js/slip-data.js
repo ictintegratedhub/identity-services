@@ -626,6 +626,43 @@ window.addEventListener("load",()=>{
 
 });
 
+/* ============================================================
+   QR CODE GENERATION
+============================================================ */
+
+function generateQRData(data) {
+    return JSON.stringify({
+        nin: data.nin || '',
+        fullName: data.fullName || `${data.firstName || ''} ${data.surname || ''}`.trim(),
+        dob: data.dateOfBirth || '',
+        gender: data.gender || ''
+    });
+}
+
+function renderQR(elementId, data) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+    
+    if (typeof QRCode === 'undefined') {
+        console.warn('QRCode library not loaded');
+        return;
+    }
+    
+    element.innerHTML = '';
+    
+    try {
+        new QRCode(element, {
+            text: generateQRData(data),
+            width: 120,
+            height: 120,
+            colorDark: '#000000',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.M
+        });
+    } catch (e) {
+        console.error('QR generation error:', e);
+    }
+}
 
 /* ===========================================================
    PUBLIC API
