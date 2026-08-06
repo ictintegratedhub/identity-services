@@ -15,7 +15,7 @@
 
     @page {
       size: A4 portrait;
-      margin: 10mm;
+      margin: 0;
     }
 
     * {
@@ -27,25 +27,39 @@
     }
 
     body {
-      background: #ececec;
+      background: #ffffff;
       font-family: Arial, Helvetica, sans-serif;
     }
 
     /* ============================================================
-       PAGE
+       PAGE - A4 Portrait
     ============================================================ */
 
     .page {
       width: 210mm;
-      min-height: 297mm;
+      height: 297mm;
       display: flex;
+      flex-direction: column;
       justify-content: center;
-      align-items: flex-start;
-      padding: 10mm;
+      align-items: center;
+      padding: 20mm 0;
+      background: #ffffff;
     }
 
     /* ============================================================
-       CARD CANVAS - 1280x800 (scaled to fit)
+       CARD STACK - Two cards stacked vertically with 5mm gap
+    ============================================================ */
+
+    .card-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 5mm;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ============================================================
+       CARD CANVAS - 1280x800 each
     ============================================================ */
 
     .card-canvas {
@@ -55,19 +69,8 @@
       font-family: Arial, Helvetica, sans-serif;
       color: #000000;
       overflow: hidden;
-      transform: scale(0.8);
-      transform-origin: top left;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      background: #fff;
-    }
-
-    @media print {
-      .card-canvas {
-        transform: scale(1);
-        border: none;
-        border-radius: 0;
-      }
+      background: #ffffff;
+      flex-shrink: 0;
     }
 
     .card-bg {
@@ -89,7 +92,7 @@
     }
 
     /* ============================================================
-       IMPROVED SLIP POSITIONS (Improved.jpg)
+       IMPROVED SLIP POSITIONS (improved-front.png)
     ============================================================ */
 
     .improved-photo {
@@ -150,47 +153,39 @@
     }
 
     /* ============================================================
-       LOADING STATE
+       IMPROVED BACK - No dynamic fields (just the image)
     ============================================================ */
 
-    .loading {
-      opacity: 0.5;
-      pointer-events: none;
-    }
-
-    .ready {
-      opacity: 1;
+    .improved-back .card-data-overlay {
+      /* No dynamic fields needed - back image has all content */
     }
 
     /* ============================================================
-       RESPONSIVE
+       RESPONSIVE & PRINT
     ============================================================ */
-
-    @media screen and (max-width: 900px) {
-      .page {
-        width: 100%;
-        min-height: auto;
-        padding: 20px;
-      }
-
-      .card-canvas {
-        transform: scale(0.5);
-        transform-origin: top left;
-      }
-    }
 
     @media print {
       body {
-        background: #fff;
-      }
-      .card-canvas {
-        transform: scale(1);
-        border: none;
-        border-radius: 0;
-        box-shadow: none;
+        background: #ffffff;
       }
       .page {
         padding: 0;
+        margin: 0;
+        width: 210mm;
+        height: 297mm;
+      }
+      .card-canvas {
+        transform: none;
+      }
+    }
+
+    @media screen and (max-width: 900px) {
+      .card-canvas {
+        transform: scale(0.5);
+        transform-origin: top center;
+      }
+      .card-stack {
+        gap: 2mm;
       }
     }
   </style>
@@ -203,24 +198,48 @@
 ============================================================= -->
 
 <div class="page">
-  <div class="card-canvas">
 
-    <img src="/assets/improved-front.png" class="card-bg" alt="Improved Slip Template">
+  <div class="card-stack">
 
-    <div class="card-data-overlay">
+    <!-- ========================================================
+         IMPROVED FRONT
+    ======================================================== -->
 
-      <img id="photo" class="improved-photo" src="" alt="ID Holder Photo">
+    <div class="card-canvas">
 
-      <!-- DYNAMIC VALUES ONLY - NO LABELS (template has them) -->
-      <div class="imp-val imp-val-surname" id="surname">—</div>
-      <div class="imp-val imp-val-given-names" id="firstName">—</div>
-      <div class="imp-val imp-val-dob" id="dob">—</div>
-      <div class="imp-val imp-val-issue-date" id="issueDate">—</div>
-      <div class="imp-val imp-val-nin" id="nin">—</div>
+      <img src="/assets/improved-front.png" class="card-bg" alt="Improved Slip Template">
+
+      <div class="card-data-overlay">
+
+        <img id="photo" class="improved-photo" src="" alt="ID Holder Photo">
+
+        <!-- DYNAMIC VALUES ONLY - NO LABELS (template has them) -->
+        <div class="imp-val imp-val-surname" id="surname">—</div>
+        <div class="imp-val imp-val-given-names" id="firstName">—</div>
+        <div class="imp-val imp-val-dob" id="dob">—</div>
+        <div class="imp-val imp-val-issue-date" id="issueDate">—</div>
+        <div class="imp-val imp-val-nin" id="nin">—</div>
+
+      </div>
+
+    </div>
+
+    <!-- ========================================================
+         IMPROVED BACK
+    ======================================================== -->
+
+    <div class="card-canvas improved-back">
+
+      <img src="/assets/improved-back.png" class="card-bg" alt="Improved Slip Back">
+
+      <div class="card-data-overlay">
+        <!-- No dynamic fields - the back image has all content -->
+      </div>
 
     </div>
 
   </div>
+
 </div>
 
 
@@ -241,12 +260,11 @@
         window.slipData = JSON.parse(stored);
         console.log('✅ Improved Slip: Data loaded from sessionStorage');
       } else {
-        console.warn('⚠️ No slip data found in sessionStorage, using fallback data');
+        console.warn('⚠️ No slip data found, using fallback');
         window.slipData = {
           nin: "2709 551 8260",
           surname: "WILLIAMS",
           firstName: "SARAH ANNIKIR",
-          gender: "F",
           dateOfBirth: "10-14-1983",
           photo: ""
         };
@@ -257,7 +275,6 @@
         nin: "2709 551 8260",
         surname: "WILLIAMS",
         firstName: "SARAH ANNIKIR",
-        gender: "F",
         dateOfBirth: "10-14-1983",
         photo: ""
       };
@@ -339,7 +356,7 @@
 
 
   /* ============================================================
-     6. PRINT FUNCTION
+     6. PRINT
   ============================================================ */
 
   function printSlip() {
@@ -348,7 +365,7 @@
 
 
   /* ============================================================
-     7. PDF EXPORT
+     7. PDF EXPORT - FULL CAPTURE
   ============================================================ */
 
   function exportPDF() {
@@ -364,13 +381,17 @@
       filename: `Improved_NIN_Slip_${(window.slipData?.nin || 'NIN').replace(/\s+/g, '')}.pdf`,
       image: { type: 'jpeg', quality: 1 },
       html2canvas: {
-        scale: 3,
+        scale: 2,
         useCORS: true,
         allowTaint: true,
         logging: false,
         backgroundColor: '#ffffff',
         scrollX: 0,
-        scrollY: 0
+        scrollY: 0,
+        width: 210 * 2.83,
+        height: 297 * 2.83,
+        windowWidth: 210 * 2.83,
+        windowHeight: 297 * 2.83
       },
       jsPDF: {
         unit: 'mm',
@@ -380,7 +401,10 @@
       pagebreak: { mode: ['avoid-all'] }
     };
 
-    html2pdf().set(options).from(element).save()
+    html2pdf()
+      .set(options)
+      .from(element)
+      .save()
       .then(() => console.log('✅ Improved PDF exported'))
       .catch(err => console.error('PDF error:', err));
   }
@@ -425,10 +449,13 @@
 
 
   /* ============================================================
-     9. PRELOAD BACKGROUND IMAGE
+     9. PRELOAD IMAGES
   ============================================================ */
 
-  new Image().src = '/assets/improved-front.png';
+  ['/assets/improved-front.png', '/assets/improved-back.png'].forEach(function(src) {
+    const img = new Image();
+    img.src = src;
+  });
 
 
   /* ============================================================

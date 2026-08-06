@@ -15,7 +15,7 @@
 
     @page {
       size: A4 portrait;
-      margin: 10mm;
+      margin: 0;
     }
 
     * {
@@ -27,25 +27,38 @@
     }
 
     body {
-      background: #ececec;
+      background: #ffffff;
       font-family: Arial, Helvetica, sans-serif;
     }
 
     /* ============================================================
-       PAGE
+       PAGE - A4 Portrait
     ============================================================ */
 
     .page {
       width: 210mm;
-      min-height: 297mm;
+      height: 297mm;
       display: flex;
+      flex-direction: column;
       justify-content: center;
-      align-items: flex-start;
-      padding: 10mm;
+      align-items: center;
+      padding: 20mm 0;
+      background: #ffffff;
     }
 
     /* ============================================================
-       CARD CANVAS - 1280x800 (scaled to fit)
+       CARD STACK - Single card centered
+    ============================================================ */
+
+    .card-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ============================================================
+       CARD CANVAS - 1280x800
     ============================================================ */
 
     .card-canvas {
@@ -55,19 +68,8 @@
       font-family: Arial, Helvetica, sans-serif;
       color: #000000;
       overflow: hidden;
-      transform: scale(0.8);
-      transform-origin: top left;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      background: #fff;
-    }
-
-    @media print {
-      .card-canvas {
-        transform: scale(1);
-        border: none;
-        border-radius: 0;
-      }
+      background: #ffffff;
+      flex-shrink: 0;
     }
 
     .card-bg {
@@ -103,7 +105,6 @@
       border: 1px solid #ccc;
     }
 
-    /* Values based on the template layout */
     .b-val {
       position: absolute;
       font-weight: 700;
@@ -112,7 +113,6 @@
       color: #000000;
     }
 
-    /* Left column: Tracking ID and NIN */
     .b-val-tracking {
       top: 215px;
       left: 105px;
@@ -129,7 +129,6 @@
       color: #000;
     }
 
-    /* Middle column: Surname, First Name, Middle Name, Gender */
     .b-val-surname {
       top: 215px;
       left: 400px;
@@ -158,7 +157,6 @@
       color: #222;
     }
 
-    /* Right column: Address */
     .b-val-address {
       top: 215px;
       left: 750px;
@@ -171,47 +169,28 @@
     }
 
     /* ============================================================
-       LOADING STATE
+       RESPONSIVE & PRINT
     ============================================================ */
-
-    .loading {
-      opacity: 0.5;
-      pointer-events: none;
-    }
-
-    .ready {
-      opacity: 1;
-    }
-
-    /* ============================================================
-       RESPONSIVE
-    ============================================================ */
-
-    @media screen and (max-width: 900px) {
-      .page {
-        width: 100%;
-        min-height: auto;
-        padding: 20px;
-      }
-
-      .card-canvas {
-        transform: scale(0.5);
-        transform-origin: top left;
-      }
-    }
 
     @media print {
       body {
-        background: #fff;
-      }
-      .card-canvas {
-        transform: scale(1);
-        border: none;
-        border-radius: 0;
-        box-shadow: none;
+        background: #ffffff;
       }
       .page {
         padding: 0;
+        margin: 0;
+        width: 210mm;
+        height: 297mm;
+      }
+      .card-canvas {
+        transform: none;
+      }
+    }
+
+    @media screen and (max-width: 900px) {
+      .card-canvas {
+        transform: scale(0.5);
+        transform-origin: top center;
       }
     }
   </style>
@@ -224,26 +203,36 @@
 ============================================================= -->
 
 <div class="page">
-  <div class="card-canvas">
 
-    <img src="/assets/basic-slip.png" class="card-bg" alt="Basic Slip Template">
+  <div class="card-stack">
 
-    <div class="card-data-overlay">
+    <!-- ========================================================
+         BASIC SLIP - Front Only
+    ======================================================== -->
 
-      <img id="photo" class="basic-photo" src="" alt="ID Holder Photo">
+    <div class="card-canvas">
 
-      <!-- DYNAMIC VALUES ONLY - NO LABELS (template has them) -->
-      <div class="b-val b-val-tracking" id="trackingId">—</div>
-      <div class="b-val b-val-nin" id="nin">—</div>
-      <div class="b-val b-val-surname" id="surname">—</div>
-      <div class="b-val b-val-firstname" id="firstName">—</div>
-      <div class="b-val b-val-middlename" id="middleName">—</div>
-      <div class="b-val b-val-gender" id="gender">—</div>
-      <div class="b-val b-val-address" id="address">—</div>
+      <img src="/assets/basic-slip.png" class="card-bg" alt="Basic Slip Template">
+
+      <div class="card-data-overlay">
+
+        <img id="photo" class="basic-photo" src="" alt="ID Holder Photo">
+
+        <!-- DYNAMIC VALUES ONLY - NO LABELS (template has them) -->
+        <div class="b-val b-val-tracking" id="trackingId">—</div>
+        <div class="b-val b-val-nin" id="nin">—</div>
+        <div class="b-val b-val-surname" id="surname">—</div>
+        <div class="b-val b-val-firstname" id="firstName">—</div>
+        <div class="b-val b-val-middlename" id="middleName">—</div>
+        <div class="b-val b-val-gender" id="gender">—</div>
+        <div class="b-val b-val-address" id="address">—</div>
+
+      </div>
 
     </div>
 
   </div>
+
 </div>
 
 
@@ -264,7 +253,7 @@
         window.slipData = JSON.parse(stored);
         console.log('✅ Basic Slip: Data loaded from sessionStorage');
       } else {
-        console.warn('⚠️ No slip data found in sessionStorage, using fallback data');
+        console.warn('⚠️ No slip data found, using fallback');
         window.slipData = {
           nin: "1234 5678 901",
           surname: "ADEBAYO",
@@ -350,7 +339,7 @@
 
 
   /* ============================================================
-     5. PRINT FUNCTION
+     5. PRINT
   ============================================================ */
 
   function printSlip() {
@@ -359,12 +348,11 @@
 
 
   /* ============================================================
-     6. PDF EXPORT
+     6. PDF EXPORT - FULL CAPTURE
   ============================================================ */
 
   function exportPDF() {
     if (typeof html2pdf === 'undefined') {
-      console.warn('html2pdf not loaded, using print fallback');
       printSlip();
       return;
     }
@@ -374,39 +362,34 @@
     const options = {
       margin: 0,
       filename: `Basic_NIN_Slip_${(window.slipData?.nin || 'NIN').replace(/\s+/g, '')}.pdf`,
-      image: {
-        type: 'jpeg',
-        quality: 1
-      },
+      image: { type: 'jpeg', quality: 1 },
       html2canvas: {
-        scale: 3,
+        scale: 2,
         useCORS: true,
         allowTaint: true,
         logging: false,
         backgroundColor: '#ffffff',
         scrollX: 0,
-        scrollY: 0
+        scrollY: 0,
+        width: 210 * 2.83,
+        height: 297 * 2.83,
+        windowWidth: 210 * 2.83,
+        windowHeight: 297 * 2.83
       },
       jsPDF: {
         unit: 'mm',
         format: 'a4',
         orientation: 'portrait'
       },
-      pagebreak: {
-        mode: ['avoid-all']
-      }
+      pagebreak: { mode: ['avoid-all'] }
     };
 
     html2pdf()
       .set(options)
       .from(element)
       .save()
-      .then(function() {
-        console.log('✅ Basic PDF exported successfully');
-      })
-      .catch(function(error) {
-        console.error('PDF export error:', error);
-      });
+      .then(() => console.log('✅ Basic PDF exported'))
+      .catch(err => console.error('PDF error:', err));
   }
 
 
@@ -418,7 +401,7 @@
     const shouldAutoGenerate = sessionStorage.getItem('autoGeneratePDF') !== 'false';
 
     if (!shouldAutoGenerate) {
-      console.log('🔄 Auto-generate disabled, showing preview only');
+      console.log('🔄 Auto-generate disabled');
       return;
     }
 
@@ -449,7 +432,7 @@
 
 
   /* ============================================================
-     8. PRELOAD BACKGROUND IMAGE
+     8. PRELOAD IMAGES
   ============================================================ */
 
   new Image().src = '/assets/basic-slip.png';
