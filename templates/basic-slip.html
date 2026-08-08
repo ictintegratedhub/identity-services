@@ -5,35 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Basic NIN Slip | AIIH</title>
 
-  <!-- PDF Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
-    /* ============================================================
-       PRINT SETTINGS
-    ============================================================ */
-
-    @page {
-      size: A4 portrait;
-      margin: 0;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-    }
-
-    body {
-      background: #ffffff;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-
-    /* ============================================================
-       PAGE - A4 Portrait
-    ============================================================ */
+    @page { size: A4 portrait; margin: 0; }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    body { background: #ffffff; font-family: Arial, Helvetica, sans-serif; }
 
     .page {
       width: 210mm;
@@ -42,13 +19,8 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 20mm 0;
       background: #ffffff;
     }
-
-    /* ============================================================
-       CARD STACK - Single card centered
-    ============================================================ */
 
     .card-stack {
       display: flex;
@@ -57,16 +29,10 @@
       justify-content: center;
     }
 
-    /* ============================================================
-       CARD CANVAS - 1280x800
-    ============================================================ */
-
     .card-canvas {
       position: relative;
       width: 1280px;
       height: 800px;
-      font-family: Arial, Helvetica, sans-serif;
-      color: #000000;
       overflow: hidden;
       background: #ffffff;
       flex-shrink: 0;
@@ -91,15 +57,15 @@
     }
 
     /* ============================================================
-       BASIC SLIP POSITIONS (basic-slip.png)
+       BASIC SLIP POSITIONS (Master Coordinate Map)
     ============================================================ */
 
     .basic-photo {
       position: absolute;
-      top: 130px;
-      right: 95px;
-      width: 200px;
-      height: 240px;
+      top: 120px;
+      left: 1085px;
+      width: 170px;
+      height: 245px;
       object-fit: cover;
       border-radius: 4px;
       border: 1px solid #ccc;
@@ -114,111 +80,85 @@
     }
 
     .b-val-tracking {
-      top: 215px;
-      left: 105px;
+      top: 158px;
+      left: 24px;
+      width: 180px;
       font-size: 22px;
       color: #222;
     }
 
     .b-val-nin {
-      top: 315px;
-      left: 105px;
+      top: 258px;
+      left: 24px;
+      width: 210px;
       font-size: 24px;
       font-weight: 900;
-      letter-spacing: 1px;
       color: #000;
     }
 
     .b-val-surname {
-      top: 215px;
-      left: 400px;
+      top: 158px;
+      left: 255px;
+      width: 185px;
       font-size: 22px;
       color: #222;
     }
 
     .b-val-firstname {
-      top: 315px;
-      left: 400px;
+      top: 258px;
+      left: 255px;
+      width: 185px;
       font-size: 22px;
       color: #222;
     }
 
     .b-val-middlename {
-      top: 390px;
-      left: 400px;
-      font-size: 20px;
+      top: 332px;
+      left: 255px;
+      width: 185px;
+      font-size: 22px;
       color: #222;
     }
 
     .b-val-gender {
-      top: 465px;
-      left: 400px;
-      font-size: 20px;
+      top: 405px;
+      left: 255px;
+      width: 185px;
+      font-size: 22px;
       color: #222;
     }
 
     .b-val-address {
-      top: 215px;
-      left: 750px;
-      width: 320px;
+      top: 160px;
+      left: 455px;
+      width: 195px;
       font-size: 18px;
       font-weight: 600;
       text-transform: none;
-      line-height: 1.3;
+      line-height: 1.25;
       color: #222;
     }
 
-    /* ============================================================
-       RESPONSIVE & PRINT
-    ============================================================ */
-
     @media print {
-      body {
-        background: #ffffff;
-      }
-      .page {
-        padding: 0;
-        margin: 0;
-        width: 210mm;
-        height: 297mm;
-      }
-      .card-canvas {
-        transform: none;
-      }
+      body { background: #ffffff; }
+      .page { padding: 0; margin: 0; width: 210mm; height: 297mm; }
+      .card-canvas { transform: none; }
     }
 
     @media screen and (max-width: 900px) {
-      .card-canvas {
-        transform: scale(0.5);
-        transform-origin: top center;
-      }
+      .card-canvas { transform: scale(0.5); transform-origin: top center; }
     }
   </style>
 </head>
 
 <body>
 
-<!-- ============================================================
-     PAGE
-============================================================= -->
-
 <div class="page">
-
   <div class="card-stack">
-
-    <!-- ========================================================
-         BASIC SLIP - Front Only
-    ======================================================== -->
-
     <div class="card-canvas">
-
       <img src="/assets/basic-slip.png" class="card-bg" alt="Basic Slip Template">
-
       <div class="card-data-overlay">
-
         <img id="photo" class="basic-photo" src="" alt="ID Holder Photo">
-
-        <!-- DYNAMIC VALUES ONLY - NO LABELS (template has them) -->
         <div class="b-val b-val-tracking" id="trackingId">—</div>
         <div class="b-val b-val-nin" id="nin">—</div>
         <div class="b-val b-val-surname" id="surname">—</div>
@@ -226,32 +166,18 @@
         <div class="b-val b-val-middlename" id="middleName">—</div>
         <div class="b-val b-val-gender" id="gender">—</div>
         <div class="b-val b-val-address" id="address">—</div>
-
       </div>
-
     </div>
-
   </div>
-
 </div>
 
-
-<!-- ============================================================
-   SCRIPTS
-============================================================= -->
-
 <script>
-
-  /* ============================================================
-     1. LOAD SLIP DATA FROM SESSIONSTORAGE
-  ============================================================ */
-
   (function loadSlipData() {
     try {
       const stored = sessionStorage.getItem('slipData');
       if (stored) {
         window.slipData = JSON.parse(stored);
-        console.log('✅ Basic Slip: Data loaded from sessionStorage');
+        console.log('✅ Basic Slip: Data loaded');
       } else {
         console.warn('⚠️ No slip data found, using fallback');
         window.slipData = {
@@ -267,23 +193,8 @@
       }
     } catch (e) {
       console.error('Error loading slip data:', e);
-      window.slipData = {
-        nin: "1234 5678 901",
-        surname: "ADEBAYO",
-        firstName: "CHUKWUEMEKA",
-        middleName: "IBRAHIM",
-        gender: "MALE",
-        address: "123 COMMERCIAL AVENUE, IKEJA, LAGOS STATE",
-        photo: "",
-        trackingId: "R0A1B2C3D4"
-      };
     }
   })();
-
-
-  /* ============================================================
-     2. HELPERS
-  ============================================================ */
 
   function formatNIN(nin) {
     if (!nin) return "";
@@ -294,20 +205,11 @@
 
   function getFullName(data) {
     if (data.fullName) return data.fullName;
-    return [data.firstName, data.middleName, data.surname]
-      .filter(Boolean)
-      .join(' ')
-      .trim() || 'Not Available';
+    return [data.firstName, data.middleName, data.surname].filter(Boolean).join(' ').trim() || 'Not Available';
   }
-
-
-  /* ============================================================
-     3. POPULATE FIELDS
-  ============================================================ */
 
   function populateFields() {
     const d = window.slipData || {};
-
     document.getElementById('trackingId').textContent = d.trackingId || '—';
     document.getElementById('nin').textContent = formatNIN(d.nin);
     document.getElementById('surname').textContent = d.surname || '—';
@@ -316,49 +218,25 @@
     document.getElementById('gender').textContent = d.gender || '—';
     document.getElementById('address').textContent = d.address || '—';
 
-    // Photo
     const photo = document.getElementById('photo');
+    const fullName = getFullName(d);
     if (d.photo && d.photo.trim() !== '') {
       photo.src = d.photo;
       photo.onerror = function() {
-        this.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(getFullName(d)) + '&background=cccccc&color=333333&size=200';
+        this.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(fullName) + '&background=cccccc&color=333333&size=200';
       };
     } else {
-      photo.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(getFullName(d)) + '&background=cccccc&color=333333&size=200';
+      photo.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(fullName) + '&background=cccccc&color=333333&size=200';
     }
   }
 
+  function renderSlip() { populateFields(); }
 
-  /* ============================================================
-     4. RENDER
-  ============================================================ */
-
-  function renderSlip() {
-    populateFields();
-  }
-
-
-  /* ============================================================
-     5. PRINT
-  ============================================================ */
-
-  function printSlip() {
-    window.print();
-  }
-
-
-  /* ============================================================
-     6. PDF EXPORT - FULL CAPTURE
-  ============================================================ */
+  function printSlip() { window.print(); }
 
   function exportPDF() {
-    if (typeof html2pdf === 'undefined') {
-      printSlip();
-      return;
-    }
-
+    if (typeof html2pdf === 'undefined') { printSlip(); return; }
     const element = document.querySelector('.page');
-
     const options = {
       margin: 0,
       filename: `Basic_NIN_Slip_${(window.slipData?.nin || 'NIN').replace(/\s+/g, '')}.pdf`,
@@ -368,96 +246,40 @@
         useCORS: true,
         allowTaint: true,
         logging: false,
-        backgroundColor: '#ffffff',
-        scrollX: 0,
-        scrollY: 0,
-        width: 210 * 2.83,
-        height: 297 * 2.83,
-        windowWidth: 210 * 2.83,
-        windowHeight: 297 * 2.83
+        backgroundColor: '#ffffff'
       },
-      jsPDF: {
-        unit: 'mm',
-        format: 'a4',
-        orientation: 'portrait'
-      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak: { mode: ['avoid-all'] }
     };
-
-    html2pdf()
-      .set(options)
-      .from(element)
-      .save()
+    html2pdf().set(options).from(element).save()
       .then(() => console.log('✅ Basic PDF exported'))
       .catch(err => console.error('PDF error:', err));
   }
 
-
-  /* ============================================================
-     7. AUTO PDF GENERATION ON LOAD
-  ============================================================ */
-
   (function autoGeneratePDF() {
-    const shouldAutoGenerate = sessionStorage.getItem('autoGeneratePDF') !== 'false';
-
-    if (!shouldAutoGenerate) {
-      console.log('🔄 Auto-generate disabled');
-      return;
-    }
-
+    if (sessionStorage.getItem('autoGeneratePDF') === 'false') return;
     window.addEventListener('load', function() {
-      Promise.all(
-        [...document.images].map(img => {
-          if (img.complete) return Promise.resolve();
-          return new Promise(resolve => {
-            img.onload = resolve;
-            img.onerror = resolve;
-          });
-        })
-      ).then(function() {
+      Promise.all([...document.images].map(img => {
+        if (img.complete) return Promise.resolve();
+        return new Promise(resolve => { img.onload = resolve; img.onerror = resolve; });
+      })).then(function() {
         setTimeout(function() {
           if (typeof exportPDF === 'function') {
             console.log('📄 Auto-generating Basic PDF...');
-            try {
-              exportPDF();
-              sessionStorage.setItem('autoGeneratePDF', 'false');
-            } catch (e) {
-              console.error('Error generating PDF:', e);
-            }
+            try { exportPDF(); sessionStorage.setItem('autoGeneratePDF', 'false'); } catch (e) { console.error('Error:', e); }
           }
         }, 800);
       });
     });
   })();
 
-
-  /* ============================================================
-     8. PRELOAD IMAGES
-  ============================================================ */
-
   new Image().src = '/assets/basic-slip.png';
-
-
-  /* ============================================================
-     9. RENDER ON LOAD
-  ============================================================ */
-
-  document.addEventListener('DOMContentLoaded', function() {
-    renderSlip();
-  });
-
-
-  /* ============================================================
-     10. PUBLIC API
-  ============================================================ */
-
+  document.addEventListener('DOMContentLoaded', renderSlip);
   window.exportBasicPDF = exportPDF;
   window.printBasicSlip = printSlip;
   window.renderSlip = renderSlip;
   window.exportPDF = exportPDF;
-
   console.log('✅ Basic Slip Ready');
-
 </script>
 
 </body>

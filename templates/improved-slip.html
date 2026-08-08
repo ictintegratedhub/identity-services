@@ -5,35 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Improved NIN Slip | AIIH</title>
 
-  <!-- PDF Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
-    /* ============================================================
-       PRINT SETTINGS
-    ============================================================ */
-
-    @page {
-      size: A4 portrait;
-      margin: 0;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-    }
-
-    body {
-      background: #ffffff;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-
-    /* ============================================================
-       PAGE - A4 Portrait
-    ============================================================ */
+    @page { size: A4 portrait; margin: 0; }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    body { background: #ffffff; font-family: Arial, Helvetica, sans-serif; }
 
     .page {
       width: 210mm;
@@ -42,13 +19,8 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 20mm 0;
       background: #ffffff;
     }
-
-    /* ============================================================
-       CARD STACK - Two cards stacked vertically with 5mm gap
-    ============================================================ */
 
     .card-stack {
       display: flex;
@@ -58,16 +30,10 @@
       justify-content: center;
     }
 
-    /* ============================================================
-       CARD CANVAS - 1280x800 each
-    ============================================================ */
-
     .card-canvas {
       position: relative;
       width: 1280px;
       height: 800px;
-      font-family: Arial, Helvetica, sans-serif;
-      color: #000000;
       overflow: hidden;
       background: #ffffff;
       flex-shrink: 0;
@@ -92,20 +58,19 @@
     }
 
     /* ============================================================
-       IMPROVED SLIP POSITIONS (improved-front.png)
+       IMPROVED SLIP POSITIONS (Master Coordinate Map)
     ============================================================ */
 
     .improved-photo {
       position: absolute;
-      top: 210px;
-      left: 80px;
-      width: 280px;
-      height: 350px;
+      top: 225px;
+      left: 58px;
+      width: 250px;
+      height: 320px;
       object-fit: cover;
       border-radius: 6px;
     }
 
-    /* Values - NO LABELS (template has them) */
     .imp-val {
       position: absolute;
       font-weight: 700;
@@ -114,177 +79,110 @@
     }
 
     .imp-val-surname {
-      top: 265px;
-      left: 420px;
-      font-size: 30px;
+      top: 228px;
+      left: 410px;
+      font-size: 34px;
       color: #000;
     }
 
     .imp-val-given-names {
-      top: 375px;
-      left: 420px;
-      font-size: 30px;
+      top: 335px;
+      left: 410px;
+      font-size: 34px;
       color: #000;
     }
 
     .imp-val-dob {
-      top: 485px;
-      left: 420px;
-      font-size: 28px;
+      top: 450px;
+      left: 410px;
+      font-size: 30px;
+      color: #000;
+    }
+
+    .imp-val-sex {
+      top: 450px;
+      left: 720px;
+      font-size: 30px;
       color: #000;
     }
 
     .imp-val-issue-date {
-      top: 485px;
-      left: 880px;
-      font-size: 28px;
+      top: 450px;
+      left: 980px;
+      font-size: 30px;
       color: #000;
     }
 
     .imp-val-nin {
-      top: 635px;
-      left: 340px;
-      width: 600px;
+      top: 615px;
+      left: 330px;
+      width: 620px;
       text-align: center;
       font-size: 46px;
       font-weight: 900;
-      letter-spacing: 6px;
+      letter-spacing: 5px;
       color: #000000;
     }
 
-    /* ============================================================
-       IMPROVED BACK - No dynamic fields (just the image)
-    ============================================================ */
-
-    .improved-back .card-data-overlay {
-      /* No dynamic fields needed - back image has all content */
-    }
-
-    /* ============================================================
-       RESPONSIVE & PRINT
-    ============================================================ */
-
     @media print {
-      body {
-        background: #ffffff;
-      }
-      .page {
-        padding: 0;
-        margin: 0;
-        width: 210mm;
-        height: 297mm;
-      }
-      .card-canvas {
-        transform: none;
-      }
+      body { background: #ffffff; }
+      .page { padding: 0; margin: 0; width: 210mm; height: 297mm; }
+      .card-canvas { transform: none; }
     }
 
     @media screen and (max-width: 900px) {
-      .card-canvas {
-        transform: scale(0.5);
-        transform-origin: top center;
-      }
-      .card-stack {
-        gap: 2mm;
-      }
+      .card-canvas { transform: scale(0.5); transform-origin: top center; }
+      .card-stack { gap: 2mm; }
     }
   </style>
 </head>
 
 <body>
 
-<!-- ============================================================
-     PAGE
-============================================================= -->
-
 <div class="page">
-
   <div class="card-stack">
 
-    <!-- ========================================================
-         IMPROVED FRONT
-    ======================================================== -->
-
     <div class="card-canvas">
-
       <img src="/assets/improved-front.png" class="card-bg" alt="Improved Slip Template">
-
       <div class="card-data-overlay">
-
         <img id="photo" class="improved-photo" src="" alt="ID Holder Photo">
-
-        <!-- DYNAMIC VALUES ONLY - NO LABELS (template has them) -->
         <div class="imp-val imp-val-surname" id="surname">—</div>
         <div class="imp-val imp-val-given-names" id="firstName">—</div>
         <div class="imp-val imp-val-dob" id="dob">—</div>
+        <div class="imp-val imp-val-sex" id="gender">—</div>
         <div class="imp-val imp-val-issue-date" id="issueDate">—</div>
         <div class="imp-val imp-val-nin" id="nin">—</div>
-
       </div>
-
     </div>
 
-    <!-- ========================================================
-         IMPROVED BACK
-    ======================================================== -->
-
-    <div class="card-canvas improved-back">
-
+    <div class="card-canvas">
       <img src="/assets/improved-back.png" class="card-bg" alt="Improved Slip Back">
-
-      <div class="card-data-overlay">
-        <!-- No dynamic fields - the back image has all content -->
-      </div>
-
+      <div class="card-data-overlay"></div>
     </div>
 
   </div>
-
 </div>
 
-
-<!-- ============================================================
-   SCRIPTS
-============================================================= -->
-
 <script>
-
-  /* ============================================================
-     1. LOAD SLIP DATA FROM SESSIONSTORAGE
-  ============================================================ */
-
   (function loadSlipData() {
     try {
       const stored = sessionStorage.getItem('slipData');
       if (stored) {
         window.slipData = JSON.parse(stored);
-        console.log('✅ Improved Slip: Data loaded from sessionStorage');
+        console.log('✅ Improved Slip: Data loaded');
       } else {
         console.warn('⚠️ No slip data found, using fallback');
         window.slipData = {
           nin: "2709 551 8260",
           surname: "WILLIAMS",
           firstName: "SARAH ANNIKIR",
+          gender: "F",
           dateOfBirth: "10-14-1983",
           photo: ""
         };
       }
-    } catch (e) {
-      console.error('Error loading slip data:', e);
-      window.slipData = {
-        nin: "2709 551 8260",
-        surname: "WILLIAMS",
-        firstName: "SARAH ANNIKIR",
-        dateOfBirth: "10-14-1983",
-        photo: ""
-      };
-    }
+    } catch (e) { console.error('Error loading slip data:', e); }
   })();
-
-
-  /* ============================================================
-     2. HELPERS
-  ============================================================ */
 
   function formatNIN(nin) {
     if (!nin) return "";
@@ -295,189 +193,75 @@
 
   function getFullName(data) {
     if (data.fullName) return data.fullName;
-    return [data.firstName, data.middleName, data.surname]
-      .filter(Boolean)
-      .join(' ')
-      .trim() || 'Not Available';
+    return [data.firstName, data.middleName, data.surname].filter(Boolean).join(' ').trim() || 'Not Available';
   }
 
-
-  /* ============================================================
-     3. ISSUE DATE
-  ============================================================ */
-
   const now = new Date();
-  const MONTHS = [
-    "JAN", "FEB", "MAR", "APR", "MAY", "JUN",
-    "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
-  ];
-
-  const issueDate =
-    String(now.getDate()).padStart(2, "0") +
-    " " +
-    MONTHS[now.getMonth()] +
-    " " +
-    now.getFullYear();
-
-
-  /* ============================================================
-     4. POPULATE FIELDS
-  ============================================================ */
+  const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+  const issueDate = String(now.getDate()).padStart(2,"0") + " " + MONTHS[now.getMonth()] + " " + now.getFullYear();
 
   function populateFields() {
     const d = window.slipData || {};
-
     document.getElementById('surname').textContent = d.surname || '—';
     document.getElementById('firstName').textContent = d.firstName || '—';
     document.getElementById('dob').textContent = d.dateOfBirth || '—';
+    document.getElementById('gender').textContent = d.gender || '—';
     document.getElementById('issueDate').textContent = issueDate;
     document.getElementById('nin').textContent = formatNIN(d.nin);
 
-    // Photo
     const photo = document.getElementById('photo');
+    const fullName = getFullName(d);
     if (d.photo && d.photo.trim() !== '') {
       photo.src = d.photo;
-      photo.onerror = function() {
-        this.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(getFullName(d)) + '&background=d4af37&color=fff&size=300';
-      };
+      photo.onerror = function() { this.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(fullName) + '&background=d4af37&color=fff&size=300'; };
     } else {
-      photo.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(getFullName(d)) + '&background=d4af37&color=fff&size=300';
+      photo.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(fullName) + '&background=d4af37&color=fff&size=300';
     }
   }
 
-
-  /* ============================================================
-     5. RENDER
-  ============================================================ */
-
-  function renderSlip() {
-    populateFields();
-  }
-
-
-  /* ============================================================
-     6. PRINT
-  ============================================================ */
-
-  function printSlip() {
-    window.print();
-  }
-
-
-  /* ============================================================
-     7. PDF EXPORT - FULL CAPTURE
-  ============================================================ */
+  function renderSlip() { populateFields(); }
+  function printSlip() { window.print(); }
 
   function exportPDF() {
-    if (typeof html2pdf === 'undefined') {
-      printSlip();
-      return;
-    }
-
+    if (typeof html2pdf === 'undefined') { printSlip(); return; }
     const element = document.querySelector('.page');
-
     const options = {
       margin: 0,
       filename: `Improved_NIN_Slip_${(window.slipData?.nin || 'NIN').replace(/\s+/g, '')}.pdf`,
       image: { type: 'jpeg', quality: 1 },
-      html2canvas: {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-        backgroundColor: '#ffffff',
-        scrollX: 0,
-        scrollY: 0,
-        width: 210 * 2.83,
-        height: 297 * 2.83,
-        windowWidth: 210 * 2.83,
-        windowHeight: 297 * 2.83
-      },
-      jsPDF: {
-        unit: 'mm',
-        format: 'a4',
-        orientation: 'portrait'
-      },
+      html2canvas: { scale: 2, useCORS: true, allowTaint: true, logging: false, backgroundColor: '#ffffff' },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak: { mode: ['avoid-all'] }
     };
-
-    html2pdf()
-      .set(options)
-      .from(element)
-      .save()
+    html2pdf().set(options).from(element).save()
       .then(() => console.log('✅ Improved PDF exported'))
       .catch(err => console.error('PDF error:', err));
   }
 
-
-  /* ============================================================
-     8. AUTO PDF GENERATION ON LOAD
-  ============================================================ */
-
   (function autoGeneratePDF() {
-    const shouldAutoGenerate = sessionStorage.getItem('autoGeneratePDF') !== 'false';
-
-    if (!shouldAutoGenerate) {
-      console.log('🔄 Auto-generate disabled');
-      return;
-    }
-
+    if (sessionStorage.getItem('autoGeneratePDF') === 'false') return;
     window.addEventListener('load', function() {
-      Promise.all(
-        [...document.images].map(img => {
-          if (img.complete) return Promise.resolve();
-          return new Promise(resolve => {
-            img.onload = resolve;
-            img.onerror = resolve;
-          });
-        })
-      ).then(function() {
+      Promise.all([...document.images].map(img => {
+        if (img.complete) return Promise.resolve();
+        return new Promise(resolve => { img.onload = resolve; img.onerror = resolve; });
+      })).then(function() {
         setTimeout(function() {
           if (typeof exportPDF === 'function') {
             console.log('📄 Auto-generating Improved PDF...');
-            try {
-              exportPDF();
-              sessionStorage.setItem('autoGeneratePDF', 'false');
-            } catch (e) {
-              console.error('Error generating PDF:', e);
-            }
+            try { exportPDF(); sessionStorage.setItem('autoGeneratePDF', 'false'); } catch (e) { console.error('Error:', e); }
           }
         }, 800);
       });
     });
   })();
 
-
-  /* ============================================================
-     9. PRELOAD IMAGES
-  ============================================================ */
-
-  ['/assets/improved-front.png', '/assets/improved-back.png'].forEach(function(src) {
-    const img = new Image();
-    img.src = src;
-  });
-
-
-  /* ============================================================
-     10. RENDER ON LOAD
-  ============================================================ */
-
-  document.addEventListener('DOMContentLoaded', function() {
-    renderSlip();
-  });
-
-
-  /* ============================================================
-     11. PUBLIC API
-  ============================================================ */
-
+  ['/assets/improved-front.png', '/assets/improved-back.png'].forEach(function(src) { new Image().src = src; });
+  document.addEventListener('DOMContentLoaded', renderSlip);
   window.exportImprovedPDF = exportPDF;
   window.printImprovedSlip = printSlip;
   window.renderSlip = renderSlip;
   window.exportPDF = exportPDF;
-
   console.log('✅ Improved Slip Ready');
-
 </script>
 
 </body>

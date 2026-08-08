@@ -5,38 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Premium NIN Slip | AIIH</title>
 
-  <!-- QR Code Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
-  <!-- PDF Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
-    /* ============================================================
-       PRINT SETTINGS
-    ============================================================ */
-
-    @page {
-      size: A4 portrait;
-      margin: 0;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-    }
-
-    body {
-      background: #ffffff;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-
-    /* ============================================================
-       PAGE - A4 Portrait
-    ============================================================ */
+    @page { size: A4 portrait; margin: 0; }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    body { background: #ffffff; font-family: Arial, Helvetica, sans-serif; }
 
     .page {
       width: 210mm;
@@ -45,13 +20,8 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 20mm 0;
       background: #ffffff;
     }
-
-    /* ============================================================
-       CARD STACK - Two cards stacked vertically with 5mm gap
-    ============================================================ */
 
     .card-stack {
       display: flex;
@@ -61,16 +31,10 @@
       justify-content: center;
     }
 
-    /* ============================================================
-       CARD CANVAS - 1280x800 each
-    ============================================================ */
-
     .card-canvas {
       position: relative;
       width: 1280px;
       height: 800px;
-      font-family: Arial, Helvetica, sans-serif;
-      color: #000000;
       overflow: hidden;
       background: #ffffff;
       flex-shrink: 0;
@@ -95,15 +59,15 @@
     }
 
     /* ============================================================
-       PREMIUM SLIP POSITIONS (premium-front.png)
+       PREMIUM SLIP POSITIONS (Master Coordinate Map)
     ============================================================ */
 
     .premium-photo {
       position: absolute;
       top: 220px;
-      left: 65px;
-      width: 270px;
-      height: 340px;
+      left: 60px;
+      width: 255px;
+      height: 330px;
       object-fit: cover;
       border-radius: 8px;
     }
@@ -111,9 +75,9 @@
     .premium-qr {
       position: absolute;
       top: 220px;
-      left: 980px;
-      width: 230px;
-      height: 230px;
+      left: 985px;
+      width: 205px;
+      height: 205px;
       background: #ffffff;
       padding: 10px;
       display: flex;
@@ -127,7 +91,6 @@
       height: 100% !important;
     }
 
-    /* Values - NO LABELS (template has them) */
     .p-val {
       position: absolute;
       font-weight: 700;
@@ -136,161 +99,98 @@
     }
 
     .p-val-surname {
-      top: 280px;
-      left: 395px;
-      font-size: 28px;
+      top: 235px;
+      left: 400px;
+      font-size: 32px;
       color: #111111;
     }
 
     .p-val-given-names {
-      top: 380px;
-      left: 395px;
-      font-size: 28px;
+      top: 340px;
+      left: 400px;
+      font-size: 32px;
       color: #111111;
     }
 
     .p-val-dob {
-      top: 485px;
-      left: 395px;
-      font-size: 26px;
+      top: 455px;
+      left: 400px;
+      font-size: 30px;
       color: #111;
     }
 
     .p-val-sex {
-      top: 485px;
-      left: 730px;
-      font-size: 26px;
+      top: 455px;
+      left: 720px;
+      font-size: 30px;
       color: #111;
     }
 
     .p-val-issue-date {
-      top: 515px;
+      top: 455px;
       left: 980px;
-      font-size: 26px;
+      font-size: 30px;
       color: #111;
     }
 
     .p-val-nin {
-      top: 675px;
+      top: 635px;
       left: 315px;
-      width: 650px;
+      width: 640px;
       text-align: center;
-      font-size: 44px;
+      font-size: 46px;
       font-weight: 900;
       letter-spacing: 5px;
-      color: #008751;
+      color: #007A41;
     }
-
-    /* ============================================================
-       PREMIUM BACK - No dynamic fields (just the image)
-    ============================================================ */
-
-    .premium-back .card-data-overlay {
-      /* No dynamic fields needed - back image has all content */
-    }
-
-    /* ============================================================
-       RESPONSIVE & PRINT
-    ============================================================ */
 
     @media print {
-      body {
-        background: #ffffff;
-      }
-      .page {
-        padding: 0;
-        margin: 0;
-        width: 210mm;
-        height: 297mm;
-      }
-      .card-canvas {
-        /* Keep at full size for PDF capture */
-        transform: none;
-      }
+      body { background: #ffffff; }
+      .page { padding: 0; margin: 0; width: 210mm; height: 297mm; }
+      .card-canvas { transform: none; }
     }
 
     @media screen and (max-width: 900px) {
-      .card-canvas {
-        transform: scale(0.5);
-        transform-origin: top center;
-      }
-      .card-stack {
-        gap: 2mm;
-      }
+      .card-canvas { transform: scale(0.5); transform-origin: top center; }
+      .card-stack { gap: 2mm; }
     }
   </style>
 </head>
 
 <body>
 
-<!-- ============================================================
-     PAGE
-============================================================= -->
-
 <div class="page">
-
   <div class="card-stack">
 
-    <!-- ========================================================
-         PREMIUM FRONT
-    ======================================================== -->
-
     <div class="card-canvas">
-
       <img src="/assets/premium-front.png" class="card-bg" alt="Premium Slip Template">
-
       <div class="card-data-overlay">
-
         <img id="photo" class="premium-photo" src="" alt="ID Holder Photo">
         <div id="qr" class="premium-qr"></div>
-
-        <!-- DYNAMIC VALUES ONLY - NO LABELS (template has them) -->
         <div class="p-val p-val-surname" id="surname">—</div>
         <div class="p-val p-val-given-names" id="firstName">—</div>
         <div class="p-val p-val-dob" id="dob">—</div>
         <div class="p-val p-val-sex" id="gender">—</div>
         <div class="p-val p-val-issue-date" id="issueDate">—</div>
         <div class="p-val p-val-nin" id="nin">—</div>
-
       </div>
-
     </div>
 
-    <!-- ========================================================
-         PREMIUM BACK
-    ======================================================== -->
-
-    <div class="card-canvas premium-back">
-
+    <div class="card-canvas">
       <img src="/assets/premium-back.png" class="card-bg" alt="Premium Slip Back">
-
-      <div class="card-data-overlay">
-        <!-- No dynamic fields - the back image has all content -->
-      </div>
-
+      <div class="card-data-overlay"></div>
     </div>
 
   </div>
-
 </div>
 
-
-<!-- ============================================================
-   SCRIPTS
-============================================================= -->
-
 <script>
-
-  /* ============================================================
-     1. LOAD SLIP DATA FROM SESSIONSTORAGE
-  ============================================================ */
-
   (function loadSlipData() {
     try {
       const stored = sessionStorage.getItem('slipData');
       if (stored) {
         window.slipData = JSON.parse(stored);
-        console.log('✅ Premium Slip: Data loaded from sessionStorage');
+        console.log('✅ Premium Slip: Data loaded');
       } else {
         console.warn('⚠️ No slip data found, using fallback');
         window.slipData = {
@@ -302,23 +202,8 @@
           photo: ""
         };
       }
-    } catch (e) {
-      console.error('Error loading slip data:', e);
-      window.slipData = {
-        nin: "2709 551 8260",
-        surname: "WILLIAMS",
-        firstName: "SARAH ANNIKIR",
-        gender: "F",
-        dateOfBirth: "10-14-1983",
-        photo: ""
-      };
-    }
+    } catch (e) { console.error('Error loading slip data:', e); }
   })();
-
-
-  /* ============================================================
-     2. HELPERS
-  ============================================================ */
 
   function formatNIN(nin) {
     if (!nin) return "";
@@ -329,38 +214,15 @@
 
   function getFullName(data) {
     if (data.fullName) return data.fullName;
-    return [data.firstName, data.middleName, data.surname]
-      .filter(Boolean)
-      .join(' ')
-      .trim() || 'Not Available';
+    return [data.firstName, data.middleName, data.surname].filter(Boolean).join(' ').trim() || 'Not Available';
   }
 
-
-  /* ============================================================
-     3. ISSUE DATE
-  ============================================================ */
-
   const now = new Date();
-  const MONTHS = [
-    "JAN", "FEB", "MAR", "APR", "MAY", "JUN",
-    "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
-  ];
-
-  const issueDate =
-    String(now.getDate()).padStart(2, "0") +
-    " " +
-    MONTHS[now.getMonth()] +
-    " " +
-    now.getFullYear();
-
-
-  /* ============================================================
-     4. POPULATE FIELDS
-  ============================================================ */
+  const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+  const issueDate = String(now.getDate()).padStart(2,"0") + " " + MONTHS[now.getMonth()] + " " + now.getFullYear();
 
   function populateFields() {
     const d = window.slipData || {};
-
     document.getElementById('surname').textContent = d.surname || '—';
     document.getElementById('firstName').textContent = d.firstName || '—';
     document.getElementById('dob').textContent = d.dateOfBirth || '—';
@@ -368,48 +230,36 @@
     document.getElementById('issueDate').textContent = issueDate;
     document.getElementById('nin').textContent = formatNIN(d.nin);
 
-    // Photo
     const photo = document.getElementById('photo');
+    const fullName = getFullName(d);
     if (d.photo && d.photo.trim() !== '') {
       photo.src = d.photo;
-      photo.onerror = function() {
-        this.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(getFullName(d)) + '&background=d4af37&color=fff&size=300';
-      };
+      photo.onerror = function() { this.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(fullName) + '&background=d4af37&color=fff&size=300'; };
     } else {
-      photo.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(getFullName(d)) + '&background=d4af37&color=fff&size=300';
+      photo.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(fullName) + '&background=d4af37&color=fff&size=300';
     }
   }
-
-
-  /* ============================================================
-     5. GENERATE QR CODE
-  ============================================================ */
 
   function generateQRCode() {
     const qrContainer = document.getElementById('qr');
     if (!qrContainer) return;
-
     const d = window.slipData || {};
-
     const qrData = JSON.stringify({
       nin: d.nin || '',
       fullName: getFullName(d),
       dob: d.dateOfBirth || '',
       gender: d.gender || ''
     });
-
     qrContainer.innerHTML = '';
-
     if (typeof QRCode === 'undefined') {
       qrContainer.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:10px;color:#999;">QR</div>';
       return;
     }
-
     try {
       new QRCode(qrContainer, {
         text: qrData,
-        width: 200,
-        height: 200,
+        width: 180,
+        height: 180,
         colorDark: '#000000',
         colorLight: '#ffffff',
         correctLevel: QRCode.CorrectLevel.M
@@ -421,141 +271,49 @@
     }
   }
 
-
-  /* ============================================================
-     6. RENDER
-  ============================================================ */
-
-  function renderSlip() {
-    populateFields();
-    generateQRCode();
-  }
-
-
-  /* ============================================================
-     7. PRINT
-  ============================================================ */
-
-  function printSlip() {
-    window.print();
-  }
-
-
-  /* ============================================================
-     8. PDF EXPORT - FIXED FOR FULL CAPTURE
-  ============================================================ */
+  function renderSlip() { populateFields(); generateQRCode(); }
+  function printSlip() { window.print(); }
 
   function exportPDF() {
-    if (typeof html2pdf === 'undefined') {
-      printSlip();
-      return;
-    }
-
+    if (typeof html2pdf === 'undefined') { printSlip(); return; }
     const element = document.querySelector('.page');
-
     const options = {
       margin: 0,
       filename: `Premium_NIN_Slip_${(window.slipData?.nin || 'NIN').replace(/\s+/g, '')}.pdf`,
       image: { type: 'jpeg', quality: 1 },
-      html2canvas: {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-        backgroundColor: '#ffffff',
-        scrollX: 0,
-        scrollY: 0,
-        // FORCE FULL CAPTURE - capture the entire page
-        width: 210 * 2.83, // A4 width in pixels at 72dpi * scale
-        height: 297 * 2.83, // A4 height in pixels at 72dpi * scale
-        windowWidth: 210 * 2.83,
-        windowHeight: 297 * 2.83
-      },
-      jsPDF: {
-        unit: 'mm',
-        format: 'a4',
-        orientation: 'portrait'
-      },
+      html2canvas: { scale: 2, useCORS: true, allowTaint: true, logging: false, backgroundColor: '#ffffff' },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak: { mode: ['avoid-all'] }
     };
-
-    html2pdf()
-      .set(options)
-      .from(element)
-      .save()
-      .then(() => console.log('✅ PDF exported'))
+    html2pdf().set(options).from(element).save()
+      .then(() => console.log('✅ Premium PDF exported'))
       .catch(err => console.error('PDF error:', err));
   }
 
-
-  /* ============================================================
-     9. AUTO PDF GENERATION ON LOAD
-  ============================================================ */
-
   (function autoGeneratePDF() {
-    const shouldAutoGenerate = sessionStorage.getItem('autoGeneratePDF') !== 'false';
-
-    if (!shouldAutoGenerate) {
-      console.log('🔄 Auto-generate disabled');
-      return;
-    }
-
+    if (sessionStorage.getItem('autoGeneratePDF') === 'false') return;
     window.addEventListener('load', function() {
-      Promise.all(
-        [...document.images].map(img => {
-          if (img.complete) return Promise.resolve();
-          return new Promise(resolve => {
-            img.onload = resolve;
-            img.onerror = resolve;
-          });
-        })
-      ).then(function() {
+      Promise.all([...document.images].map(img => {
+        if (img.complete) return Promise.resolve();
+        return new Promise(resolve => { img.onload = resolve; img.onerror = resolve; });
+      })).then(function() {
         setTimeout(function() {
           if (typeof exportPDF === 'function') {
-            console.log('📄 Auto-generating PDF...');
-            try {
-              exportPDF();
-              sessionStorage.setItem('autoGeneratePDF', 'false');
-            } catch (e) {
-              console.error('Error generating PDF:', e);
-            }
+            console.log('📄 Auto-generating Premium PDF...');
+            try { exportPDF(); sessionStorage.setItem('autoGeneratePDF', 'false'); } catch (e) { console.error('Error:', e); }
           }
         }, 800);
       });
     });
   })();
 
-
-  /* ============================================================
-     10. PRELOAD IMAGES
-  ============================================================ */
-
-  ['/assets/premium-front.png', '/assets/premium-back.png'].forEach(function(src) {
-    const img = new Image();
-    img.src = src;
-  });
-
-
-  /* ============================================================
-     11. RENDER ON LOAD
-  ============================================================ */
-
-  document.addEventListener('DOMContentLoaded', function() {
-    renderSlip();
-  });
-
-
-  /* ============================================================
-     12. PUBLIC API
-  ============================================================ */
-
+  ['/assets/premium-front.png', '/assets/premium-back.png'].forEach(function(src) { new Image().src = src; });
+  document.addEventListener('DOMContentLoaded', renderSlip);
   window.exportPremiumPDF = exportPDF;
   window.printPremiumSlip = printSlip;
   window.renderSlip = renderSlip;
   window.exportPDF = exportPDF;
-
   console.log('✅ Premium Slip Ready');
-
 </script>
 
 </body>
