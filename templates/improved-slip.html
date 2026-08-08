@@ -9,29 +9,56 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
-    @page { size: A4 portrait; margin: 8mm; }
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    body { background: #ffffff; font-family: Arial, Helvetica, sans-serif; }
+    @page {
+      size: A4 portrait;
+      margin: 0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    body {
+      background: #ffffff;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    /* ============================================================
+       PAGE - Exact A4 height, centered content
+    ============================================================ */
 
     .page {
       width: 100%;
+      height: 297mm;
       min-height: 297mm;
+      max-height: 297mm;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       background: #ffffff;
-      padding: 8mm 0;
     }
 
-    .card-row {
+    /* ============================================================
+       CARD STACK - Vertical, 1mm gap, centered
+    ============================================================ */
+
+    .card-stack {
       display: flex;
-      flex-direction: row;
-      gap: 5mm;
-      align-items: flex-start;
+      flex-direction: column;
+      gap: 1mm;
+      align-items: center;
       justify-content: center;
-      width: 100%;
     }
+
+    /* ============================================================
+       CARD CANVAS - Native 1280x800 resolution
+    ============================================================ */
 
     .card-canvas {
       position: relative;
@@ -62,6 +89,7 @@
 
     /* ============================================================
        IMPROVED SLIP POSITIONS (1280x800 coordinates)
+       - Values sit BELOW the labels
     ============================================================ */
 
     .improved-photo {
@@ -103,31 +131,31 @@
     }
 
     .imp-val-surname {
-      top: 248px;
-      left: 520px;
+      top: 280px;
+      left: 410px;
       font-size: 34px;
     }
 
     .imp-val-given-names {
-      top: 355px;
-      left: 520px;
+      top: 390px;
+      left: 410px;
       font-size: 34px;
     }
 
     .imp-val-dob {
-      top: 470px;
-      left: 520px;
+      top: 510px;
+      left: 410px;
       font-size: 30px;
     }
 
     .imp-val-sex {
-      top: 470px;
-      left: 780px;
+      top: 510px;
+      left: 720px;
       font-size: 30px;
     }
 
     .imp-val-issue-date {
-      top: 470px;
+      top: 510px;
       left: 980px;
       font-size: 28px;
     }
@@ -143,57 +171,101 @@
       color: #000;
     }
 
-    @media print {
-      body { background: #ffffff; }
-      .page { padding: 0; margin: 0; }
-      .card-canvas { transform: none; }
-    }
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
 
     @media screen and (max-width: 900px) {
-      .card-row { flex-direction: column; gap: 5mm; }
-      .card-canvas { transform: scale(0.5); transform-origin: top center; }
+      .card-canvas {
+        transform: scale(0.3);
+        transform-origin: top center;
+      }
+    }
+
+    /* ============================================================
+       PRINT - Reset transforms for clean capture
+    ============================================================ */
+
+    @media print {
+      body {
+        background: #ffffff;
+      }
+      .page {
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        height: 297mm;
+        min-height: 297mm;
+        max-height: 297mm;
+        overflow: hidden;
+      }
+      .card-stack {
+        gap: 1mm;
+      }
     }
   </style>
 </head>
 
 <body>
 
-<div class="page">
-  <div class="card-row">
+  <div class="page">
+    <div class="card-stack">
 
-    <!-- FRONT (Left) -->
-    <div class="card-canvas">
-      <img src="/assets/improved-front.png" class="card-bg" alt="Improved Front">
-      <div class="card-data-overlay">
-        <img id="photo" class="improved-photo" src="" alt="ID Holder Photo">
-        <div id="qr" class="improved-qr"></div>
-        <div class="imp-val imp-val-surname" id="surname">—</div>
-        <div class="imp-val imp-val-given-names" id="givenNames">—</div>
-        <div class="imp-val imp-val-dob" id="dob">—</div>
-        <div class="imp-val imp-val-sex" id="gender">—</div>
-        <div class="imp-val imp-val-issue-date" id="issueDate">—</div>
-        <div class="imp-val imp-val-nin" id="nin">—</div>
+      <!-- ========================================================
+           IMPROVED FRONT (Top)
+      ======================================================== -->
+
+      <div class="card-canvas">
+        <img src="/assets/improved-front.png" class="card-bg" alt="Improved Front">
+        <div class="card-data-overlay">
+          <img id="photo" class="improved-photo" src="" alt="ID Holder Photo">
+          <div id="qr" class="improved-qr"></div>
+          <div class="imp-val imp-val-surname" id="surname">—</div>
+          <div class="imp-val imp-val-given-names" id="givenNames">—</div>
+          <div class="imp-val imp-val-dob" id="dob">—</div>
+          <div class="imp-val imp-val-sex" id="gender">—</div>
+          <div class="imp-val imp-val-issue-date" id="issueDate">—</div>
+          <div class="imp-val imp-val-nin" id="nin">—</div>
+        </div>
       </div>
-    </div>
 
-    <!-- BACK (Right) - 5mm gap -->
-    <div class="card-canvas">
-      <img src="/assets/improved-back.png" class="card-bg" alt="Improved Back">
-      <div class="card-data-overlay"></div>
-    </div>
+      <!-- ========================================================
+           IMPROVED BACK (Bottom) - 1mm gap
+      ======================================================== -->
 
+      <div class="card-canvas">
+        <img src="/assets/improved-back.png" class="card-bg" alt="Improved Back">
+        <div class="card-data-overlay"></div>
+      </div>
+
+    </div>
   </div>
-</div>
 
-<script>
-  (function loadSlipData() {
-    try {
-      const stored = sessionStorage.getItem('slipData');
-      if (stored) {
-        window.slipData = JSON.parse(stored);
-        console.log('✅ Improved Slip: Data loaded');
-      } else {
-        console.warn('⚠️ No slip data found, using fallback');
+  <script>
+    /* ============================================================
+       1. LOAD SLIP DATA FROM SESSIONSTORAGE
+    ============================================================ */
+
+    (function loadSlipData() {
+      try {
+        const stored = sessionStorage.getItem('slipData');
+        if (stored) {
+          window.slipData = JSON.parse(stored);
+          console.log('✅ Improved Slip: Data loaded from sessionStorage');
+        } else {
+          console.warn('⚠️ No slip data found, using fallback data');
+          window.slipData = {
+            nin: "2709 551 8260",
+            surname: "WILLIAMS",
+            firstName: "SARAH",
+            middleName: "ANNIKIR",
+            gender: "F",
+            dateOfBirth: "10-14-1983",
+            photo: ""
+          };
+        }
+      } catch (e) {
+        console.error('Error loading slip data:', e);
         window.slipData = {
           nin: "2709 551 8260",
           surname: "WILLIAMS",
@@ -204,150 +276,259 @@
           photo: ""
         };
       }
-    } catch (e) { console.error('Error loading slip data:', e); }
-  })();
+    })();
 
-  function formatNIN(nin) {
-    if (!nin) return "";
-    nin = nin.toString().replace(/\D/g, "");
-    if (nin.length !== 11) return nin;
-    return nin.replace(/(\d{4})(\d{3})(\d{4})/, "$1 $2 $3");
-  }
 
-  function getFullName(data) {
-    if (data.fullName) return data.fullName;
-    return [data.firstName, data.middleName, data.surname].filter(Boolean).join(' ').trim() || 'Not Available';
-  }
+    /* ============================================================
+       2. HELPERS
+    ============================================================ */
 
-  const now = new Date();
-  const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
-  const issueDate = String(now.getDate()).padStart(2,"0") + " " + MONTHS[now.getMonth()] + " " + now.getFullYear();
-
-  function populateFields() {
-    const d = window.slipData || {};
-    const givenNames = [d.firstName, d.middleName].filter(Boolean).join(' ') || '—';
-    
-    document.getElementById('surname').textContent = d.surname || '—';
-    document.getElementById('givenNames').textContent = givenNames;
-    document.getElementById('dob').textContent = d.dateOfBirth || '—';
-    document.getElementById('gender').textContent = d.gender || '—';
-    document.getElementById('issueDate').textContent = issueDate;
-    document.getElementById('nin').textContent = formatNIN(d.nin);
-
-    const photo = document.getElementById('photo');
-    const fullName = getFullName(d);
-    if (d.photo && d.photo.trim() !== '') {
-      photo.src = d.photo;
-      photo.onerror = function() { this.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(fullName) + '&background=d4af37&color=fff&size=300'; };
-    } else {
-      photo.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(fullName) + '&background=d4af37&color=fff&size=300';
+    function formatNIN(nin) {
+      if (!nin) return "";
+      nin = nin.toString().replace(/\D/g, "");
+      if (nin.length !== 11) return nin;
+      return nin.replace(/(\d{4})(\d{3})(\d{4})/, "$1 $2 $3");
     }
-  }
 
-  function generateQRCode() {
-    const qrContainer = document.getElementById('qr');
-    if (!qrContainer) return;
-    const d = window.slipData || {};
-    const qrData = JSON.stringify({
-      nin: d.nin || '',
-      fullName: getFullName(d),
-      dob: d.dateOfBirth || '',
-      gender: d.gender || ''
+    function getFullName(data) {
+      if (data.fullName) return data.fullName;
+      return [data.firstName, data.middleName, data.surname]
+        .filter(Boolean)
+        .join(' ')
+        .trim() || 'Not Available';
+    }
+
+
+    /* ============================================================
+       3. ISSUE DATE
+    ============================================================ */
+
+    const now = new Date();
+    const MONTHS = [
+      "JAN", "FEB", "MAR", "APR", "MAY", "JUN",
+      "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
+    ];
+
+    const issueDate =
+      String(now.getDate()).padStart(2, "0") +
+      " " +
+      MONTHS[now.getMonth()] +
+      " " +
+      now.getFullYear();
+
+
+    /* ============================================================
+       4. POPULATE FIELDS
+    ============================================================ */
+
+    function populateFields() {
+      const d = window.slipData || {};
+
+      // Given Names = First Name + Middle Name
+      const givenNames = [d.firstName, d.middleName].filter(Boolean).join(' ') || '—';
+
+      document.getElementById('surname').textContent = d.surname || '—';
+      document.getElementById('givenNames').textContent = givenNames;
+      document.getElementById('dob').textContent = d.dateOfBirth || '—';
+      document.getElementById('gender').textContent = d.gender || '—';
+      document.getElementById('issueDate').textContent = issueDate;
+      document.getElementById('nin').textContent = formatNIN(d.nin);
+
+      // Photo
+      const photo = document.getElementById('photo');
+      const fullName = getFullName(d);
+      if (d.photo && d.photo.trim() !== '') {
+        photo.src = d.photo;
+        photo.onerror = function() {
+          this.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(fullName) +
+            '&background=d4af37&color=fff&size=300';
+        };
+      } else {
+        photo.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(fullName) +
+          '&background=d4af37&color=fff&size=300';
+      }
+    }
+
+
+    /* ============================================================
+       5. GENERATE QR CODE
+    ============================================================ */
+
+    function generateQRCode() {
+      const qrContainer = document.getElementById('qr');
+      if (!qrContainer) return;
+
+      const d = window.slipData || {};
+
+      const qrData = JSON.stringify({
+        nin: d.nin || '',
+        fullName: getFullName(d),
+        dob: d.dateOfBirth || '',
+        gender: d.gender || ''
+      });
+
+      qrContainer.innerHTML = '';
+
+      if (typeof QRCode === 'undefined') {
+        qrContainer.innerHTML =
+          '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:10px;color:#999;">QR</div>';
+        return;
+      }
+
+      try {
+        new QRCode(qrContainer, {
+          text: qrData,
+          width: 120,
+          height: 120,
+          colorDark: '#000000',
+          colorLight: '#ffffff',
+          correctLevel: QRCode.CorrectLevel.M
+        });
+        console.log('✅ Improved QR Code generated');
+      } catch (e) {
+        console.error('Error generating QR:', e);
+        qrContainer.innerHTML =
+          '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:10px;color:#999;">QR Error</div>';
+      }
+    }
+
+
+    /* ============================================================
+       6. RENDER
+    ============================================================ */
+
+    function renderSlip() {
+      populateFields();
+      generateQRCode();
+    }
+
+
+    /* ============================================================
+       7. PRINT
+    ============================================================ */
+
+    function printSlip() {
+      window.print();
+    }
+
+
+    /* ============================================================
+       8. PDF EXPORT - Scale 0.33, 1mm gap, centered
+    ============================================================ */
+
+    function exportPDF() {
+      if (typeof html2pdf === 'undefined') {
+        printSlip();
+        return;
+      }
+
+      const element = document.querySelector('.page');
+      const stack = document.querySelector('.card-stack');
+
+      // Same scale as Premium for consistency
+      const scaleFactor = 0.33;
+      stack.style.transform = `scale(${scaleFactor})`;
+      stack.style.transformOrigin = 'center center';
+
+      const options = {
+        margin: [5, 5, 5, 5],
+        filename: `Improved_NIN_Slip_${(window.slipData?.nin || 'NIN').replace(/\s+/g, '')}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          logging: false,
+          backgroundColor: '#ffffff',
+          scrollX: 0,
+          scrollY: 0
+        },
+        jsPDF: {
+          unit: 'mm',
+          format: 'a4',
+          orientation: 'portrait'
+        },
+        pagebreak: { mode: ['avoid-all'] }
+      };
+
+      html2pdf()
+        .set(options)
+        .from(element)
+        .save()
+        .then(() => {
+          stack.style.transform = '';
+          console.log('✅ Improved PDF exported at scale 0.33 with 1mm gap (centered)');
+        })
+        .catch(err => {
+          stack.style.transform = '';
+          console.error('PDF error:', err);
+        });
+    }
+
+
+    /* ============================================================
+       9. AUTO PDF GENERATION ON LOAD
+    ============================================================ */
+
+    (function autoGeneratePDF() {
+      if (sessionStorage.getItem('autoGeneratePDF') === 'false') return;
+
+      window.addEventListener('load', function() {
+        Promise.all(
+          [...document.images].map(img => {
+            if (img.complete) return Promise.resolve();
+            return new Promise(resolve => {
+              img.onload = resolve;
+              img.onerror = resolve;
+            });
+          })
+        ).then(function() {
+          setTimeout(function() {
+            if (typeof exportPDF === 'function') {
+              console.log('📄 Auto-generating Improved PDF...');
+              try {
+                exportPDF();
+                sessionStorage.setItem('autoGeneratePDF', 'false');
+              } catch (e) {
+                console.error('Error generating PDF:', e);
+              }
+            }
+          }, 800);
+        });
+      });
+    })();
+
+
+    /* ============================================================
+       10. PRELOAD IMAGES
+    ============================================================ */
+
+    ['/assets/improved-front.png', '/assets/improved-back.png'].forEach(function(src) {
+      const img = new Image();
+      img.src = src;
     });
-    qrContainer.innerHTML = '';
-    if (typeof QRCode === 'undefined') {
-      qrContainer.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:10px;color:#999;">QR</div>';
-      return;
-    }
-    try {
-      new QRCode(qrContainer, {
-        text: qrData,
-        width: 120,
-        height: 120,
-        colorDark: '#000000',
-        colorLight: '#ffffff',
-        correctLevel: QRCode.CorrectLevel.M
-      });
-      console.log('✅ Improved QR Code generated');
-    } catch (e) {
-      console.error('Error generating QR:', e);
-      qrContainer.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:10px;color:#999;">QR Error</div>';
-    }
-  }
 
-  function renderSlip() { populateFields(); generateQRCode(); }
-  function printSlip() { window.print(); }
 
-  function exportPDF() {
-    if (typeof html2pdf === 'undefined') { printSlip(); return; }
+    /* ============================================================
+       11. RENDER ON LOAD
+    ============================================================ */
 
-    const element = document.querySelector('.page');
-    const row = document.querySelector('.card-row');
-
-    const scaleFactor = 0.28;
-    row.style.transform = `scale(${scaleFactor})`;
-    row.style.transformOrigin = 'top center';
-
-    const options = {
-      margin: [8, 8, 8, 8],
-      filename: `Improved_NIN_Slip_${(window.slipData?.nin || 'NIN').replace(/\s+/g, '')}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-        backgroundColor: '#ffffff',
-        scrollX: 0,
-        scrollY: 0
-      },
-      jsPDF: {
-        unit: 'mm',
-        format: 'a4',
-        orientation: 'portrait'
-      },
-      pagebreak: { mode: ['avoid-all'] }
-    };
-
-    html2pdf()
-      .set(options)
-      .from(element)
-      .save()
-      .then(() => {
-        row.style.transform = '';
-        console.log('✅ Improved PDF exported successfully');
-      })
-      .catch(err => {
-        row.style.transform = '';
-        console.error('PDF error:', err);
-      });
-  }
-
-  (function autoGeneratePDF() {
-    if (sessionStorage.getItem('autoGeneratePDF') === 'false') return;
-    window.addEventListener('load', function() {
-      Promise.all([...document.images].map(img => {
-        if (img.complete) return Promise.resolve();
-        return new Promise(resolve => { img.onload = resolve; img.onerror = resolve; });
-      })).then(function() {
-        setTimeout(function() {
-          if (typeof exportPDF === 'function') {
-            console.log('📄 Auto-generating Improved PDF...');
-            try { exportPDF(); sessionStorage.setItem('autoGeneratePDF', 'false'); } catch (e) { console.error('Error:', e); }
-          }
-        }, 800);
-      });
+    document.addEventListener('DOMContentLoaded', function() {
+      renderSlip();
     });
-  })();
 
-  ['/assets/improved-front.png', '/assets/improved-back.png'].forEach(function(src) { new Image().src = src; });
-  document.addEventListener('DOMContentLoaded', renderSlip);
-  window.exportImprovedPDF = exportPDF;
-  window.printImprovedSlip = printSlip;
-  window.renderSlip = renderSlip;
-  window.exportPDF = exportPDF;
-  console.log('✅ Improved Slip Ready');
-</script>
+
+    /* ============================================================
+       12. PUBLIC API
+    ============================================================ */
+
+    window.exportImprovedPDF = exportPDF;
+    window.printImprovedSlip = printSlip;
+    window.renderSlip = renderSlip;
+    window.exportPDF = exportPDF;
+
+    console.log('✅ Improved Slip Ready');
+  </script>
 
 </body>
 </html>
