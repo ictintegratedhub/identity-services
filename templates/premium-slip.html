@@ -21,37 +21,27 @@
       justify-content: center;
       align-items: center;
       background: #ffffff;
-      padding: 5mm 0;
+      padding: 8mm 0;
     }
 
-    /* Side-by-side card container */
+    /* Side-by-side container – 5 mm gap */
     .card-row {
       display: flex;
       flex-direction: row;
-      gap: 10mm;
-      align-items: center;
+      gap: 5mm;
+      align-items: flex-start;
       justify-content: center;
       width: 100%;
     }
 
+    /* Keep native resolution so coordinates stay correct */
     .card-canvas {
       position: relative;
-      width: 85.6mm;
-      height: 54mm;
+      width: 1280px;
+      height: 800px;
       overflow: hidden;
       background: #ffffff;
       flex-shrink: 0;
-      /* Scale from 1280x800 to 85.6x54mm */
-      transform: scale(0.067);
-      transform-origin: top left;
-    }
-
-    .card-canvas-front {
-      /* Front card - scale from 1280x800 to fit */
-    }
-
-    .card-canvas-back {
-      /* Back card - same scale */
     }
 
     .card-bg {
@@ -160,15 +150,10 @@
       color: #007A41;
     }
 
-    /* ============================================================
-       PRINT & RESPONSIVE
-    ============================================================ */
-
     @media print {
       body { background: #ffffff; }
-      .page { padding: 0; margin: 0; width: 100%; min-height: 297mm; }
-      .card-canvas { transform: scale(0.067); transform-origin: top left; }
-      .card-row { gap: 10mm; }
+      .page { padding: 0; margin: 0; }
+      .card-canvas { transform: none; }
     }
 
     @media screen and (max-width: 900px) {
@@ -183,11 +168,8 @@
 <div class="page">
   <div class="card-row">
 
-    <!-- ========================================================
-         PREMIUM FRONT (Left)
-    ======================================================== -->
-
-    <div class="card-canvas card-canvas-front">
+    <!-- FRONT (Left) -->
+    <div class="card-canvas">
       <img src="/assets/premium-front.png" class="card-bg" alt="Premium Front">
       <div class="card-data-overlay">
         <img id="photo" class="premium-photo" src="" alt="ID Holder Photo">
@@ -201,11 +183,8 @@
       </div>
     </div>
 
-    <!-- ========================================================
-         PREMIUM BACK (Right) - 10mm gap
-    ======================================================== -->
-
-    <div class="card-canvas card-canvas-back">
+    <!-- BACK (Right) - 5mm gap -->
+    <div class="card-canvas">
       <img src="/assets/premium-back.png" class="card-bg" alt="Premium Back">
       <div class="card-data-overlay"></div>
     </div>
@@ -253,8 +232,6 @@
 
   function populateFields() {
     const d = window.slipData || {};
-    
-    // Given Names = First Name + Middle Name
     const givenNames = [d.firstName, d.middleName].filter(Boolean).join(' ') || '—';
     
     document.getElementById('surname').textContent = d.surname || '—';
@@ -310,9 +287,18 @@
 
   function exportPDF() {
     if (typeof html2pdf === 'undefined') { printSlip(); return; }
+
     const element = document.querySelector('.page');
+    const row = document.querySelector('.card-row');
+
+    // Scale the whole row so two cards + 5mm gap fit on A4
+    // 1280px ≈ 338mm → two cards + gap ≈ 681mm → A4 usable ≈ 194mm → scale ≈ 0.28
+    const scaleFactor = 0.28;
+    row.style.transform = `scale(${scaleFactor})`;
+    row.style.transformOrigin = 'top center';
+
     const options = {
-      margin: [5, 5, 5, 5],
+      margin: [8, 8, 8, 8],
       filename: `Premium_NIN_Slip_${(window.slipData?.nin || 'NIN').replace(/\s+/g, '')}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: {
@@ -322,16 +308,28 @@
         logging: false,
         backgroundColor: '#ffffff',
         scrollX: 0,
-        scrollY: 0,
-        windowWidth: document.documentElement.offsetWidth,
-        windowHeight: document.documentElement.offsetHeight
+        scrollY: 0
       },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['css', 'legacy'], avoid: ['.card-canvas'] }
+      jsPDF: {
+        unit: 'mm',
+        format: 'a4',
+        orientation: 'portrait'
+      },
+      pagebreak: { mode: ['avoid-all'] }
     };
-    html2pdf().set(options).from(element).save()
-      .then(() => console.log('✅ Premium PDF exported'))
-      .catch(err => console.error('PDF error:', err));
+
+    html2pdf()
+      .set(options)
+      .from(element)
+      .save()
+      .then(() => {
+        row.style.transform = '';
+        console.log('✅ Premium PDF exported successfully');
+      })
+      .catch(err => {
+        row.style.transform = '';
+        console.error('PDF error:', err);
+      });
   }
 
   (function autoGeneratePDF() {
