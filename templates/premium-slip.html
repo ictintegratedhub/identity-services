@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Improved NIN Slip | AIIH</title>
+  <title>Premium NIN Slip | AIIH</title>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -59,86 +59,90 @@
     }
 
     /* ============================================================
-       IMPROVED SLIP POSITIONS (Final Master Map)
+       PREMIUM SLIP POSITIONS (Final Master Map)
     ============================================================ */
 
-    .improved-photo {
+    .premium-photo {
       position: absolute;
-      top: 210px;
-      left: 55px;
-      width: 240px;
-      height: 310px;
+      top: 215px;
+      left: 60px;
+      width: 255px;
+      height: 330px;
       object-fit: cover;
-      border-radius: 6px;
+      border-radius: 8px;
     }
 
-    .improved-qr {
+    .premium-qr {
       position: absolute;
-      top: 200px;
+      top: 215px;
       left: 980px;
-      width: 150px;
-      height: 150px;
+      width: 205px;
+      height: 205px;
       background: #ffffff;
-      padding: 8px;
+      padding: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       border-radius: 4px;
     }
 
-    .improved-qr canvas,
-    .improved-qr img {
+    .premium-qr canvas,
+    .premium-qr img {
       width: 100% !important;
       height: 100% !important;
     }
 
-    .imp-val {
+    .p-val {
       position: absolute;
-      font-weight: 800;
+      font-weight: 700;
       text-transform: uppercase;
       line-height: 1;
-      color: #000;
     }
 
-    .imp-val-surname {
-      top: 280px;
-      left: 410px;
-      font-size: 36px;
+    .p-val-surname {
+      top: 275px;
+      left: 400px;
+      font-size: 34px;
+      color: #111;
     }
 
-    .imp-val-given-names {
-      top: 390px;
-      left: 410px;
-      font-size: 36px;
+    .p-val-given-names {
+      top: 385px;
+      left: 400px;
+      font-size: 34px;
+      color: #111;
     }
 
-    .imp-val-dob {
-      top: 510px;
-      left: 410px;
-      font-size: 32px;
+    .p-val-dob {
+      top: 500px;
+      left: 400px;
+      font-size: 30px;
+      color: #111;
     }
 
-    .imp-val-sex {
-      top: 510px;
+    .p-val-sex {
+      top: 500px;
       left: 720px;
-      font-size: 32px;
+      font-size: 30px;
+      color: #111;
     }
 
-    .imp-val-issue-date {
-      top: 510px;
+    .p-val-issue-date {
+      top: 500px;
       left: 980px;
-      font-size: 32px;
+      font-size: 30px;
+      color: #111;
     }
 
-    .imp-val-nin {
-      top: 640px;
-      left: 280px;
-      width: 720px;
+    .p-val-nin {
+      top: 660px;
+      left: 300px;
+      width: 680px;
       text-align: center;
       font-size: 48px;
       font-weight: 900;
       letter-spacing: 6px;
-      color: #000;
+      color: #007A41;
     }
 
     @media print {
@@ -160,21 +164,21 @@
   <div class="card-stack">
 
     <div class="card-canvas">
-      <img src="/assets/improved-front.png" class="card-bg" alt="Improved Slip Template">
+      <img src="/assets/premium-front.png" class="card-bg" alt="Premium Slip Template">
       <div class="card-data-overlay">
-        <img id="photo" class="improved-photo" src="" alt="ID Holder Photo">
-        <div id="qr" class="improved-qr"></div>
-        <div class="imp-val imp-val-surname" id="surname">—</div>
-        <div class="imp-val imp-val-given-names" id="firstName">—</div>
-        <div class="imp-val imp-val-dob" id="dob">—</div>
-        <div class="imp-val imp-val-sex" id="gender">—</div>
-        <div class="imp-val imp-val-issue-date" id="issueDate">—</div>
-        <div class="imp-val imp-val-nin" id="nin">—</div>
+        <img id="photo" class="premium-photo" src="" alt="ID Holder Photo">
+        <div id="qr" class="premium-qr"></div>
+        <div class="p-val p-val-surname" id="surname">—</div>
+        <div class="p-val p-val-given-names" id="firstName">—</div>
+        <div class="p-val p-val-dob" id="dob">—</div>
+        <div class="p-val p-val-sex" id="gender">—</div>
+        <div class="p-val p-val-issue-date" id="issueDate">—</div>
+        <div class="p-val p-val-nin" id="nin">—</div>
       </div>
     </div>
 
     <div class="card-canvas">
-      <img src="/assets/improved-back.png" class="card-bg" alt="Improved Slip Back">
+      <img src="/assets/premium-back.png" class="card-bg" alt="Premium Slip Back">
       <div class="card-data-overlay"></div>
     </div>
 
@@ -187,7 +191,7 @@
       const stored = sessionStorage.getItem('slipData');
       if (stored) {
         window.slipData = JSON.parse(stored);
-        console.log('✅ Improved Slip: Data loaded');
+        console.log('✅ Premium Slip: Data loaded');
       } else {
         console.warn('⚠️ No slip data found, using fallback');
         window.slipData = {
@@ -255,13 +259,13 @@
     try {
       new QRCode(qrContainer, {
         text: qrData,
-        width: 120,
-        height: 120,
+        width: 180,
+        height: 180,
         colorDark: '#000000',
         colorLight: '#ffffff',
         correctLevel: QRCode.CorrectLevel.M
       });
-      console.log('✅ Improved QR Code generated');
+      console.log('✅ Premium QR Code generated');
     } catch (e) {
       console.error('Error generating QR:', e);
       qrContainer.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:10px;color:#999;">QR Error</div>';
@@ -277,7 +281,7 @@
     const canvases = document.querySelectorAll('.card-canvas');
     const options = {
       margin: [8, 8, 8, 8],
-      filename: `Improved_NIN_Slip_${(window.slipData?.nin || 'NIN').replace(/\s+/g, '')}.pdf`,
+      filename: `Premium_NIN_Slip_${(window.slipData?.nin || 'NIN').replace(/\s+/g, '')}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: {
         scale: 1.5,
@@ -295,7 +299,7 @@
     };
     canvases.forEach(c => { c.style.transform = 'scale(0.72)'; c.style.transformOrigin = 'top center'; });
     html2pdf().set(options).from(element).save()
-      .then(() => { canvases.forEach(c => c.style.transform = ''); console.log('✅ Improved PDF exported'); })
+      .then(() => { canvases.forEach(c => c.style.transform = ''); console.log('✅ Premium PDF exported'); })
       .catch(err => { canvases.forEach(c => c.style.transform = ''); console.error('PDF error:', err); });
   }
 
@@ -308,7 +312,7 @@
       })).then(function() {
         setTimeout(function() {
           if (typeof exportPDF === 'function') {
-            console.log('📄 Auto-generating Improved PDF...');
+            console.log('📄 Auto-generating Premium PDF...');
             try { exportPDF(); sessionStorage.setItem('autoGeneratePDF', 'false'); } catch (e) { console.error('Error:', e); }
           }
         }, 800);
@@ -316,13 +320,13 @@
     });
   })();
 
-  ['/assets/improved-front.png', '/assets/improved-back.png'].forEach(function(src) { new Image().src = src; });
+  ['/assets/premium-front.png', '/assets/premium-back.png'].forEach(function(src) { new Image().src = src; });
   document.addEventListener('DOMContentLoaded', renderSlip);
-  window.exportImprovedPDF = exportPDF;
-  window.printImprovedSlip = printSlip;
+  window.exportPremiumPDF = exportPDF;
+  window.printPremiumSlip = printSlip;
   window.renderSlip = renderSlip;
   window.exportPDF = exportPDF;
-  console.log('✅ Improved Slip Ready');
+  console.log('✅ Premium Slip Ready');
 </script>
 
 </body>
