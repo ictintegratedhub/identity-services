@@ -212,7 +212,7 @@ p{
 
     flex-direction:column;
 
-    gap:5mm;
+    gap:1mm;
 
 }
 
@@ -424,7 +424,7 @@ p{
 
     flex-direction:column;
 
-    gap:5mm;
+    gap:1mm;
 
     align-items:flex-start;
 
@@ -683,7 +683,7 @@ p{
 
         margin:0;
 
-        padding:10mm;
+        padding:6mm;
 
         box-shadow:none;
 

@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Premium NIN Slip | AIIH</title>
 
+  <!-- Shared Data Layer (load first) -->
+  <script src="/js/slip-data.js"></script>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
@@ -46,13 +49,13 @@
     }
 
     /* ============================================================
-       CARD STACK - Vertical, 1mm gap, tightly stacked
+       CARD STACK - Vertical, 1mm gap (OVERRIDES shared CSS)
     ============================================================ */
 
     .card-stack {
       display: flex;
       flex-direction: column;
-      gap: 1mm;
+      gap: 1mm !important;    /* Force override shared CSS */
       align-items: center;
       justify-content: flex-start;
     }
@@ -201,7 +204,7 @@
         overflow: hidden;
       }
       .card-stack {
-        gap: 1mm;
+        gap: 1mm !important;
       }
     }
   </style>
@@ -414,7 +417,7 @@
 
 
     /* ============================================================
-       8. PDF EXPORT - Ideal scale 0.33
+       8. PDF EXPORT - Ideal scale 0.33, 1mm gap
     ============================================================ */
 
     function exportPDF() {
@@ -520,15 +523,14 @@
 
 
     /* ============================================================
-       12. PUBLIC API
+       12. FORCE LOCAL EXPORT - Override shared slip-data.js version
     ============================================================ */
 
-    window.exportPremiumPDF = exportPDF;
-    window.printPremiumSlip = printSlip;
-    window.renderSlip = renderSlip;
+    // Re-assign to ensure your version wins over any shared version
     window.exportPDF = exportPDF;
+    window.exportPremiumPDF = exportPDF;
 
-    console.log('✅ Premium Slip Ready');
+    console.log('✅ Premium Slip Ready - Local export forced');
   </script>
 
 </body>
