@@ -38,11 +38,11 @@
       padding: 5mm 0;
     }
 
-    /* Vertical stack - front on top, back below with 0.5cm gap */
+    /* Vertical stack - front on top, back below with 0.1cm gap */
     .card-stack {
       display: flex;
       flex-direction: column;
-      gap: 5mm;
+      gap: 1mm;
       align-items: center;
       justify-content: center;
       width: 100%;
@@ -182,7 +182,7 @@
         transform: none;
       }
       .card-stack {
-        gap: 5mm;
+        gap: 1mm;
       }
     }
 
@@ -192,7 +192,7 @@
         transform-origin: top center;
       }
       .card-stack {
-        gap: 3mm;
+        gap: 1mm;
       }
     }
   </style>
@@ -222,7 +222,7 @@
       </div>
 
       <!-- ========================================================
-           PREMIUM BACK (Bottom) - 0.5cm gap
+           PREMIUM BACK (Bottom) - 0.1cm gap
       ======================================================== -->
 
       <div class="card-canvas">
@@ -405,7 +405,7 @@
 
 
     /* ============================================================
-       8. PDF EXPORT
+       8. PDF EXPORT - Scale 0.3
     ============================================================ */
 
     function exportPDF() {
@@ -418,8 +418,9 @@
       const stack = document.querySelector('.card-stack');
 
       // Scale the stack so two cards + gap fit on A4
-      // 1280px ≈ 338mm → two cards + 5mm gap ≈ 681mm → A4 usable ≈ 194mm → scale ≈ 0.28
-      const scaleFactor = 0.28;
+      // 1280px ≈ 338mm → two cards + 1mm gap ≈ 677mm → A4 usable ≈ 194mm → scale ≈ 0.286
+      // Using 0.3 for slightly larger cards
+      const scaleFactor = 0.3;
       stack.style.transform = `scale(${scaleFactor})`;
       stack.style.transformOrigin = 'top center';
 
