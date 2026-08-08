@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Improved NIN Slip | AIIH</title>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
@@ -14,10 +15,11 @@
 
     .page {
       width: 210mm;
-      height: 297mm;
+      min-height: 297mm;
+      padding: 10mm 0;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
       background: #ffffff;
     }
@@ -25,9 +27,8 @@
     .card-stack {
       display: flex;
       flex-direction: column;
-      gap: 5mm;
+      gap: 8mm;
       align-items: center;
-      justify-content: center;
     }
 
     .card-canvas {
@@ -58,81 +59,97 @@
     }
 
     /* ============================================================
-       IMPROVED SLIP POSITIONS (Master Coordinate Map)
+       IMPROVED SLIP POSITIONS (Final Master Map)
     ============================================================ */
 
     .improved-photo {
       position: absolute;
-      top: 225px;
-      left: 58px;
-      width: 250px;
-      height: 320px;
+      top: 210px;
+      left: 55px;
+      width: 240px;
+      height: 310px;
       object-fit: cover;
       border-radius: 6px;
     }
 
+    .improved-qr {
+      position: absolute;
+      top: 200px;
+      left: 980px;
+      width: 150px;
+      height: 150px;
+      background: #ffffff;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+    }
+
+    .improved-qr canvas,
+    .improved-qr img {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
     .imp-val {
       position: absolute;
-      font-weight: 700;
+      font-weight: 800;
       text-transform: uppercase;
       line-height: 1;
+      color: #000;
     }
 
     .imp-val-surname {
-      top: 228px;
+      top: 280px;
       left: 410px;
-      font-size: 34px;
-      color: #000;
+      font-size: 36px;
     }
 
     .imp-val-given-names {
-      top: 335px;
+      top: 390px;
       left: 410px;
-      font-size: 34px;
-      color: #000;
+      font-size: 36px;
     }
 
     .imp-val-dob {
-      top: 450px;
+      top: 510px;
       left: 410px;
-      font-size: 30px;
-      color: #000;
+      font-size: 32px;
     }
 
     .imp-val-sex {
-      top: 450px;
+      top: 510px;
       left: 720px;
-      font-size: 30px;
-      color: #000;
+      font-size: 32px;
     }
 
     .imp-val-issue-date {
-      top: 450px;
+      top: 510px;
       left: 980px;
-      font-size: 30px;
-      color: #000;
+      font-size: 32px;
     }
 
     .imp-val-nin {
-      top: 615px;
-      left: 330px;
-      width: 620px;
+      top: 640px;
+      left: 280px;
+      width: 720px;
       text-align: center;
-      font-size: 46px;
+      font-size: 48px;
       font-weight: 900;
-      letter-spacing: 5px;
-      color: #000000;
+      letter-spacing: 6px;
+      color: #000;
     }
 
     @media print {
       body { background: #ffffff; }
-      .page { padding: 0; margin: 0; width: 210mm; height: 297mm; }
+      .page { padding: 0; margin: 0; width: 210mm; min-height: 297mm; }
       .card-canvas { transform: none; }
     }
 
     @media screen and (max-width: 900px) {
       .card-canvas { transform: scale(0.5); transform-origin: top center; }
-      .card-stack { gap: 2mm; }
+      .card-stack { gap: 4mm; }
     }
   </style>
 </head>
@@ -146,6 +163,7 @@
       <img src="/assets/improved-front.png" class="card-bg" alt="Improved Slip Template">
       <div class="card-data-overlay">
         <img id="photo" class="improved-photo" src="" alt="ID Holder Photo">
+        <div id="qr" class="improved-qr"></div>
         <div class="imp-val imp-val-surname" id="surname">—</div>
         <div class="imp-val imp-val-given-names" id="firstName">—</div>
         <div class="imp-val imp-val-dob" id="dob">—</div>
@@ -219,23 +237,66 @@
     }
   }
 
-  function renderSlip() { populateFields(); }
+  function generateQRCode() {
+    const qrContainer = document.getElementById('qr');
+    if (!qrContainer) return;
+    const d = window.slipData || {};
+    const qrData = JSON.stringify({
+      nin: d.nin || '',
+      fullName: getFullName(d),
+      dob: d.dateOfBirth || '',
+      gender: d.gender || ''
+    });
+    qrContainer.innerHTML = '';
+    if (typeof QRCode === 'undefined') {
+      qrContainer.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:10px;color:#999;">QR</div>';
+      return;
+    }
+    try {
+      new QRCode(qrContainer, {
+        text: qrData,
+        width: 120,
+        height: 120,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+      console.log('✅ Improved QR Code generated');
+    } catch (e) {
+      console.error('Error generating QR:', e);
+      qrContainer.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:10px;color:#999;">QR Error</div>';
+    }
+  }
+
+  function renderSlip() { populateFields(); generateQRCode(); }
   function printSlip() { window.print(); }
 
   function exportPDF() {
     if (typeof html2pdf === 'undefined') { printSlip(); return; }
     const element = document.querySelector('.page');
+    const canvases = document.querySelectorAll('.card-canvas');
     const options = {
-      margin: 0,
+      margin: [8, 8, 8, 8],
       filename: `Improved_NIN_Slip_${(window.slipData?.nin || 'NIN').replace(/\s+/g, '')}.pdf`,
-      image: { type: 'jpeg', quality: 1 },
-      html2canvas: { scale: 2, useCORS: true, allowTaint: true, logging: false, backgroundColor: '#ffffff' },
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: {
+        scale: 1.5,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: document.documentElement.offsetWidth,
+        windowHeight: document.documentElement.offsetHeight
+      },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['avoid-all'] }
+      pagebreak: { mode: ['css', 'legacy'], avoid: ['.card-canvas'] }
     };
+    canvases.forEach(c => { c.style.transform = 'scale(0.72)'; c.style.transformOrigin = 'top center'; });
     html2pdf().set(options).from(element).save()
-      .then(() => console.log('✅ Improved PDF exported'))
-      .catch(err => console.error('PDF error:', err));
+      .then(() => { canvases.forEach(c => c.style.transform = ''); console.log('✅ Improved PDF exported'); })
+      .catch(err => { canvases.forEach(c => c.style.transform = ''); console.error('PDF error:', err); });
   }
 
   (function autoGeneratePDF() {

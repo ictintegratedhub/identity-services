@@ -14,10 +14,11 @@
 
     .page {
       width: 210mm;
-      height: 297mm;
+      min-height: 297mm;
+      padding: 10mm 0;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
       background: #ffffff;
     }
@@ -26,7 +27,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      gap: 4mm;
     }
 
     .card-canvas {
@@ -57,18 +58,18 @@
     }
 
     /* ============================================================
-       BASIC SLIP POSITIONS (Master Coordinate Map)
+       BASIC SLIP POSITIONS (Final Master Map)
     ============================================================ */
 
     .basic-photo {
       position: absolute;
-      top: 120px;
-      left: 1085px;
-      width: 170px;
-      height: 245px;
+      top: 140px;
+      left: 1080px;
+      width: 160px;
+      height: 230px;
       object-fit: cover;
-      border-radius: 4px;
       border: 1px solid #ccc;
+      border-radius: 4px;
     }
 
     .b-val {
@@ -76,72 +77,72 @@
       font-weight: 700;
       text-transform: uppercase;
       line-height: 1;
-      color: #000000;
+      color: #000;
     }
 
     .b-val-tracking {
-      top: 158px;
-      left: 24px;
-      width: 180px;
-      font-size: 22px;
+      top: 175px;
+      left: 30px;
+      width: 200px;
+      font-size: 20px;
       color: #222;
     }
 
     .b-val-nin {
-      top: 258px;
-      left: 24px;
+      top: 280px;
+      left: 30px;
       width: 210px;
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 900;
       color: #000;
     }
 
     .b-val-surname {
-      top: 158px;
-      left: 255px;
-      width: 185px;
-      font-size: 22px;
+      top: 175px;
+      left: 270px;
+      width: 180px;
+      font-size: 20px;
       color: #222;
     }
 
     .b-val-firstname {
-      top: 258px;
-      left: 255px;
-      width: 185px;
-      font-size: 22px;
+      top: 280px;
+      left: 270px;
+      width: 180px;
+      font-size: 20px;
       color: #222;
     }
 
     .b-val-middlename {
-      top: 332px;
-      left: 255px;
-      width: 185px;
-      font-size: 22px;
+      top: 355px;
+      left: 270px;
+      width: 180px;
+      font-size: 20px;
       color: #222;
     }
 
     .b-val-gender {
-      top: 405px;
-      left: 255px;
-      width: 185px;
-      font-size: 22px;
+      top: 430px;
+      left: 270px;
+      width: 180px;
+      font-size: 20px;
       color: #222;
     }
 
     .b-val-address {
-      top: 160px;
-      left: 455px;
-      width: 195px;
-      font-size: 18px;
+      top: 175px;
+      left: 480px;
+      width: 280px;
+      font-size: 16px;
       font-weight: 600;
       text-transform: none;
-      line-height: 1.25;
+      line-height: 1.3;
       color: #222;
     }
 
     @media print {
       body { background: #ffffff; }
-      .page { padding: 0; margin: 0; width: 210mm; height: 297mm; }
+      .page { padding: 0; margin: 0; width: 210mm; min-height: 297mm; }
       .card-canvas { transform: none; }
     }
 
@@ -191,9 +192,7 @@
           trackingId: "R0A1B2C3D4"
         };
       }
-    } catch (e) {
-      console.error('Error loading slip data:', e);
-    }
+    } catch (e) { console.error('Error loading slip data:', e); }
   })();
 
   function formatNIN(nin) {
@@ -222,38 +221,41 @@
     const fullName = getFullName(d);
     if (d.photo && d.photo.trim() !== '') {
       photo.src = d.photo;
-      photo.onerror = function() {
-        this.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(fullName) + '&background=cccccc&color=333333&size=200';
-      };
+      photo.onerror = function() { this.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(fullName) + '&background=cccccc&color=333333&size=200'; };
     } else {
       photo.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(fullName) + '&background=cccccc&color=333333&size=200';
     }
   }
 
   function renderSlip() { populateFields(); }
-
   function printSlip() { window.print(); }
 
   function exportPDF() {
     if (typeof html2pdf === 'undefined') { printSlip(); return; }
     const element = document.querySelector('.page');
+    const canvases = document.querySelectorAll('.card-canvas');
     const options = {
-      margin: 0,
+      margin: [8, 8, 8, 8],
       filename: `Basic_NIN_Slip_${(window.slipData?.nin || 'NIN').replace(/\s+/g, '')}.pdf`,
-      image: { type: 'jpeg', quality: 1 },
+      image: { type: 'jpeg', quality: 0.98 },
       html2canvas: {
-        scale: 2,
+        scale: 1.5,
         useCORS: true,
         allowTaint: true,
         logging: false,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: document.documentElement.offsetWidth,
+        windowHeight: document.documentElement.offsetHeight
       },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['avoid-all'] }
+      pagebreak: { mode: ['css', 'legacy'], avoid: ['.card-canvas'] }
     };
+    canvases.forEach(c => { c.style.transform = 'scale(0.72)'; c.style.transformOrigin = 'top center'; });
     html2pdf().set(options).from(element).save()
-      .then(() => console.log('✅ Basic PDF exported'))
-      .catch(err => console.error('PDF error:', err));
+      .then(() => { canvases.forEach(c => c.style.transform = ''); console.log('✅ Basic PDF exported'); })
+      .catch(err => { canvases.forEach(c => c.style.transform = ''); console.error('PDF error:', err); });
   }
 
   (function autoGeneratePDF() {
