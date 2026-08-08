@@ -178,7 +178,7 @@
 
     @media screen and (max-width: 900px) {
       .card-canvas {
-        transform: scale(0.3);
+        transform: scale(0.5);
         transform-origin: top center;
       }
     }
@@ -414,7 +414,7 @@
 
 
     /* ============================================================
-       8. PDF EXPORT - Ideal scale 0.33, 1mm gap
+       8. PDF EXPORT
     ============================================================ */
 
     function exportPDF() {
@@ -427,7 +427,7 @@
       const stack = document.querySelector('.card-stack');
 
       // Ideal visual size from reference PDF
-      const scaleFactor = 0.33;
+      const scaleFactor = 0.55;
       stack.style.transform = `scale(${scaleFactor})`;
       stack.style.transformOrigin = 'top center';
 
