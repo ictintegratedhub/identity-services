@@ -55,7 +55,6 @@
       gap: 1mm;
       align-items: center;
       justify-content: flex-start;
-      width: 100%;
     }
 
     /* ============================================================
@@ -69,8 +68,6 @@
       overflow: hidden;
       background: #ffffff;
       flex-shrink: 0;
-      transform: scale(0.55);
-      transform-origin: top center;
     }
 
     .card-bg {
@@ -92,28 +89,27 @@
     }
 
     /* ============================================================
-       PREMIUM SLIP POSITIONS (1280x800 coordinates)
-       - DO NOT MODIFY - These are correctly aligned
+       PREMIUM POSITIONS – matched to ideal slip
     ============================================================ */
 
     .premium-photo {
       position: absolute;
-      top: 215px;
-      left: 60px;
-      width: 255px;
-      height: 330px;
+      top: 205px;
+      left: 55px;
+      width: 250px;
+      height: 320px;
       object-fit: cover;
-      border-radius: 8px;
+      border-radius: 6px;
     }
 
     .premium-qr {
       position: absolute;
-      top: 215px;
-      left: 980px;
-      width: 205px;
-      height: 205px;
+      top: 200px;
+      left: 990px;
+      width: 195px;
+      height: 195px;
       background: #ffffff;
-      padding: 10px;
+      padding: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -131,52 +127,48 @@
       font-weight: 700;
       text-transform: uppercase;
       line-height: 1;
+      color: #111;
     }
 
     .p-val-surname {
-      top: 275px;
-      left: 400px;
-      font-size: 34px;
-      color: #111;
+      top: 268px;
+      left: 395px;
+      font-size: 36px;
     }
 
     .p-val-given-names {
-      top: 385px;
-      left: 400px;
-      font-size: 34px;
-      color: #111;
+      top: 378px;
+      left: 395px;
+      font-size: 36px;
     }
 
     .p-val-dob {
-      top: 500px;
-      left: 400px;
+      top: 495px;
+      left: 395px;
       font-size: 30px;
-      color: #111;
     }
 
     .p-val-sex {
-      top: 500px;
-      left: 720px;
+      top: 495px;
+      left: 710px;
       font-size: 30px;
-      color: #111;
     }
 
     .p-val-issue-date {
-      top: 500px;
-      left: 950px;
+      top: 495px;
+      left: 960px;
       font-size: 28px;
-      color: #111;
       white-space: nowrap;
     }
 
     .p-val-nin {
-      top: 680px;
-      left: 280px;
-      width: 720px;
+      top: 670px;
+      left: 260px;
+      width: 760px;
       text-align: center;
-      font-size: 46px;
+      font-size: 48px;
       font-weight: 900;
-      letter-spacing: 5px;
+      letter-spacing: 6px;
       color: #007A41;
     }
 
@@ -207,10 +199,6 @@
         min-height: 297mm;
         max-height: 297mm;
         overflow: hidden;
-      }
-      .card-canvas {
-        transform: scale(0.55);
-        transform-origin: top center;
       }
       .card-stack {
         gap: 1mm;
@@ -426,7 +414,7 @@
 
 
     /* ============================================================
-       8. PDF EXPORT - Scale 0.55, Single Page
+       8. PDF EXPORT - Ideal scale 0.33
     ============================================================ */
 
     function exportPDF() {
@@ -436,9 +424,15 @@
       }
 
       const element = document.querySelector('.page');
+      const stack = document.querySelector('.card-stack');
+
+      // Ideal visual size from reference PDF
+      const scaleFactor = 0.33;
+      stack.style.transform = `scale(${scaleFactor})`;
+      stack.style.transformOrigin = 'top center';
 
       const options = {
-        margin: 0,
+        margin: [5, 5, 5, 5],
         filename: `Premium_NIN_Slip_${(window.slipData?.nin || 'NIN').replace(/\s+/g, '')}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: {
@@ -463,9 +457,11 @@
         .from(element)
         .save()
         .then(() => {
-          console.log('✅ Premium PDF exported successfully (single page)');
+          stack.style.transform = '';
+          console.log('✅ Premium PDF exported at ideal scale (0.33) with 1mm gap');
         })
         .catch(err => {
+          stack.style.transform = '';
           console.error('PDF error:', err);
         });
     }
